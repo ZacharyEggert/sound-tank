@@ -2,4 +2,9 @@
 /**
  * @type {import('prettier').Options}
  */
-module.exports = {};
+module.exports = {
+  singleQuote: true,
+  arrowParens: "always",
+  trailingComma: "all",
+  tabWidth: 2,
+};
