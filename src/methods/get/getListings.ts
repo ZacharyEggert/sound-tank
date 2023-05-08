@@ -1,5 +1,7 @@
 // import type {  } from '~/Reverb';
 
+import { Listing } from '~/types';
+import { PaginatedReverbResponse } from '.';
 import Reverb from '~/Reverb';
 import axios from 'axios';
 
@@ -11,7 +13,7 @@ export interface GetMyListingsOptions {
   state?: string;
 }
 
-export const getMyListings = async <T = any>(
+export const getMyListings = async (
   reverb: Reverb,
   options: GetMyListingsOptions,
 ) => {
@@ -26,7 +28,9 @@ export const getMyListings = async <T = any>(
 
   const url = `${baseUrl}?${pageString}${perPageString}${queryString}${skuString}${stateString}`;
 
-  const response = await axios.get<T>(url, {
+  const response = await axios.get<
+    PaginatedReverbResponse<{ listings: Listing[] }>
+  >(url, {
     headers: reverb.headers,
   });
 

@@ -1,6 +1,9 @@
 import { expect, it, suite } from 'vitest';
 
 import Reverb from './Reverb';
+import { config } from 'dotenv';
+
+config();
 
 const defaultHeaders = Reverb.defaultHeaders;
 
@@ -190,5 +193,15 @@ suite('Reverb', () => {
       // locale should be updated
       expect(reverb.locale).toBe('fr');
     });
+
+    it(
+      'should be able to get listings',
+      async ({ expect }) => {
+        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+        const response = await reverb.getMyListings({});
+        expect(response.status).toEqual(200);
+      },
+      { timeout: 30000 },
+    );
   });
 });
