@@ -60,5 +60,5 @@ suite(
       expect(response.data.listings[0].state).toBeDefined();
     });
   },
-  { timeout: 30000 },
+  { timeout: 60000 },
 );

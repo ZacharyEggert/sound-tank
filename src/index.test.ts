@@ -1,7 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest';
 
-describe("Test Suite", () => {
-  it("Test Case", () => {
-    expect(1).toBe(1);
+import Reverb from '.';
+
+describe('Index', () => {
+  it('should export Reverb from the index file', () => {
+    expect(Reverb).toBeDefined();
   });
 });

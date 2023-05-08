@@ -201,7 +201,7 @@ suite('Reverb', () => {
         const response = await reverb.getMyListings({});
         expect(response.status).toEqual(200);
       },
-      { timeout: 30000 },
+      { timeout: 60000 },
     );
   });
 });
