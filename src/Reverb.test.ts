@@ -32,7 +32,7 @@ suite('Reverb', () => {
     const reverb = new Reverb({ apiKey: '123' });
 
     // headers should be set to default
-    expect(reverb._headers).toEqual({
+    expect(reverb.headers).toEqual({
       ...defaultHeaders,
       Authorization: 'Bearer 123',
     });
@@ -49,7 +49,7 @@ suite('Reverb', () => {
     });
 
     // headers should be set to given options
-    expect(reverb._headers).toEqual({
+    expect(reverb.headers).toEqual({
       ...defaultHeaders,
       'Accept-Version': '1.0',
       'Accept-Language': 'fr',
@@ -75,7 +75,7 @@ suite('Reverb', () => {
     // locale should be set to given locale
     expect(reverb.displayCurrency).toBe('CAD');
     expect(reverb.locale).toBe('fr');
-    expect(reverb._headers).toEqual({
+    expect(reverb.headers).toEqual({
       ...defaultHeaders,
       'Accept-Language': 'fr',
       'X-Display-Currency': 'CAD',
@@ -109,7 +109,7 @@ suite('Reverb', () => {
       const reverb = new Reverb({ apiKey: '123' });
 
       // headers should be set to default
-      expect(reverb._headers).toEqual({
+      expect(reverb.headers).toEqual({
         ...defaultHeaders,
         Authorization: 'Bearer 123',
       });
@@ -121,7 +121,7 @@ suite('Reverb', () => {
       reverb.locale = 'fr';
 
       // headers should be updated
-      expect(reverb._headers).toEqual({
+      expect(reverb.headers).toEqual({
         ...defaultHeaders,
         'Accept-Version': '1.0',
         'Accept-Language': 'fr',

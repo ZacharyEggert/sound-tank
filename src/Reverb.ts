@@ -1,3 +1,7 @@
+import * as methods from './methods';
+
+import { Axios } from 'axios';
+
 export type ApiVersion = string;
 export type ApiKey = string;
 export type Locale = string;
@@ -16,7 +20,7 @@ export interface ReverbOptions {
   locale?: Locale | undefined;
 }
 
-export interface ReverbHeaders {
+export type ReverbHeaders = Axios['get']['arguments'][1] & {
   'Content-Type': string;
   'Accept-Version': ApiVersion;
   Accept: string;
@@ -24,7 +28,7 @@ export interface ReverbHeaders {
   'X-Display-Currency': DisplayCurrency;
   'X-Shipping-Region'?: ShippingRegion | undefined;
   'User-Agent'?: string;
-}
+};
 
 export interface AuthReverbHeaders extends ReverbHeaders {
   Authorization: `Bearer ${ApiKey}`;
@@ -125,6 +129,10 @@ export default class Reverb {
     return this._shippingRegion;
   }
 
+  get headers(): AuthReverbHeaders {
+    return this._headers;
+  }
+
   set displayCurrency(displayCurrency: DisplayCurrency) {
     this._displayCurrency = displayCurrency;
     this.updateHeaders();
@@ -147,5 +155,9 @@ export default class Reverb {
   }
   get rootEndpoint(): RootEndpoint {
     return this._rootEndpoint;
+  }
+
+  async getMyListings(options?: methods.GetMyListingsOptions) {
+    return await methods.getMyListings(this, options ?? {});
   }
 }
