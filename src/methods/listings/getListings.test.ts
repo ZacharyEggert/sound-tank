@@ -3,7 +3,7 @@ import { expect, it, suite } from 'vitest';
 import { Listing } from '~/types';
 import Reverb from '../../Reverb';
 import { config } from 'dotenv';
-import { getMyListings } from '.';
+import { getMyListings } from '../';
 
 config();
 
