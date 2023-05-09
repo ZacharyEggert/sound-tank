@@ -7,14 +7,6 @@ import { getMyListings } from '../';
 
 config();
 
-declare global {
-  namespace NodeJS {
-    interface ProcessEnv {
-      REVERB_API_KEY: string;
-    }
-  }
-}
-
 suite(
   'getMyListings',
   () => {
