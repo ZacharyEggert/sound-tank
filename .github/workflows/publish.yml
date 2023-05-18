@@ -24,6 +24,8 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
+        env:
+          REVERB_API_KEY: ${{ secrets.REVERB_API_KEY }}
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
