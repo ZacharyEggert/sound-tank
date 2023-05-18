@@ -17,14 +17,14 @@
     "release": "yarn lint && yarn test && yarn build && changeset publish"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.0",
-    "@types/node": "^18.14.0",
-    "@vitest/coverage-c8": "^0.31.0",
+    "@changesets/cli": "^2.26.1",
+    "@types/node": "^20.2.1",
+    "@vitest/coverage-c8": "^0.31.1",
     "dotenv": "^16.0.3",
     "prettier": "^2.8.8",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4",
-    "vitest": "^0.31.0"
+    "vitest": "^0.31.1"
   },
   "dependencies": {
     "axios": "^1.4.0"
