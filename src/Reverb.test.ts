@@ -89,7 +89,7 @@ suite('Reverb', () => {
     // locale should be set to default
     expect(reverb2.displayCurrency).toBe('USD');
     expect(reverb2.locale).toBe('en');
-    expect(reverb2._headers).toEqual({
+    expect(reverb2.headers).toEqual({
       ...defaultHeaders,
       Authorization: 'Bearer 123',
     });
