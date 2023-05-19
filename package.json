@@ -8,6 +8,10 @@
   "types": "dist/index.d.ts",
   "author": "Zachary Eggert <Eggert.Zachary@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZacharyEggert/sound-tank.git"
+  },
   "scripts": {
     "dev": "vitest",
     "test": "vitest run",

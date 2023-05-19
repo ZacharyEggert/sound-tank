@@ -1,19 +1,37 @@
-# Library Template
+<h1 align="center">
+ Sound Tank
+</h1>
 
-This is a template for a typescript library.
+<p align="center">
+ A library to interface with <a href="https://www.reverb.com/" target="_blank">Reverb's</a> API programmatically.
+</p>
 
-## Usage
+<p align="center">
+ To get started, just run <code>npm install sound-tank</code> in your project's directory, or <code>yarn add sound-tank</code> if you prefer Yarn.
+</p>
 
-- Use this template to create a new repository
-- Clone the repository
-- Run `yarn install`
-- Add a NPM token to your github environment variables as "NPM_TOKEN"
-- Delete this README.md and replace it with your own
-- Update the package.json with your own information
-- Update the LICENSE file with your own information
+<h2>
+  Example Usage
+</h2>
 
-## Links
+```typescript
+import Reverb from 'sound-tank';
 
-- [Github](https://github.com/ZacharyEggert/library-template)
+const { REVERB_API_KEY } = process.env;
 
-- [NPM](https://www.npmjs.com/package/@zacharyeggert/library-template)
+(async () => {
+  const reverb = new Reverb({ apiKey: REVERB_API_KEY });
+
+  const response = await reverb.getMyListings({
+    perPage: 10,
+    page: 1,
+    state: 'all',
+  });
+
+  const { listings } = response.data;
+
+  listings.forEach((listing) => {
+    console.log(listing.title);
+  });
+})();
+```
