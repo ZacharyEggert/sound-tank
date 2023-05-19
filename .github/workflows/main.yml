@@ -2,7 +2,12 @@ name: CI
 on:
   push:
     branches:
-      - "**"
+      - '**'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  REVERB_API_KEY: ${{ secrets.REVERB_API_KEY }}
 
 jobs:
   build:

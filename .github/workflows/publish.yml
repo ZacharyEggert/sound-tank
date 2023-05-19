@@ -6,6 +6,11 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  REVERB_API_KEY: ${{ secrets.REVERB_API_KEY }}
+
 jobs:
   publish:
     name: Publish
@@ -19,13 +24,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
-        env:
-          REVERB_API_KEY: ${{ secrets.REVERB_API_KEY }}
 
       - name: Install Dependencies
         run: yarn
-        env:
-          REVERB_API_KEY: ${{ secrets.REVERB_API_KEY }}
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
@@ -33,7 +34,3 @@ jobs:
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: yarn release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          REVERB_API_KEY: ${{ secrets.REVERB_API_KEY }}
