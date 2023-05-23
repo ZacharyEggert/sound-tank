@@ -118,11 +118,10 @@ export type Listing = {
 };
 
 type OrderStatus =
-  | 'all'
   | 'unpaid'
   | 'awaiting_shipment'
   | 'shipped'
-  | Exclude<string, 'all' | 'unpaid' | 'awaiting_shipment' | 'shipped'>;
+  | Exclude<string, 'unpaid' | 'awaiting_shipment' | 'shipped'>;
 
 type OrderTaxResponsibleParty = 'reverb' | Exclude<string, 'reverb'>;
 type OrderShippingMethod = 'shipped' | Exclude<string, 'shipped'>;
