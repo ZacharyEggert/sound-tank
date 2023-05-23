@@ -8,7 +8,7 @@ import axios from 'axios';
 interface GetMyOrdersOptions {
   page?: number;
   perPage?: number;
-  status?: 'all' | 'unpaid' | 'awaiting_shipment';
+  status?: Order['status'];
 }
 
 export const getMyOrders = async (

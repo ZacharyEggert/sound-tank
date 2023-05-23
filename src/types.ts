@@ -117,6 +117,19 @@ export type Listing = {
   _links: ListingLinks;
 };
 
+type OrderStatus =
+  | 'all'
+  | 'unpaid'
+  | 'awaiting_shipment'
+  | 'shipped'
+  | Exclude<string, 'all' | 'unpaid' | 'awaiting_shipment' | 'shipped'>;
+
+type OrderTaxResponsibleParty = 'reverb' | Exclude<string, 'reverb'>;
+type OrderShippingMethod = 'shipped' | Exclude<string, 'shipped'>;
+type OrderShipmentStatus = 'in_transit' | Exclude<string, 'in_transit'>;
+type OrderType = 'offer' | Exclude<string, 'offer'>;
+type OrderSource = 'reverb' | Exclude<string, 'reverb'>;
+
 export type Order = {
   amount_product: Price;
   presentment_amount_product: Price;
@@ -137,10 +150,10 @@ export type Order = {
   created_at: ReturnType<typeof Date.toString>;
   order_number: number | string;
   tax_rate: number;
-  order_source: 'reverb' | Exclude<string, 'reverb'>;
+  order_source: OrderSource;
   needs_feedback_for_buyer: boolean;
   needs_feedback_for_seller: boolean;
-  order_type: 'offer' | Exclude<string, 'offer'>;
+  order_type: OrderType;
   paid_at: ReturnType<typeof Date.toString>;
   quantity: number;
   shipping_address: ShippingAddress;
@@ -148,14 +161,11 @@ export type Order = {
   shipped_at: ReturnType<typeof Date.toString>;
   shipping_provider: string;
   shipping_code: string;
-  shipping_method: 'shipped' | Exclude<string, 'shipped'>;
-  shipment_status: 'in_transit' | Exclude<string, 'in_transit'>;
+  shipping_method: OrderShippingMethod;
+  shipment_status: OrderShipmentStatus;
   local_pickup: boolean;
   shop_name: string;
-  status:
-    | 'awaiting_shipment'
-    | 'shipped'
-    | Exclude<string, 'awaiting_shipment' | 'shipped'>;
+  status: OrderStatus;
   title: string;
   updated_at: ReturnType<typeof Date.toString>;
   payment_method: string;
@@ -167,7 +177,7 @@ export type Order = {
   bump_fee: Price;
   direct_checkout_fee: Price;
   tax_on_fees: Price;
-  tax_responsible_party: 'reverb' | Exclude<string, 'reverb'>;
+  tax_responsible_party: OrderTaxResponsibleParty;
   direct_checkout_payout: Price;
   order_notes: any[];
   _links: OrderLinks;
