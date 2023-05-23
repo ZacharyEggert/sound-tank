@@ -174,6 +174,35 @@ type OrderStatus =
   | 'shipped'
   | Exclude<string, 'unpaid' | 'awaiting_shipment' | 'shipped'>;
 
+type ShippingProvider =
+  | 'UPS'
+  | 'USPS'
+  | 'FedEx'
+  | 'DHL Deutschland'
+  | 'DHLExpress'
+  | 'DHLGlobalMail'
+  | 'DHL'
+  | 'Canada Post'
+  | 'CanPar'
+  | 'Royal Mail'
+  | 'PostNL'
+  | 'Australia Post'
+  | 'EMS'
+  | 'La Poste - Colissimo'
+  | 'China Post'
+  | 'GLS'
+  | 'Parcelforce'
+  | 'Purolator'
+  | 'Interlogistica'
+  | 'Correos España'
+  | 'Ukraine Post'
+  | 'DPD Germany'
+  | 'DPD UK'
+  | 'DPD France'
+  | 'Hermes'
+  | 'TNT'
+  | 'Other';
+
 type OrderTaxResponsibleParty = 'reverb' | Exclude<string, 'reverb'>;
 type OrderShippingMethod = 'shipped' | Exclude<string, 'shipped'>;
 type OrderShipmentStatus = 'in_transit' | Exclude<string, 'in_transit'>;
@@ -209,7 +238,7 @@ export type Order = {
   shipping_address: ShippingAddress;
   shipping_date: ReturnType<typeof Date.toString>;
   shipped_at: ReturnType<typeof Date.toString>;
-  shipping_provider: string;
+  shipping_provider: ShippingProvider;
   shipping_code: string;
   shipping_method: OrderShippingMethod;
   shipment_status: OrderShipmentStatus;
