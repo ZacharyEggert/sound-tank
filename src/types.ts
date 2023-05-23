@@ -116,3 +116,54 @@ export type Listing = {
   photos: { _links: PhotoLinks }[];
   _links: ListingLinks;
 };
+
+export type ListingPostBody = {
+  make: string;
+  model: string;
+  categories: {
+    uuid: string; // get these values from /api/categories/flat
+  }[];
+  condition: {
+    uuid: string; // get these from /api/listing_conditions
+  };
+  photos: string[];
+  videos: [
+    {
+      link: string;
+    },
+  ];
+  description: string;
+  finish: string;
+  price: {
+    amount: string; // amount in XX.XX format
+    currency: string; // USD, GBP, EUR, etc.
+  };
+  title: string;
+  year: string;
+  sku: string;
+  upc: string; // this string value can also be an EAN
+  upc_does_not_apply: `${boolean}`; // use 'true' in cases where the item does not come with a UPC
+  has_inventory: boolean;
+  inventory: number;
+  offers_enabled: boolean; // can be either true or false
+  handmade: boolean;
+  shipping_profile_id?: string; // enter your shipping profile here instead of shipping rates if applicable
+  shipping?: {
+    // only use this if not using shipping profiles
+    rates: {
+      rate: {
+        amount: string;
+        currency: string;
+      };
+      region_code: string; // Continental US
+    }[];
+    // {
+    //   rate: {
+    //     amount: string;
+    //     currency: string;
+    //   };
+    //   region_code: 'XX'; // Everywhere Else
+    // },
+    local: boolean;
+  };
+};

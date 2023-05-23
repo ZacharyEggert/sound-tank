@@ -48,7 +48,7 @@ export default class Reverb {
   private _rootEndpoint: RootEndpoint = 'https://api.reverb.com/api';
   private _version: ApiVersion = Reverb.defaultHeaders['Accept-Version'];
   private apiKey: string;
-  _headers: AuthReverbHeaders;
+  private _headers: AuthReverbHeaders;
   private _displayCurrency: DisplayCurrency =
     Reverb.defaultHeaders['X-Display-Currency'];
   private _shippingRegion: ShippingRegion | undefined;
