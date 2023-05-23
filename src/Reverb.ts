@@ -121,7 +121,7 @@ export default class Reverb {
     return this._locale;
   }
 
-  set shippingRegion(shippingRegion: ShippingRegion) {
+  set shippingRegion(shippingRegion: ShippingRegion | undefined) {
     this._shippingRegion = shippingRegion;
     this.updateHeaders();
   }
@@ -159,5 +159,13 @@ export default class Reverb {
 
   async getMyListings(options?: methods.GetMyListingsOptions) {
     return await methods.getMyListings(this, options ?? {});
+  }
+
+  async getMyOrders(options?: methods.GetMyOrdersOptions) {
+    return await methods.getMyOrders(this, options ?? {});
+  }
+
+  async getArbitraryEndpoint(options: methods.GetArbitraryEndpointOptions) {
+    return await methods.getArbitraryEndpoint(this, options);
   }
 }

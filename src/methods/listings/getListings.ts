@@ -1,7 +1,7 @@
 // import type {  } from '~/Reverb';
 
 import { Listing } from '~/types';
-import { PaginatedReverbResponse } from '.';
+import { PaginatedReverbResponse } from '..';
 import Reverb from '~/Reverb';
 import axios from 'axios';
 

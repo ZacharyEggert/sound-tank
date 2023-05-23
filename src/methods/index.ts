@@ -1,4 +1,5 @@
 export * from './listings/getListings';
+export * from './orders/getOrders';
 
 import { Link } from '~/types';
 import Reverb from '~/Reverb';
@@ -20,4 +21,25 @@ export type PaginatedReverbResponse<T> = T & {
     next?: Link;
     prev?: Link;
   };
+};
+
+export type GetArbitraryEndpointOptions = {
+  url: string;
+  params?: {
+    [key: string]: string;
+  };
+};
+
+export const getArbitraryEndpoint = async <T = any>(
+  reverb: Reverb,
+  options: GetArbitraryEndpointOptions,
+) => {
+  const { url, params } = options;
+
+  const response = await axios.get<T>(url, {
+    headers: reverb.headers,
+    params,
+  });
+
+  return response;
 };
