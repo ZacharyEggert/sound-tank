@@ -5,7 +5,7 @@ import { PaginatedReverbResponse } from '..';
 import Reverb from '~/Reverb';
 import axios from 'axios';
 
-interface GetMyOrdersOptions {
+export interface GetMyOrdersOptions {
   page?: number;
   perPage?: number;
   status?: Order['status'] | 'all';

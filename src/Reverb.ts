@@ -160,4 +160,12 @@ export default class Reverb {
   async getMyListings(options?: methods.GetMyListingsOptions) {
     return await methods.getMyListings(this, options ?? {});
   }
+
+  async getMyOrders(options?: methods.GetMyOrdersOptions) {
+    return await methods.getMyOrders(this, options ?? {});
+  }
+
+  async getArbitraryEndpoint(options: methods.GetArbitraryEndpointOptions) {
+    return await methods.getArbitraryEndpoint(this, options);
+  }
 }

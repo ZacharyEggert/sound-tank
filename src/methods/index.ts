@@ -22,3 +22,24 @@ export type PaginatedReverbResponse<T> = T & {
     prev?: Link;
   };
 };
+
+export type GetArbitraryEndpointOptions = {
+  url: string;
+  params?: {
+    [key: string]: string;
+  };
+};
+
+export const getArbitraryEndpoint = async <T = any>(
+  reverb: Reverb,
+  options: GetArbitraryEndpointOptions,
+) => {
+  const { url, params } = options;
+
+  const response = await axios.get<T>(url, {
+    headers: reverb.headers,
+    params,
+  });
+
+  return response;
+};
