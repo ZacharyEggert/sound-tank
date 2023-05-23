@@ -116,3 +116,91 @@ export type Listing = {
   photos: { _links: PhotoLinks }[];
   _links: ListingLinks;
 };
+
+export type Order = {
+  amount_product: Price;
+  presentment_amount_product: Price;
+  amount_product_subtotal: Price;
+  presentment_amount_product_subtotal: Price;
+  shipping: Price;
+  presentment_amount_shipping: Price;
+  amount_tax: Price;
+  presentment_amount_tax: Price;
+  total: Price;
+  presentment_amount_total: Price;
+  shipping_taxed: boolean;
+  buyer_name: string;
+  buyer_first_name: string;
+  buyer_email: string;
+  buyer_last_name: string;
+  buyer_id: number | string;
+  created_at: ReturnType<typeof Date.toString>;
+  order_number: number | string;
+  tax_rate: number;
+  order_source: 'reverb' | Exclude<string, 'reverb'>;
+  needs_feedback_for_buyer: boolean;
+  needs_feedback_for_seller: boolean;
+  order_type: 'offer' | Exclude<string, 'offer'>;
+  paid_at: ReturnType<typeof Date.toString>;
+  quantity: number;
+  shipping_address: ShippingAddress;
+  shipping_date: ReturnType<typeof Date.toString>;
+  shipped_at: ReturnType<typeof Date.toString>;
+  shipping_provider: string;
+  shipping_code: string;
+  shipping_method: 'shipped' | Exclude<string, 'shipped'>;
+  shipment_status: 'in_transit' | Exclude<string, 'in_transit'>;
+  local_pickup: boolean;
+  shop_name: string;
+  status:
+    | 'awaiting_shipment'
+    | 'shipped'
+    | Exclude<string, 'awaiting_shipment' | 'shipped'>;
+  title: string;
+  updated_at: ReturnType<typeof Date.toString>;
+  payment_method: string;
+  order_bundle_id: number | string;
+  product_id: number | string;
+  uuid: string;
+  photos: { _links: PhotoLinks }[];
+  selling_fee: Price;
+  bump_fee: Price;
+  direct_checkout_fee: Price;
+  tax_on_fees: Price;
+  tax_responsible_party: 'reverb' | Exclude<string, 'reverb'>;
+  direct_checkout_payout: Price;
+  order_notes: any[];
+  _links: OrderLinks;
+};
+
+type OrderLinks = {
+  photo: Link;
+  feedback_for_buyer: Link;
+  feedback_for_seller: Link;
+  listing: Link;
+  start_conversation: Link;
+  web_tracking: Link;
+  web: Link;
+  web_listing: Link;
+  self: Link;
+  mark_picked_up: Link;
+  payments: Link;
+  contact_buyer: { web: Link };
+};
+
+type ShippingAddress = {
+  region: string;
+  locality: string;
+  country_code: string;
+  display_location: string;
+  id: number | string;
+  primary: boolean;
+  name: string;
+  street_address: string;
+  extended_address: string;
+  postal_code: string;
+  phone: string;
+  unformatted_phone: string;
+  complete_shipping_address: boolean;
+  _links: { self: Link };
+};

@@ -1,4 +1,5 @@
 export * from './listings/getListings';
+export * from './orders/getOrders';
 
 import { Link } from '~/types';
 import Reverb from '~/Reverb';
