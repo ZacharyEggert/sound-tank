@@ -34,11 +34,19 @@ export const getArbitraryEndpoint = async <T = any>(
   reverb: Reverb,
   options: GetArbitraryEndpointOptions,
 ) => {
-  const { url, params } = options;
+  const { url, ...requestConfig } = options;
 
-  const response = await axios.get<T>(url, {
+  // check if url is absolute
+  const isAbsoluteUrl = url.startsWith('http');
+  //check if url has / at the beginning
+  const hasSlash = url.startsWith('/');
+  const requestUrl = isAbsoluteUrl
+    ? url
+    : `${reverb.rootEndpoint}${hasSlash ? '' : '/'}${url}`;
+
+  const response = await axios.get<T>(requestUrl, {
     headers: reverb.headers,
-    params,
+    ...requestConfig,
   });
 
   return response;
