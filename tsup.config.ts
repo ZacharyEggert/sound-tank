@@ -8,7 +8,7 @@ export default defineConfig({
   sourcemap: true,
   tsconfig: 'tsconfig.json',
   clean: true,
-  target: 'es2020',
+  // target: 'es2015',
   platform: 'node',
   external: ['axios'],
   bundle: true,
