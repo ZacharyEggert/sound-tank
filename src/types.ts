@@ -3,7 +3,7 @@ export type Link = {
   method?: 'PUT' | 'POST' | 'GET' | Exclude<string, 'PUT' | 'POST' | 'GET'>;
 };
 
-type ShippingRate = {
+export type ShippingRate = {
   region_code: string;
   rate: Price;
   carrier_calculated: boolean;
@@ -11,19 +11,22 @@ type ShippingRate = {
   destination_postal_code_needed: boolean;
 };
 
-type ListingStateSlug = 'sold' | 'live' | Exclude<string, 'sold' | 'live'>;
+export type ListingStateSlug =
+  | 'sold'
+  | 'live'
+  | Exclude<string, 'sold' | 'live'>;
 
-type ListingState = {
+export type ListingState = {
   slug: ListingStateSlug;
   description: string;
 };
 
-type ListingStats = {
+export type ListingStats = {
   views: number;
   watches: number;
 };
 
-type ConditionDisplayName =
+export type ConditionDisplayName =
   | 'Excellent'
   | 'New'
   | 'B-Stock'
@@ -36,19 +39,19 @@ type ConditionDisplayName =
       'Excellent' | 'New' | 'B-Stock' | 'Very Good' | 'Good' | 'Fair' | 'Poor'
     >;
 
-type ListingCondition = {
+export type ListingCondition = {
   uuid: string;
   displayName: ConditionDisplayName;
 };
 
-type ListingShipping = {
+export type ListingShipping = {
   local: boolean;
   rates: ShippingRate[];
   user_region_rate: ShippingRate;
   initial_offer_rate: ShippingRate;
 };
 
-type ListingLinks = {
+export type ListingLinks = {
   photo: Link;
   self: Link;
   update: Link;
@@ -61,15 +64,15 @@ type ListingLinks = {
   cart: Link;
 };
 
-type Category = {
+export type Category = {
   uuid: string;
   full_name: string;
 };
 
-type CurrencyCode = string;
-type CurrencySymbol = '$' | Exclude<string, '$'>;
+export type CurrencyCode = string;
+export type CurrencySymbol = '$' | Exclude<string, '$'>;
 
-type Price = {
+export type Price = {
   amount: `${number}.${number}` | `${number}`;
   amount_cents: number;
   currency: CurrencyCode;
@@ -80,7 +83,7 @@ type Price = {
   tax_included_rate?: number;
 };
 
-type PhotoLinks = {
+export type PhotoLinks = {
   large_crop: Link;
   small_crop: Link;
   full: Link;
@@ -168,13 +171,13 @@ export type ListingPostBody = {
   };
 };
 
-type OrderStatus =
+export type OrderStatus =
   | 'unpaid'
   | 'awaiting_shipment'
   | 'shipped'
   | Exclude<string, 'unpaid' | 'awaiting_shipment' | 'shipped'>;
 
-type ShippingProvider =
+export type ShippingProvider =
   | 'UPS'
   | 'USPS'
   | 'FedEx'
@@ -203,11 +206,11 @@ type ShippingProvider =
   | 'TNT'
   | 'Other';
 
-type OrderTaxResponsibleParty = 'reverb' | Exclude<string, 'reverb'>;
-type OrderShippingMethod = 'shipped' | Exclude<string, 'shipped'>;
-type OrderShipmentStatus = 'in_transit' | Exclude<string, 'in_transit'>;
-type OrderType = 'offer' | Exclude<string, 'offer'>;
-type OrderSource = 'reverb' | Exclude<string, 'reverb'>;
+export type OrderTaxResponsibleParty = 'reverb' | Exclude<string, 'reverb'>;
+export type OrderShippingMethod = 'shipped' | Exclude<string, 'shipped'>;
+export type OrderShipmentStatus = 'in_transit' | Exclude<string, 'in_transit'>;
+export type OrderType = 'offer' | Exclude<string, 'offer'>;
+export type OrderSource = 'reverb' | Exclude<string, 'reverb'>;
 
 export type Order = {
   amount_product: Price;
@@ -262,7 +265,7 @@ export type Order = {
   _links: OrderLinks;
 };
 
-type OrderLinks = {
+export type OrderLinks = {
   photo: Link;
   feedback_for_buyer: Link;
   feedback_for_seller: Link;
@@ -277,7 +280,7 @@ type OrderLinks = {
   contact_buyer: { web: Link };
 };
 
-type ShippingAddress = {
+export type ShippingAddress = {
   region: string;
   locality: string;
   country_code: string;

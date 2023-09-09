@@ -1,6 +1,6 @@
 {
   "name": "sound-tank",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A library for interacting with the Reverb Marketplace API",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -15,20 +15,20 @@
   "scripts": {
     "dev": "vitest",
     "test": "vitest run",
-    "build": "tsup src/index.ts --dts --format cjs,esm",
+    "build": "tsup --config tsup.config.ts",
     "lint": "tsc",
     "ci": "yarn install --frozen-lockfile && yarn lint && yarn test && yarn build",
     "release": "yarn lint && yarn test && yarn build && changeset publish"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.1",
-    "@types/node": "^20.2.1",
-    "@vitest/coverage-c8": "^0.31.1",
-    "dotenv": "^16.0.3",
-    "prettier": "^2.8.8",
-    "tsup": "^6.7.0",
-    "typescript": "^5.0.4",
-    "vitest": "^0.31.1"
+    "@changesets/cli": "^2.26.2",
+    "@types/node": "^20.4.2",
+    "@vitest/coverage-c8": "^0.33.0",
+    "dotenv": "^16.3.1",
+    "prettier": "^3.0.0",
+    "tsup": "^7.1.0",
+    "typescript": "^5.1.6",
+    "vitest": "^0.33.0"
   },
   "dependencies": {
     "axios": "^1.4.0"
