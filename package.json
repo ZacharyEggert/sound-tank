@@ -17,8 +17,8 @@
     "test": "vitest run",
     "build": "tsup --config tsup.config.ts",
     "lint": "tsc",
-    "ci": "yarn install --frozen-lockfile && yarn lint && yarn test && yarn build",
-    "release": "yarn lint && yarn test && yarn build && changeset publish"
+    "ci": "bun install && bun run lint && bun run test && bun run build",
+    "release": "bun run lint && bun run test && bun run build && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
