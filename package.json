@@ -17,7 +17,7 @@
     "test": "vitest run",
     "build": "tsup --config tsup.config.ts",
     "lint": "tsc",
-    "ci": "bun install && bun run lint && bun run test && bun run build",
+    "ci": "bun install --yarn && bun run lint && bun run test && bun run build",
     "release": "bun run lint && bun run test && bun run build && changeset publish"
   },
   "devDependencies": {
