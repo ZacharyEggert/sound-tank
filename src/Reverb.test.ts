@@ -1,4 +1,4 @@
-import { expect, it, suite } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 
 import Reverb from './Reverb';
 import { config } from 'dotenv';
@@ -7,7 +7,7 @@ config();
 
 const defaultHeaders = Reverb.defaultHeaders;
 
-suite('Reverb', () => {
+describe('Reverb', () => {
   it('should throw if no api key is given', () => {
     // throws if there is no api key
     // @ts-ignore
@@ -106,7 +106,7 @@ suite('Reverb', () => {
     expect(reverb.rootEndpoint).toBe('https://api.reverb.com/api2');
   });
 
-  suite('Getters and Setters', () => {
+  describe('Getters and Setters', () => {
     it('setters should update the headers when any option is updated', () => {
       // initialize client with api key
       const reverb = new Reverb({ apiKey: '123' });
@@ -196,7 +196,7 @@ suite('Reverb', () => {
 
     it(
       'should be able to get listings',
-      async ({ expect }) => {
+      async () => {
         const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
         const response = await reverb.getMyListings({});
         expect(response.status).toEqual(200);

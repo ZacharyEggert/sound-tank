@@ -1,4 +1,4 @@
-import { expect, it, suite } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 
 import { Order } from '~/types';
 import Reverb from '../../Reverb';
@@ -7,18 +7,14 @@ import { getMyOrders } from '../';
 
 config();
 
-suite(
-  'getMyOrders',
-  () => {
-    const { REVERB_API_KEY } = process.env;
-    const reverb = new Reverb({ apiKey: REVERB_API_KEY });
+describe('getMyOrders', () => {
+  const { REVERB_API_KEY } = process.env;
+  const reverb = new Reverb({ apiKey: REVERB_API_KEY });
 
-    it.concurrent('should return a list of orders', async ({ expect }) => {
-      const response = await getMyOrders(reverb, {});
+  it('should return a list of orders', async () => {
+    const response = await getMyOrders(reverb, {});
 
-      // console.log(response.data.orders[0]);
-      expect(response.data.orders).toBeDefined();
-    });
-  },
-  { timeout: 60000 },
-);
+    // console.log(response.data.orders[0]);
+    expect(response.data.orders).toBeDefined();
+  });
+});
