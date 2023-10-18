@@ -1,9 +1,10 @@
 // import type {  } from '~/Reverb';
 
+import axios, { AxiosResponse } from 'axios';
+
 import { Listing } from '~/types';
 import { PaginatedReverbResponse } from '..';
 import Reverb from '~/Reverb';
-import axios from 'axios';
 
 export interface GetMyListingsOptions {
   page?: number;
@@ -53,7 +54,7 @@ export interface GetAllMyListingsOptions {
 export const getAllMyListings = async (
   reverb: Reverb,
   options: GetAllMyListingsOptions,
-) => {
+): Promise<AxiosResponse<Listing[]>> => {
   let page = 1;
   const perPage = 50;
 
