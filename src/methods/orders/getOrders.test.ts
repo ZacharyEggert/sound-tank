@@ -22,7 +22,7 @@ suite(
 
     it.concurrent('should pass options to the request', async ({ expect }) => {
       const response = await getMyOrders(reverb, {
-        page:2,
+        page: 2,
       });
 
       expect(response.data.current_page).toEqual(2);

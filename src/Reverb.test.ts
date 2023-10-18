@@ -204,15 +204,15 @@ suite('Reverb', () => {
       { timeout: 60000 },
     );
 
-		it.concurrent(
-			'shoulde be able to get listings without a config object',
-			async ({ expect }) => {
-				const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
-				const response = await reverb.getMyListings();
-				expect(response.status).toEqual(200);
-			},
-			{ timeout: 60000 },
-		)
+    it.concurrent(
+      'shoulde be able to get listings without a config object',
+      async ({ expect }) => {
+        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+        const response = await reverb.getMyListings();
+        expect(response.status).toEqual(200);
+      },
+      { timeout: 60000 },
+    );
 
     it.concurrent(
       'should be able to get my orders',
@@ -224,15 +224,15 @@ suite('Reverb', () => {
       { timeout: 60000 },
     );
 
-		it.concurrent(
-			'should be able to get my orders without a config object',
-			async ({ expect }) => {
-				const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
-				const response = await reverb.getMyOrders();
-				expect(response.status).toEqual(200);
-			},
-			{ timeout: 60000 },
-		)
+    it.concurrent(
+      'should be able to get my orders without a config object',
+      async ({ expect }) => {
+        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+        const response = await reverb.getMyOrders();
+        expect(response.status).toEqual(200);
+      },
+      { timeout: 60000 },
+    );
 
     it.concurrent(
       'should be able to get arbitrary endpoints',
