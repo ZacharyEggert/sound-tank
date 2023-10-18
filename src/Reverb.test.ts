@@ -194,11 +194,65 @@ suite('Reverb', () => {
       expect(reverb.locale).toBe('fr');
     });
 
-    it(
+    it.concurrent(
       'should be able to get listings',
       async ({ expect }) => {
         const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
         const response = await reverb.getMyListings({});
+        expect(response.status).toEqual(200);
+      },
+      { timeout: 60000 },
+    );
+
+		it.concurrent(
+			'shoulde be able to get listings without a config object',
+			async ({ expect }) => {
+				const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+				const response = await reverb.getMyListings();
+				expect(response.status).toEqual(200);
+			},
+			{ timeout: 60000 },
+		)
+
+    it.concurrent(
+      'should be able to get my orders',
+      async ({ expect }) => {
+        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+        const response = await reverb.getMyOrders({});
+        expect(response.status).toEqual(200);
+      },
+      { timeout: 60000 },
+    );
+
+		it.concurrent(
+			'should be able to get my orders without a config object',
+			async ({ expect }) => {
+				const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+				const response = await reverb.getMyOrders();
+				expect(response.status).toEqual(200);
+			},
+			{ timeout: 60000 },
+		)
+
+    it.concurrent(
+      'should be able to get arbitrary endpoints',
+      async ({ expect }) => {
+        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+        const response = await reverb.getArbitraryEndpoint({
+          url: '/',
+        });
+        expect(response.status).toEqual(200);
+      },
+      { timeout: 60000 },
+    );
+
+    it.concurrent(
+      'should be able to get arbitrary endpoints on another domain',
+      async ({ expect }) => {
+        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+        const response = await reverb.getArbitraryEndpoint({
+          url: 'https://www.google.com',
+        });
         expect(response.status).toEqual(200);
       },
       { timeout: 60000 },

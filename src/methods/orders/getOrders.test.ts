@@ -16,8 +16,16 @@ suite(
     it.concurrent('should return a list of orders', async ({ expect }) => {
       const response = await getMyOrders(reverb, {});
 
-      // console.log(response.data.orders[0]);
+      console.log(response.data.orders[0]);
       expect(response.data.orders).toBeDefined();
+    });
+
+    it.concurrent('should pass options to the request', async ({ expect }) => {
+      const response = await getMyOrders(reverb, {
+        page:2,
+      });
+
+      expect(response.data.current_page).toEqual(2);
     });
   },
   { timeout: 60000 },

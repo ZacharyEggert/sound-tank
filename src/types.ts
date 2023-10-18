@@ -171,8 +171,12 @@ export type ListingPostBody = {
   };
 };
 
+type OrderStatusOptions = 'unpaid' | 'paid' | 'awaiting_shipment' | 'shipped';
+type OtherOrderStatusOptions = Exclude<string, OrderStatusOptions>;
+
 export type OrderStatus =
   | 'unpaid'
+  | 'paid'
   | 'awaiting_shipment'
   | 'shipped'
   | Exclude<string, 'unpaid' | 'awaiting_shipment' | 'shipped'>;

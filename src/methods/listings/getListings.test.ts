@@ -42,7 +42,7 @@ suite(
         page: 5,
         perPage: 1,
         query: 'gibson',
-        sku: '',
+        // sku: '',
         state: 'all',
       });
 
@@ -51,6 +51,8 @@ suite(
       expect(response.data.listings[0].make).toContain('Gibson');
       expect(response.data.listings[0].state).toBeDefined();
     });
+	
+		
   },
   { timeout: 60000 },
 );

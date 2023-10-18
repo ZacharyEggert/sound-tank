@@ -31,3 +31,26 @@ suite(
   },
   { timeout: 60000 },
 );
+
+suite(
+	'getArbitraryEndpoint',
+	() => {
+		const { REVERB_API_KEY } = process.env;
+		const reverb = new Reverb({ apiKey: REVERB_API_KEY });
+
+		it.concurrent(
+			'should insert a slash if one is not provided',
+			async ({ expect }) => {
+				const response = await reverb.getArbitraryEndpoint(
+					{url:'listings'},
+				);
+				const response2 = await reverb.getArbitraryEndpoint(
+					{url:'/listings'},
+				);
+				expect(response.data._links).toBeDefined();
+				expect(response2.data._links).toBeDefined();
+			},
+		)
+	},
+	{ timeout: 60000 },
+);
