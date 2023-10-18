@@ -13,6 +13,13 @@ export interface GetMyListingsOptions {
   state?: string;
 }
 
+/**
+ * Retrieves a paginated list of the authenticated user's listings on Reverb.
+ *
+ * @param reverb - The Reverb client instance.
+ * @param options - The options to use when fetching the listings.
+ * @returns A Promise that resolves to the paginated response containing the user's listings.
+ */
 export const getMyListings = async (
   reverb: Reverb,
   options: GetMyListingsOptions,
@@ -41,6 +48,12 @@ export interface GetOneListingOptions {
   id: string;
 }
 
+/**
+ * Retrieves a single Reverb listing by ID.
+ * @param reverb - The Reverb instance to use for the API request.
+ * @param options - The options for the API request, including the ID of the listing to retrieve.
+ * @returns A Promise that resolves with the retrieved listing. Structured as an axios response
+ */
 export const getOneListing = async (
   reverb: Reverb,
   options: GetOneListingOptions,

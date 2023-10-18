@@ -11,6 +11,12 @@ export interface GetMyOrdersOptions {
   // status?: Order['status'] | 'all';
 }
 
+/**
+ * Retrieves a paginated list of orders for the authenticated user.
+ * @param reverb - The Reverb instance to use for the API request.
+ * @param options - The options to use for the API request.
+ * @returns A Promise that resolves to the API response containing the list of orders.
+ */
 export const getMyOrders = async (
   reverb: Reverb,
   options: GetMyOrdersOptions,

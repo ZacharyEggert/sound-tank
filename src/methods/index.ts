@@ -30,6 +30,13 @@ export type GetArbitraryEndpointOptions = {
   };
 };
 
+/**
+ * Makes a GET request to an arbitrary endpoint.
+ * @param reverb - The Reverb instance to use for the request.
+ * @param options - The options for the request, including the URL and any additional request configuration.
+ * @returns A Promise that resolves with the response data.
+ * @template T - The type of the response data.
+ */
 export const getArbitraryEndpoint = async <T = any>(
   reverb: Reverb,
   options: GetArbitraryEndpointOptions,

@@ -157,18 +157,38 @@ export default class Reverb {
     return this._rootEndpoint;
   }
 
+  /**
+   * Retrieves the current user's listings.
+   * @param options - Optional parameters for the request.
+   * @returns A Promise that resolves to the user's listings. Structured as an axios response
+   */
   async getMyListings(options?: methods.GetMyListingsOptions) {
     return await methods.getMyListings(this, options ?? {});
   }
 
+  /**
+   * Retrieves the orders for the current user.
+   * @param options - An optional object containing options for the request.
+   * @returns A Promise that resolves with the user's orders. Structured as an axios response
+   */
   async getMyOrders(options?: methods.GetMyOrdersOptions) {
     return await methods.getMyOrders(this, options ?? {});
   }
 
+  /**
+   * Retrieves an arbitrary endpoint using the provided options.
+   * @param options - The options to use when retrieving the endpoint.
+   * @returns A Promise that resolves with the retrieved endpoint. Structured as an axios response
+   */
   async getArbitraryEndpoint(options: methods.GetArbitraryEndpointOptions) {
     return await methods.getArbitraryEndpoint(this, options);
   }
 
+  /**
+   * Retrieves a single listing based on the provided options.
+   * @param options - The options to use when retrieving the listing.
+   * @returns A Promise that resolves with the retrieved listing.
+   */
   async getOneListing(options: methods.GetOneListingOptions) {
     return await methods.getOneListing(this, options);
   }
