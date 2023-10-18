@@ -168,4 +168,8 @@ export default class Reverb {
   async getArbitraryEndpoint(options: methods.GetArbitraryEndpointOptions) {
     return await methods.getArbitraryEndpoint(this, options);
   }
+
+  async getOneListing(options: methods.GetOneListingOptions) {
+    return await methods.getOneListing(this, options);
+  }
 }

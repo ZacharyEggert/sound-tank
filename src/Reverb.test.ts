@@ -257,5 +257,16 @@ suite('Reverb', () => {
       },
       { timeout: 60000 },
     );
+
+    it.concurrent(
+      'should be able to fetch a single listing given an id',
+      async ({ expect }) => {
+        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+        const response = await reverb.getOneListing({ id: '40000' });
+        expect(response.status).toEqual(200);
+        expect(response.data.id.toString()).toEqual('40000');
+      },
+      { timeout: 60000 },
+    );
   });
 });

@@ -36,3 +36,22 @@ export const getMyListings = async (
 
   return response;
 };
+
+export interface GetOneListingOptions {
+  id: string;
+}
+
+export const getOneListing = async (
+  reverb: Reverb,
+  options: GetOneListingOptions,
+) => {
+  const { id } = options;
+
+  const baseUrl = `${reverb.rootEndpoint}/listings/${id}`;
+
+  const response = await axios.get<Listing>(baseUrl, {
+    headers: reverb.headers,
+  });
+
+  return response;
+};
