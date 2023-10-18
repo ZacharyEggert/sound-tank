@@ -192,4 +192,13 @@ export default class Reverb {
   async getOneListing(options: methods.GetOneListingOptions) {
     return await methods.getOneListing(this, options);
   }
+
+  /**
+   * Retrieves all listings associated with the current user.
+   * @param options - An optional object containing options for the request.
+   * @returns A Promise that resolves with an array of listings.
+   */
+  async getAllMyListings(options?: methods.GetAllMyListingsOptions) {
+    return await methods.getAllMyListings(this, options ?? {});
+  }
 }

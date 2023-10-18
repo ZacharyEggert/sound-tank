@@ -268,5 +268,39 @@ suite('Reverb', () => {
       },
       { timeout: 60000 },
     );
+
+    it(
+      'should be able to fetch all listings in a given query',
+      async ({ expect }) => {
+        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+        const response = await reverb.getAllMyListings({ query: 'gibson' });
+
+        const listingTitles = response.data.map((listing) => listing.title);
+        const includesQuery = listingTitles
+          .map((title) => title.toLowerCase().includes('gibson'))
+          .every((result) => result === true);
+
+        expect(response.status).toEqual(200);
+        expect(response.data.length).toBeGreaterThan(0);
+        expect(includesQuery).toBe(true);
+      },
+      {
+        timeout: 60000,
+      },
+    );
+
+    it(
+      'should be able to fetch all listings',
+      async ({ expect }) => {
+        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+        const response = await reverb.getAllMyListings();
+
+        expect(response.status).toEqual(200);
+        expect(response.data.length).toBeGreaterThan(0);
+      },
+      {
+        timeout: 60000,
+      },
+    );
   });
 });

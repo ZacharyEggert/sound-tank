@@ -44,6 +44,33 @@ export const getMyListings = async (
   return response;
 };
 
+export interface GetAllMyListingsOptions {
+  query?: string;
+  // sku?: string;
+  state?: string;
+}
+
+export const getAllMyListings = async (
+  reverb: Reverb,
+  options: GetAllMyListingsOptions,
+) => {
+  let page = 1;
+  const perPage = 50;
+
+  const { query, state } = options;
+
+  let listings: Listing[] = [];
+  let response;
+
+  do {
+    response = await getMyListings(reverb, { page, perPage, query, state });
+    listings = listings.concat(response.data.listings);
+    page++;
+  } while (response.data.listings.length === perPage);
+
+  return { ...response, data: listings };
+};
+
 export interface GetOneListingOptions {
   id: string;
 }
