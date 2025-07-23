@@ -97,6 +97,10 @@ export default class Reverb {
     this.updateHeaders();
   }
 
+	/**
+	 * Updates the headers based on the current state of the Reverb instance.
+	 * This method is called whenever a property that affects the headers is changed, rather than every time a request is made.
+	 */
   private updateHeaders() {
     const optionalHeaders = {} as any;
 
@@ -151,7 +155,7 @@ export default class Reverb {
 
   set rootEndpoint(rootEndpoint: RootEndpoint) {
     this._rootEndpoint = rootEndpoint;
-    // this.updateHeaders();
+    // this.updateHeaders(); // No need to update headers here, as rootEndpoint does not affect headers
   }
   get rootEndpoint(): RootEndpoint {
     return this._rootEndpoint;
@@ -159,8 +163,8 @@ export default class Reverb {
 
   /**
    * Retrieves the current user's listings.
-   * @param options - Optional parameters for the request.
-   * @returns A Promise that resolves to the user's listings. Structured as an axios response
+   * @param {methods.GetMyListingsOptions} options - Optional parameters for the request.
+   * @returns {Promise<AxiosResponse<PaginatedReverbResponse<{ listings: Listing[] }>>>} A Promise that resolves to the user's listings. Structured as an axios response
    */
   async getMyListings(options?: methods.GetMyListingsOptions) {
     return await methods.getMyListings(this, options ?? {});
@@ -168,8 +172,8 @@ export default class Reverb {
 
   /**
    * Retrieves the orders for the current user.
-   * @param options - An optional object containing options for the request.
-   * @returns A Promise that resolves with the user's orders. Structured as an axios response
+   * @param {methods.GetMyOrdersOptions} options - An optional object containing options for the request.
+   * @returns {Promise<AxiosResponse<PaginatedReverbResponse<{ orders: Order[] }>>>} A Promise that resolves with the user's orders. Structured as an axios response
    */
   async getMyOrders(options?: methods.GetMyOrdersOptions) {
     return await methods.getMyOrders(this, options ?? {});
@@ -177,8 +181,8 @@ export default class Reverb {
 
   /**
    * Retrieves an arbitrary endpoint using the provided options.
-   * @param options - The options to use when retrieving the endpoint.
-   * @returns A Promise that resolves with the retrieved endpoint. Structured as an axios response
+   * @param {methods.GetArbitraryEndpointOptions} options - The options to use when retrieving the endpoint.
+   * @returns {Promise<AxiosResponse<unknown>>} A Promise that resolves with the retrieved endpoint. Structured as an axios response
    */
   async getArbitraryEndpoint(options: methods.GetArbitraryEndpointOptions) {
     return await methods.getArbitraryEndpoint(this, options);
@@ -186,8 +190,8 @@ export default class Reverb {
 
   /**
    * Retrieves a single listing based on the provided options.
-   * @param options - The options to use when retrieving the listing.
-   * @returns A Promise that resolves with the retrieved listing.
+   * @param {methods.GetOneListingOptions} options - The options to use when retrieving the listing.
+   * @returns {Promise<AxiosResponse<Listing>>} A Promise that resolves with the retrieved listing.
    */
   async getOneListing(options: methods.GetOneListingOptions) {
     return await methods.getOneListing(this, options);
@@ -195,8 +199,8 @@ export default class Reverb {
 
   /**
    * Retrieves all listings associated with the current user.
-   * @param options - An optional object containing options for the request.
-   * @returns A Promise that resolves with an array of listings.
+   * @param {methods.GetAllMyListingsOptions} options - An optional object containing options for the request.
+   * @returns {Promise<AxiosResponse<PaginatedReverbResponse<{ listings: Listing[] }>>>} A Promise that resolves with an array of listings.
    */
   async getAllMyListings(options?: methods.GetAllMyListingsOptions) {
     return await methods.getAllMyListings(this, options ?? {});
