@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/roadmap/v1.json",
+  "metadata": {
+    "createdAt": "2026-02-04T03:58:54.410Z",
+    "createdBy": "project-roadmap-tracking CLI",
+    "description": "A project roadmap managed by Project Roadmap Tracking",
+    "name": "My Project Roadmap"
+  },
+  "tasks": []
+}
