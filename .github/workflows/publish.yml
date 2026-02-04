@@ -6,10 +6,15 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  id-token: write      # Generate OIDC tokens for npm trusted publishing
+  contents: write      # Create version commits
+  pull-requests: write # Create version PRs
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  NPM_TOKEN: ""
   REVERB_API_KEY: ${{ secrets.REVERB_API_KEY }}
+  NPM_CONFIG_PROVENANCE: true
 
 jobs:
   publish:
@@ -20,10 +25,13 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js 16.x
+      - name: Setup Node.js 20.x
         uses: actions/setup-node@v3
         with:
           node-version: 20.x
+
+      - name: Upgrade npm for provenance support
+        run: npm install -g npm@latest
 
       - name: Install Dependencies
         run: yarn
