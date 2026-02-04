@@ -1,5 +1,11 @@
 # sound-tank
 
+## 1.3.0
+
+### Minor Changes
+
+- 8abed60: Restructure code and add more comprehensive testing
+
 ## 1.2.1
 
 ### Patch Changes
