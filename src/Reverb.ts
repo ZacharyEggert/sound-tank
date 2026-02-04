@@ -1,6 +1,8 @@
 import * as methods from './methods';
 
 import { Axios } from 'axios';
+import { ReverbConfig, createReverbConfig } from './config/ReverbConfig';
+import { AxiosHttpClient, HttpClient } from './http';
 
 export type ApiVersion = string;
 export type ApiKey = string;
@@ -53,6 +55,8 @@ export default class Reverb {
     Reverb.defaultHeaders['X-Display-Currency'];
   private _shippingRegion: ShippingRegion | undefined;
   private _locale: Locale = Reverb.defaultHeaders['Accept-Language'];
+  private _config!: ReverbConfig;
+  private _httpClient: HttpClient;
 
   constructor(options: ReverbOptions) {
     const {
@@ -94,7 +98,11 @@ export default class Reverb {
       Authorization: `Bearer ${this.apiKey}`,
     };
 
+    // Initialize HTTP client
+    this._httpClient = new AxiosHttpClient();
+
     this.updateHeaders();
+    this._updateConfig();
   }
 
 	/**
@@ -117,9 +125,26 @@ export default class Reverb {
     };
   }
 
+  /**
+   * Updates the internal config object based on current state.
+   * This is called whenever configuration-related properties change.
+   */
+  private _updateConfig() {
+    this._config = createReverbConfig({
+      rootEndpoint: this._rootEndpoint,
+      apiKey: this.apiKey,
+      headers: this._headers,
+      version: this._version,
+      locale: this._locale,
+      displayCurrency: this._displayCurrency,
+      shippingRegion: this._shippingRegion,
+    });
+  }
+
   set locale(locale: Locale) {
     this._locale = locale;
     this.updateHeaders();
+    this._updateConfig();
   }
   get locale() {
     return this._locale;
@@ -128,6 +153,7 @@ export default class Reverb {
   set shippingRegion(shippingRegion: ShippingRegion | undefined) {
     this._shippingRegion = shippingRegion;
     this.updateHeaders();
+    this._updateConfig();
   }
   get shippingRegion(): ShippingRegion | undefined {
     return this._shippingRegion;
@@ -140,6 +166,7 @@ export default class Reverb {
   set displayCurrency(displayCurrency: DisplayCurrency) {
     this._displayCurrency = displayCurrency;
     this.updateHeaders();
+    this._updateConfig();
   }
   get displayCurrency(): DisplayCurrency {
     return this._displayCurrency;
@@ -148,6 +175,7 @@ export default class Reverb {
   set version(version: ApiVersion) {
     this._version = version;
     this.updateHeaders();
+    this._updateConfig();
   }
   get version(): ApiVersion {
     return this._version;
@@ -155,10 +183,19 @@ export default class Reverb {
 
   set rootEndpoint(rootEndpoint: RootEndpoint) {
     this._rootEndpoint = rootEndpoint;
-    // this.updateHeaders(); // No need to update headers here, as rootEndpoint does not affect headers
+    this._updateConfig();
   }
   get rootEndpoint(): RootEndpoint {
     return this._rootEndpoint;
+  }
+
+  /**
+   * Gets the current configuration object.
+   * This provides access to all configuration values in a single object,
+   * useful for passing to methods without requiring the entire Reverb instance.
+   */
+  get config(): ReverbConfig {
+    return this._config;
   }
 
   /**

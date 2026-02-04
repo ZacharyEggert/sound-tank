@@ -5,6 +5,9 @@ import axios, { AxiosResponse } from 'axios';
 
 import { PaginatedReverbResponse } from '..';
 import Reverb from '~/Reverb';
+import { ReverbConfig } from '~/config/ReverbConfig';
+import { HttpClient } from '~/http';
+import { buildUrl, buildUrlWithQuery, paginateAll, createPaginatedResult } from '~/utils';
 
 export interface GetMyListingsOptions {
   page?: number;
@@ -13,6 +16,36 @@ export interface GetMyListingsOptions {
   // sku?: string;
   state?: string;
 }
+
+/**
+ * Internal implementation that uses HttpClient abstraction.
+ * This is the new architecture that all methods will eventually use.
+ */
+export const getMyListingsWithClient = async (
+  client: HttpClient,
+  config: ReverbConfig,
+  options: GetMyListingsOptions,
+): Promise<AxiosResponse<PaginatedReverbResponse<{ listings: Listing[]; }>>> => {
+  const { page, perPage, query, state } = options;
+
+  const url = buildUrlWithQuery(
+    buildUrl(config.rootEndpoint, '/my/listings'),
+    {
+      page,
+      per_page: perPage,
+      query,
+      state,
+    }
+  );
+
+  const response = await client.get<
+    PaginatedReverbResponse<{ listings: Listing[] }>
+  >(url, {
+    headers: config.headers,
+  });
+
+  return response as AxiosResponse<PaginatedReverbResponse<{ listings: Listing[] }>>;
+};
 
 /**
  * Retrieves a paginated list of the authenticated user's listings on Reverb.
@@ -51,6 +84,45 @@ export interface GetAllMyListingsOptions {
   // sku?: string;
   state?: ListingStates;
 }
+
+/**
+ * Internal implementation using HttpClient and pagination utility.
+ */
+export const getAllMyListingsWithClient = async (
+  client: HttpClient,
+  config: ReverbConfig,
+  options: GetAllMyListingsOptions,
+): Promise<AxiosResponse<Listing[]>> => {
+  const { query, state } = options;
+
+  // Use pagination utility to fetch all listings
+  const allListings = await paginateAll<Listing>(
+    async (page, perPage) => {
+      const response = await getMyListingsWithClient(client, config, {
+        page,
+        perPage,
+        query,
+        state,
+      });
+
+      return createPaginatedResult(
+        response.data.listings || [],
+        perPage,
+        page
+      );
+    },
+    { perPage: 50 }
+  );
+
+  // Create a synthetic response matching the expected structure
+  return {
+    data: allListings,
+    status: 200,
+    statusText: 'OK',
+    headers: {},
+    config: {},
+  } as AxiosResponse<Listing[]>;
+};
 
 /**
  * Retrieves all listings for the authenticated user, paginated.
