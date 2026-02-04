@@ -7,3 +7,4 @@ yarn.lock
 tsconfig.json
 prettier.config.cjs
 vite.config.ts
+tests

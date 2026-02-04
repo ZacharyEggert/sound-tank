@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import Reverb from '.';
+import Reverb from '../src';
 
 declare global {
   namespace NodeJS {

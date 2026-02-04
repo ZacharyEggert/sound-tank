@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildQueryString, buildUrlWithQuery } from './queryBuilder';
+import { buildQueryString, buildUrlWithQuery } from '../../src/utils/queryBuilder';
 
 describe('queryBuilder', () => {
   describe('buildQueryString', () => {

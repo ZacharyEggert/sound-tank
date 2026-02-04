@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import axios, { AxiosInstance } from 'axios';
-import { AxiosHttpClient } from './AxiosHttpClient';
-import { HttpClient } from './HttpClient';
+import { AxiosHttpClient } from '../../src/http/AxiosHttpClient';
+import { HttpClient } from '../../src/http/HttpClient';
 
 describe('AxiosHttpClient', () => {
   describe('interface compliance', () => {

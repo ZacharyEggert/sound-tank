@@ -3,8 +3,8 @@ import {
   MockHttpClient,
   createMockResponse,
   createMockError,
-} from './MockHttpClient';
-import { HttpClient } from './HttpClient';
+} from '../../src/http/MockHttpClient';
+import { HttpClient } from '../../src/http/HttpClient';
 
 describe('MockHttpClient', () => {
   let client: MockHttpClient;

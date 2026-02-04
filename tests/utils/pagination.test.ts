@@ -3,7 +3,7 @@ import {
   paginateAll,
   createPaginatedResult,
   PaginatedFetchResult,
-} from './pagination';
+} from '../../src/utils/pagination';
 
 describe('pagination', () => {
   describe('createPaginatedResult', () => {

@@ -1,9 +1,9 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { getMyListingsWithClient } from './getListings';
+import { getMyListingsWithClient } from '../../../src/methods/listings/getListings';
 import { MockHttpClient, createMockResponse } from '~/http/MockHttpClient';
 import { ReverbConfig } from '~/config/ReverbConfig';
 import { Listing } from '~/types';
-import { PaginatedReverbResponse } from '..';
+import { PaginatedReverbResponse } from '../../../src/methods';
 
 describe('getListings (unit tests with MockHttpClient)', () => {
   let mockClient: MockHttpClient;
