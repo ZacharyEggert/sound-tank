@@ -1,6 +1,6 @@
 import { expect, it, suite } from 'vitest';
 
-import Reverb from './Reverb';
+import Reverb from '../src/Reverb';
 import { config } from 'dotenv';
 
 config();

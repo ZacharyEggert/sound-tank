@@ -1,8 +1,8 @@
 import { expect, it, suite } from 'vitest';
 
-import Reverb from '../Reverb';
+import Reverb from '../../src/Reverb';
 import { config } from 'dotenv';
-import { getMyRoot } from '.';
+import { getMyRoot } from '../../src/methods';
 
 config();
 

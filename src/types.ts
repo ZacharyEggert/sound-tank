@@ -1,6 +1,12 @@
+export enum LinkMethods {
+  PUT = 'PUT',
+  POST = 'POST',
+  GET = 'GET',
+}
+
 export type Link = {
   href: string;
-  method?: 'PUT' | 'POST' | 'GET' | Exclude<string, 'PUT' | 'POST' | 'GET'>;
+  method?: LinkMethods | Exclude<string, LinkMethods>;
 };
 
 export type ShippingRate = {
@@ -11,10 +17,15 @@ export type ShippingRate = {
   destination_postal_code_needed: boolean;
 };
 
+export enum ListingStates {
+  SOLD = 'sold',
+  LIVE = 'live',
+  DRAFT = 'draft',
+}
+
 export type ListingStateSlug =
-  | 'sold'
-  | 'live'
-  | Exclude<string, 'sold' | 'live'>;
+	| ListingStates
+  // | Exclude<string, ListingStates>;
 
 export type ListingState = {
   slug: ListingStateSlug;
@@ -34,10 +45,10 @@ export type ConditionDisplayName =
   | 'Good'
   | 'Fair'
   | 'Poor'
-  | Exclude<
-      string,
-      'Excellent' | 'New' | 'B-Stock' | 'Very Good' | 'Good' | 'Fair' | 'Poor'
-    >;
+  // | Exclude<
+  //     string,
+  //     'Excellent' | 'New' | 'B-Stock' | 'Very Good' | 'Good' | 'Fair' | 'Poor'
+  //   >;
 
 export type ListingCondition = {
   uuid: string;
@@ -171,44 +182,47 @@ export type ListingPostBody = {
   };
 };
 
-type OrderStatusOptions = 'unpaid' | 'paid' | 'awaiting_shipment' | 'shipped';
-type OtherOrderStatusOptions = Exclude<string, OrderStatusOptions>;
+enum OrderStatusOptions {
+  Unpaid = 'unpaid',
+  Paid = 'paid',
+  AwaitingShipment = 'awaiting_shipment',
+  Shipped = 'shipped'
+}
+// type OtherOrderStatusOptions = Exclude<string, OrderStatusOptions>;
 
 export type OrderStatus =
-  | 'unpaid'
-  | 'paid'
-  | 'awaiting_shipment'
-  | 'shipped'
-  | Exclude<string, 'unpaid' | 'awaiting_shipment' | 'shipped'>;
+  | OrderStatusOptions
+  | Exclude<string, OrderStatusOptions>;
 
-export type ShippingProvider =
-  | 'UPS'
-  | 'USPS'
-  | 'FedEx'
-  | 'DHL Deutschland'
-  | 'DHLExpress'
-  | 'DHLGlobalMail'
-  | 'DHL'
-  | 'Canada Post'
-  | 'CanPar'
-  | 'Royal Mail'
-  | 'PostNL'
-  | 'Australia Post'
-  | 'EMS'
-  | 'La Poste - Colissimo'
-  | 'China Post'
-  | 'GLS'
-  | 'Parcelforce'
-  | 'Purolator'
-  | 'Interlogistica'
-  | 'Correos España'
-  | 'Ukraine Post'
-  | 'DPD Germany'
-  | 'DPD UK'
-  | 'DPD France'
-  | 'Hermes'
-  | 'TNT'
-  | 'Other';
+export enum ShippingProviders {
+  UPS = 'UPS',
+  USPS = 'USPS',
+  FedEx = 'FedEx',
+  DHLDeutschland = 'DHL Deutschland',
+  DHLExpress = 'DHLExpress',
+  DHLGlobalMail = 'DHLGlobalMail',
+  DHL = 'DHL',
+  CanadaPost = 'Canada Post',
+  CanPar = 'CanPar',
+  RoyalMail = 'Royal Mail',
+  PostNL = 'PostNL',
+  AustraliaPost = 'Australia Post',
+  EMS = 'EMS',
+  LaPosteColissimo = 'La Poste - Colissimo',
+  ChinaPost = 'China Post',
+  GLS = 'GLS',
+  Parcelforce = 'Parcelforce',
+  Purolator = 'Purolator',
+  Interlogistica = 'Interlogistica',
+  CorreosEspaña = 'Correos España',
+  UkrainePost = 'Ukraine Post',
+  DPDGermany = 'DPD Germany',
+  DPDUK = 'DPD UK',
+  DPDFrance = 'DPD France',
+  Hermes = 'Hermes',
+  TNT = 'TNT',
+  Other = 'Other'
+}
 
 export type OrderTaxResponsibleParty = 'reverb' | Exclude<string, 'reverb'>;
 export type OrderShippingMethod = 'shipped' | Exclude<string, 'shipped'>;
@@ -245,7 +259,7 @@ export type Order = {
   shipping_address: ShippingAddress;
   shipping_date: ReturnType<typeof Date.toString>;
   shipped_at: ReturnType<typeof Date.toString>;
-  shipping_provider: ShippingProvider;
+  shipping_provider: ShippingProviders;
   shipping_code: string;
   shipping_method: OrderShippingMethod;
   shipment_status: OrderShipmentStatus;

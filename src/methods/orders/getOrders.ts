@@ -1,9 +1,10 @@
 // import type {  } from '~/Reverb';
 
+import axios, { AxiosResponse } from 'axios';
+
 import { Order } from '~/types';
 import { PaginatedReverbResponse } from '..';
 import Reverb from '~/Reverb';
-import axios from 'axios';
 
 export interface GetMyOrdersOptions {
   page?: number;
@@ -13,14 +14,14 @@ export interface GetMyOrdersOptions {
 
 /**
  * Retrieves a paginated list of orders for the authenticated user.
- * @param reverb - The Reverb instance to use for the API request.
- * @param options - The options to use for the API request.
- * @returns A Promise that resolves to the API response containing the list of orders.
+ * @param {Reverb} reverb - The Reverb instance to use for the API request.
+ * @param {GetMyOrdersOptions} options - The options to use for the API request.
+ * @returns {Promise<AxiosResponse<PaginatedReverbResponse<{ orders: Order[] }>>>} A Promise that resolves to the API response containing the list of orders.
  */
 export const getMyOrders = async (
   reverb: Reverb,
   options: GetMyOrdersOptions,
-) => {
+): Promise<AxiosResponse<PaginatedReverbResponse<{ orders: Order[]; }>>> => {
   const { page } = options;
 
   const baseUrl = `${reverb.rootEndpoint}/my/orders/selling/all`;

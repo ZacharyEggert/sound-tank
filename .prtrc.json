@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ZacharyEggert/project-roadmap-tracking/refs/heads/master/schemas/config/v1.1.json",
+  "cache": {
+    "enabled": true,
+    "maxSize": 10,
+    "watchFiles": true
+  },
+  "metadata": {
+    "description": "A typescript library for interacting with the Reverb Marketplace API",
+    "name": "Soundtank"
+  },
+  "path": "./prt.json"
+}

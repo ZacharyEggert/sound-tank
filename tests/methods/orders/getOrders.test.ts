@@ -1,9 +1,9 @@
 import { expect, it, suite } from 'vitest';
 
 import { Order } from '~/types';
-import Reverb from '../../Reverb';
+import Reverb from '../../../src/Reverb';
 import { config } from 'dotenv';
-import { getMyOrders } from '../';
+import { getMyOrders } from '../../../src/methods';
 
 config();
 
