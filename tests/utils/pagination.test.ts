@@ -43,10 +43,7 @@ describe('pagination', () => {
 
   describe('paginateAll', () => {
     it('should fetch all pages until no more items', async () => {
-      const mockFetch = vi.fn<
-        [number, number],
-        Promise<PaginatedFetchResult<string>>
-      >(async (page, perPage) => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
         const pageData: Record<number, string[]> = {
           1: ['item1', 'item2', 'item3'],
           2: ['item4', 'item5', 'item6'],
@@ -79,10 +76,7 @@ describe('pagination', () => {
     });
 
     it('should stop when empty result is returned', async () => {
-      const mockFetch = vi.fn<
-        [number, number],
-        Promise<PaginatedFetchResult<string>>
-      >(async (page) => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
         if (page === 1) {
           return {
             items: ['item1', 'item2'],
@@ -104,10 +98,7 @@ describe('pagination', () => {
     });
 
     it('should stop when hasMore is false', async () => {
-      const mockFetch = vi.fn<
-        [number, number],
-        Promise<PaginatedFetchResult<string>>
-      >(async (page) => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
         return {
           items: page === 1 ? ['item1'] : [],
           hasMore: false,
@@ -122,10 +113,7 @@ describe('pagination', () => {
     });
 
     it('should respect maxPages option', async () => {
-      const mockFetch = vi.fn<
-        [number, number],
-        Promise<PaginatedFetchResult<string>>
-      >(async (page, perPage) => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
         return {
           items: Array.from({ length: perPage }, (_, i) => `item${page}-${i}`),
           hasMore: true,
@@ -140,10 +128,7 @@ describe('pagination', () => {
     });
 
     it('should use custom startPage', async () => {
-      const mockFetch = vi.fn<
-        [number, number],
-        Promise<PaginatedFetchResult<string>>
-      >(async (page) => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
         return {
           items: page === 5 ? ['item5'] : [],
           hasMore: false,
@@ -158,10 +143,7 @@ describe('pagination', () => {
     });
 
     it('should handle single page of results', async () => {
-      const mockFetch = vi.fn<
-        [number, number],
-        Promise<PaginatedFetchResult<string>>
-      >(async () => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
         return {
           items: ['only-item'],
           hasMore: false,
@@ -176,10 +158,7 @@ describe('pagination', () => {
     });
 
     it('should handle empty first page', async () => {
-      const mockFetch = vi.fn<
-        [number, number],
-        Promise<PaginatedFetchResult<string>>
-      >(async () => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
         return {
           items: [],
           hasMore: false,
@@ -194,10 +173,7 @@ describe('pagination', () => {
     });
 
     it('should accumulate items from multiple pages', async () => {
-      const mockFetch = vi.fn<
-        [number, number],
-        Promise<PaginatedFetchResult<number>>
-      >(async (page, perPage) => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<number>> => {
         const items =
           page <= 3
             ? Array.from({ length: perPage }, (_, i) => page * 100 + i)
@@ -219,10 +195,7 @@ describe('pagination', () => {
     });
 
     it('should stop when fewer items than perPage are returned', async () => {
-      const mockFetch = vi.fn<
-        [number, number],
-        Promise<PaginatedFetchResult<string>>
-      >(async (page) => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
         if (page === 1) {
           return {
             items: ['item1', 'item2', 'item3', 'item4', 'item5'],
