@@ -1,40 +1,18 @@
-/**
- * Options for pagination behavior
- */
 export interface PaginationOptions {
-  /**
-   * Number of items per page
-   */
   perPage?: number;
-
   /**
    * Starting page number (default: 1)
    */
   startPage?: number;
-
   /**
    * Maximum number of pages to fetch (optional, for safety)
    */
   maxPages?: number;
 }
 
-/**
- * Result from a paginated fetch operation
- */
 export interface PaginatedFetchResult<T> {
-  /**
-   * The items returned from this page
-   */
   items: T[];
-
-  /**
-   * Whether there are more pages available
-   */
   hasMore: boolean;
-
-  /**
-   * Current page number
-   */
   currentPage: number;
 }
 
@@ -80,10 +58,8 @@ export async function paginateAll<T>(
   while (pagesProcessed < maxPages) {
     const result = await fetchPage(currentPage, perPage);
 
-    // Add items from this page
     allItems.push(...result.items);
 
-    // Stop if no more pages or empty result
     if (!result.hasMore || result.items.length === 0) {
       break;
     }

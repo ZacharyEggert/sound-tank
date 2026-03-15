@@ -1,27 +1,15 @@
 import { HttpClient } from './HttpClient';
 import { HttpRequestConfig, HttpResponse, HttpError } from './types';
 
-/**
- * Request matcher function type
- */
 export type RequestMatcher = (url: string, config?: HttpRequestConfig) => boolean;
 
-/**
- * Response generator function type
- */
 export type ResponseGenerator<T = any> = (
   url: string,
   config?: HttpRequestConfig,
   data?: any
 ) => HttpResponse<T> | Promise<HttpResponse<T>>;
 
-/**
- * Mock response configuration
- */
 export interface MockResponse<T = any> {
-  /**
-   * Matcher to determine if this mock should be used
-   */
   matcher: RequestMatcher;
 
   /**
@@ -29,9 +17,6 @@ export interface MockResponse<T = any> {
    */
   response: HttpResponse<T> | ResponseGenerator<T>;
 
-  /**
-   * Optional error to throw instead of returning response
-   */
   error?: HttpError | Error;
 
   /**
@@ -53,19 +38,14 @@ export class MockHttpClient implements HttpClient {
     data?: any;
   }> = [];
 
-  /**
-   * Records a request and returns the appropriate mocked response
-   */
   private async handleRequest<T>(
     method: string,
     url: string,
     data?: any,
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>> {
-    // Record the request
     this.requests.push({ method, url, config, data });
 
-    // Find matching mock
     const mocks = this.mocks.get(method) || [];
     for (let i = 0; i < mocks.length; i++) {
       const mock = mocks[i];
@@ -78,12 +58,10 @@ export class MockHttpClient implements HttpClient {
           mock.times--;
         }
 
-        // Throw error if configured
         if (mock.error) {
           throw mock.error;
         }
 
-        // Return response
         if (typeof mock.response === 'function') {
           return await mock.response(url, config, data);
         }
@@ -91,7 +69,6 @@ export class MockHttpClient implements HttpClient {
       }
     }
 
-    // No mock found - throw error
     const error: HttpError = new Error(
       `No mock found for ${method} ${url}`
     ) as HttpError;
@@ -158,44 +135,26 @@ export class MockHttpClient implements HttpClient {
     this.mocks.get(method)!.push(mock);
   }
 
-  /**
-   * Helper to mock a GET request
-   */
   onGet<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
     this.onRequest('GET', { matcher, response });
   }
 
-  /**
-   * Helper to mock a POST request
-   */
   onPost<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
     this.onRequest('POST', { matcher, response });
   }
 
-  /**
-   * Helper to mock a PUT request
-   */
   onPut<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
     this.onRequest('PUT', { matcher, response });
   }
 
-  /**
-   * Helper to mock a DELETE request
-   */
   onDelete<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
     this.onRequest('DELETE', { matcher, response });
   }
 
-  /**
-   * Helper to mock a PATCH request
-   */
   onPatch<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
     this.onRequest('PATCH', { matcher, response });
   }
 
-  /**
-   * Gets all recorded requests
-   */
   getRequests(): Array<{
     method: string;
     url: string;
@@ -205,9 +164,6 @@ export class MockHttpClient implements HttpClient {
     return [...this.requests];
   }
 
-  /**
-   * Gets requests for a specific method
-   */
   getRequestsByMethod(method: string): Array<{
     method: string;
     url: string;
@@ -217,16 +173,10 @@ export class MockHttpClient implements HttpClient {
     return this.requests.filter((req) => req.method === method);
   }
 
-  /**
-   * Clears all recorded requests
-   */
   clearRequests(): void {
     this.requests = [];
   }
 
-  /**
-   * Clears all mocks
-   */
   clearMocks(): void {
     this.mocks.clear();
   }
@@ -257,9 +207,6 @@ export function createMockResponse<T>(
   };
 }
 
-/**
- * Helper function to create an HTTP error
- */
 export function createMockError(
   message: string,
   status?: number,

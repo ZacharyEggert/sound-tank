@@ -18,12 +18,10 @@
  * ```
  */
 export function buildUrl(baseUrl: string, path: string): string {
-  // Check if path is an absolute URL
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path;
   }
 
-  // Ensure baseUrl doesn't end with a slash and path starts with one
   const normalizedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 

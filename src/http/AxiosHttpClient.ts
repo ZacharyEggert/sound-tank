@@ -2,19 +2,10 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpClient } from './HttpClient';
 import { HttpRequestConfig, HttpResponse } from './types';
 
-/**
- * Production HTTP client implementation using axios.
- * Wraps axios to implement the HttpClient interface while preserving
- * all axios functionality and response structure.
- */
 export class AxiosHttpClient implements HttpClient {
   private axiosInstance: AxiosInstance;
 
   /**
-   * Creates a new AxiosHttpClient instance
-   *
-   * @param axiosInstance - Optional custom axios instance. If not provided, uses the default axios instance.
-   *
    * @example
    * ```ts
    * // Using default axios
@@ -88,10 +79,7 @@ export class AxiosHttpClient implements HttpClient {
   }
 
   /**
-   * Gets the underlying axios instance.
    * Useful for advanced axios features like interceptors.
-   *
-   * @returns The axios instance
    *
    * @example
    * ```ts
