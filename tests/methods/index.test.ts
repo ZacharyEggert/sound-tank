@@ -7,6 +7,7 @@ config();
 
 suite(
   'getArbitraryEndpoint',
+  { timeout: 60000 },
   () => {
     const { REVERB_API_KEY } = process.env;
     const reverb = new Reverb({ apiKey: REVERB_API_KEY });
@@ -21,5 +22,4 @@ suite(
       },
     );
   },
-  { timeout: 60000 },
 );

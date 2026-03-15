@@ -7,6 +7,7 @@ config();
 
 suite(
   'orders.getMy',
+  { timeout: 60000 },
   () => {
     const { REVERB_API_KEY } = process.env;
     const reverb = new Reverb({ apiKey: REVERB_API_KEY });
@@ -21,5 +22,4 @@ suite(
       expect(response.data.current_page).toEqual(2);
     });
   },
-  { timeout: 60000 },
 );

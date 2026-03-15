@@ -7,6 +7,7 @@ config();
 
 suite(
   'listings.getMy',
+  { timeout: 60000 },
   () => {
     const { REVERB_API_KEY } = process.env;
     const reverb = new Reverb({ apiKey: REVERB_API_KEY });
@@ -48,5 +49,4 @@ suite(
       expect(response.data.listings[0].state).toBeDefined();
     });
   },
-  { timeout: 60000 },
 );

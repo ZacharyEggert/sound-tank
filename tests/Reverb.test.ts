@@ -139,7 +139,7 @@ suite('Reverb', () => {
         const response = await reverb.listings.getMy({});
         expect(response.status).toEqual(200);
       },
-      { timeout: 60000 },
+      60000,
     );
 
     it.concurrent(
@@ -149,7 +149,7 @@ suite('Reverb', () => {
         const response = await reverb.listings.getMy();
         expect(response.status).toEqual(200);
       },
-      { timeout: 60000 },
+      60000,
     );
 
     it.concurrent(
@@ -159,7 +159,7 @@ suite('Reverb', () => {
         const response = await reverb.orders.getMy({});
         expect(response.status).toEqual(200);
       },
-      { timeout: 60000 },
+      60000,
     );
 
     it.concurrent(
@@ -169,7 +169,7 @@ suite('Reverb', () => {
         const response = await reverb.orders.getMy();
         expect(response.status).toEqual(200);
       },
-      { timeout: 60000 },
+      60000,
     );
 
     it.concurrent(
@@ -179,7 +179,7 @@ suite('Reverb', () => {
         const response = await reverb._getArbitraryEndpoint('/');
         expect(response.status).toEqual(200);
       },
-      { timeout: 60000 },
+      60000,
     );
 
     it.concurrent(
@@ -189,7 +189,7 @@ suite('Reverb', () => {
         const response = await reverb._getArbitraryEndpoint('https://www.google.com');
         expect(response.status).toEqual(200);
       },
-      { timeout: 60000 },
+      60000,
     );
 
     it.concurrent(
@@ -200,7 +200,7 @@ suite('Reverb', () => {
         expect(response.status).toEqual(200);
         expect(response.data.id.toString()).toEqual('40000');
       },
-      { timeout: 60000 },
+      60000,
     );
 
     it(
@@ -218,7 +218,7 @@ suite('Reverb', () => {
         expect(response.data.length).toBeGreaterThan(0);
         expect(includesQuery).toBe(true);
       },
-      { timeout: 60000 },
+      60000,
     );
 
     it(
@@ -230,7 +230,7 @@ suite('Reverb', () => {
         expect(response.status).toEqual(200);
         expect(response.data.length).toBeGreaterThan(0);
       },
-      { timeout: 60000 },
+      60000,
     );
   });
 });
