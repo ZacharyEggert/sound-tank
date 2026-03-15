@@ -1,9 +1,8 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { getMyListingsWithClient } from '../../../src/methods/listings/getListings';
+import { getMyListings } from '../../../src/methods/listings/getListings';
 import { MockHttpClient, createMockResponse } from '~/http/MockHttpClient';
 import { ReverbConfig } from '~/config/ReverbConfig';
-import { Listing } from '~/types';
-import { PaginatedReverbResponse } from '../../../src/methods';
+import { Listing, PaginatedReverbResponse } from '~/types';
 
 describe('getListings (unit tests with MockHttpClient)', () => {
   let mockClient: MockHttpClient;
@@ -28,7 +27,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
     };
   });
 
-  describe('getMyListingsWithClient', () => {
+  describe('getMyListings', () => {
     it('should fetch listings with default options', async () => {
       const mockListings: Listing[] = [
         {
@@ -57,7 +56,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      const response = await getMyListingsWithClient(mockClient, config, {});
+      const response = await getMyListings(mockClient, config, {});
 
       expect(response.status).toBe(200);
       expect(response.data.listings).toEqual(mockListings);
@@ -79,7 +78,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       mockClient.onGet((url) => url.includes('page=2'), createMockResponse(mockResponse));
 
-      await getMyListingsWithClient(mockClient, config, { page: 2 });
+      await getMyListings(mockClient, config, { page: 2 });
 
       const requests = mockClient.getRequests();
       expect(requests[0].url).toContain('page=2');
@@ -99,7 +98,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      await getMyListingsWithClient(mockClient, config, { perPage: 25 });
+      await getMyListings(mockClient, config, { perPage: 25 });
 
       const requests = mockClient.getRequests();
       expect(requests[0].url).toContain('per_page=25');
@@ -119,7 +118,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      await getMyListingsWithClient(mockClient, config, { query: 'guitar' });
+      await getMyListings(mockClient, config, { query: 'guitar' });
 
       const requests = mockClient.getRequests();
       expect(requests[0].url).toContain('query=guitar');
@@ -139,7 +138,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      await getMyListingsWithClient(mockClient, config, { state: 'live' });
+      await getMyListings(mockClient, config, { state: 'live' });
 
       const requests = mockClient.getRequests();
       expect(requests[0].url).toContain('state=live');
@@ -163,7 +162,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      await getMyListingsWithClient(mockClient, config, {
+      await getMyListings(mockClient, config, {
         page: 2,
         perPage: 50,
         query: 'fender',
@@ -196,7 +195,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      await getMyListingsWithClient(mockClient, config, {});
+      await getMyListings(mockClient, config, {});
 
       const requests = mockClient.getRequests();
       expect(requests[0].config?.headers?.Authorization).toBe('Bearer test-api-key');
@@ -221,7 +220,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      await getMyListingsWithClient(mockClient, customConfig, {});
+      await getMyListings(mockClient, customConfig, {});
 
       const requests = mockClient.getRequests();
       expect(requests[0].url).toContain('https://custom.api.com');
@@ -241,7 +240,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      const response = await getMyListingsWithClient(mockClient, config, {});
+      const response = await getMyListings(mockClient, config, {});
 
       expect(response.data.listings).toEqual([]);
       expect(response.data.total).toBe(0);
@@ -264,7 +263,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      const response = await getMyListingsWithClient(mockClient, config, { page: 3 });
+      const response = await getMyListings(mockClient, config, { page: 3 });
 
       expect(response.data.total).toBe(150);
       expect(response.data.current_page).toBe(3);
@@ -287,7 +286,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         createMockResponse(mockResponse)
       );
 
-      await getMyListingsWithClient(mockClient, config, { query: 'hello world' });
+      await getMyListings(mockClient, config, { query: 'hello world' });
 
       const requests = mockClient.getRequests();
       expect(requests[0].url).toContain('query=hello%20world');

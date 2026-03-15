@@ -1,8 +1,9 @@
-import * as methods from './methods';
-
 import { Axios } from 'axios';
 import { ReverbConfig, createReverbConfig } from './config/ReverbConfig';
 import { AxiosHttpClient, HttpClient } from './http';
+import { ListingsResource } from './resources/ListingsResource';
+import { OrdersResource } from './resources/OrdersResource';
+import { getArbitraryEndpoint, GetArbitraryEndpointOptions } from './methods';
 
 export type ApiVersion = string;
 export type ApiKey = string;
@@ -43,7 +44,6 @@ export default class Reverb {
     Accept: 'application/hal+json',
     'Accept-Language': 'en',
     'X-Display-Currency': 'USD',
-    // 'X-Shipping-Region': undefined
     'User-Agent': 'Reverb Node SDK',
   };
 
@@ -51,69 +51,45 @@ export default class Reverb {
   private _version: ApiVersion = Reverb.defaultHeaders['Accept-Version'];
   private apiKey: string;
   private _headers: AuthReverbHeaders;
-  private _displayCurrency: DisplayCurrency =
-    Reverb.defaultHeaders['X-Display-Currency'];
+  private _displayCurrency: DisplayCurrency = Reverb.defaultHeaders['X-Display-Currency'];
   private _shippingRegion: ShippingRegion | undefined;
   private _locale: Locale = Reverb.defaultHeaders['Accept-Language'];
   private _config!: ReverbConfig;
   private _httpClient: HttpClient;
 
-  constructor(options: ReverbOptions) {
-    const {
-      apiKey,
-      version,
-      rootEndpoint: defaultEndpoint,
-      displayCurrency,
-      shippingRegion,
-      locale,
-    } = options;
+  readonly listings: ListingsResource;
+  readonly orders: OrdersResource;
 
-    // throw if no api key
+  constructor(options: ReverbOptions) {
+    const { apiKey, version, rootEndpoint: defaultEndpoint, displayCurrency, shippingRegion, locale } = options;
+
     if (!apiKey || apiKey === '') {
       throw new Error('Reverb: apiKey is required');
     }
 
-    // set version and default endpoint if provided
-    if (version) {
-      this._version = version;
-    }
-    if (defaultEndpoint) {
-      this._rootEndpoint = defaultEndpoint;
-    }
-    if (displayCurrency) {
-      this._displayCurrency = displayCurrency;
-    }
-    if (shippingRegion) {
-      this._shippingRegion = shippingRegion;
-    }
-    if (locale) {
-      this._locale = locale;
-    }
+    if (version) this._version = version;
+    if (defaultEndpoint) this._rootEndpoint = defaultEndpoint;
+    if (displayCurrency) this._displayCurrency = displayCurrency;
+    if (shippingRegion) this._shippingRegion = shippingRegion;
+    if (locale) this._locale = locale;
 
-    // set api key
     this.apiKey = apiKey;
-
     this._headers = {
       ...Reverb.defaultHeaders,
       Authorization: `Bearer ${this.apiKey}`,
     };
 
-    // Initialize HTTP client
     this._httpClient = new AxiosHttpClient();
-
     this.updateHeaders();
     this._updateConfig();
+
+    this.listings = new ListingsResource(() => this._httpClient, () => this._config);
+    this.orders = new OrdersResource(() => this._httpClient, () => this._config);
   }
 
-	/**
-	 * Updates the headers based on the current state of the Reverb instance.
-	 * This method is called whenever a property that affects the headers is changed, rather than every time a request is made.
-	 */
   private updateHeaders() {
     const optionalHeaders = {} as any;
-
-    if (this._shippingRegion)
-      optionalHeaders['X-Shipping-Region'] = this._shippingRegion;
+    if (this._shippingRegion) optionalHeaders['X-Shipping-Region'] = this._shippingRegion;
 
     this._headers = {
       ...this._headers,
@@ -125,10 +101,6 @@ export default class Reverb {
     };
   }
 
-  /**
-   * Updates the internal config object based on current state.
-   * This is called whenever configuration-related properties change.
-   */
   private _updateConfig() {
     this._config = createReverbConfig({
       rootEndpoint: this._rootEndpoint,
@@ -189,57 +161,11 @@ export default class Reverb {
     return this._rootEndpoint;
   }
 
-  /**
-   * Gets the current configuration object.
-   * This provides access to all configuration values in a single object,
-   * useful for passing to methods without requiring the entire Reverb instance.
-   */
   get config(): ReverbConfig {
     return this._config;
   }
 
-  /**
-   * Retrieves the current user's listings.
-   * @param {methods.GetMyListingsOptions} options - Optional parameters for the request.
-   * @returns {Promise<AxiosResponse<PaginatedReverbResponse<{ listings: Listing[] }>>>} A Promise that resolves to the user's listings. Structured as an axios response
-   */
-  async getMyListings(options?: methods.GetMyListingsOptions) {
-    return await methods.getMyListings(this, options ?? {});
-  }
-
-  /**
-   * Retrieves the orders for the current user.
-   * @param {methods.GetMyOrdersOptions} options - An optional object containing options for the request.
-   * @returns {Promise<AxiosResponse<PaginatedReverbResponse<{ orders: Order[] }>>>} A Promise that resolves with the user's orders. Structured as an axios response
-   */
-  async getMyOrders(options?: methods.GetMyOrdersOptions) {
-    return await methods.getMyOrders(this, options ?? {});
-  }
-
-  /**
-   * Retrieves an arbitrary endpoint using the provided options.
-   * @param {methods.GetArbitraryEndpointOptions} options - The options to use when retrieving the endpoint.
-   * @returns {Promise<AxiosResponse<unknown>>} A Promise that resolves with the retrieved endpoint. Structured as an axios response
-   */
-  async getArbitraryEndpoint(options: methods.GetArbitraryEndpointOptions) {
-    return await methods.getArbitraryEndpoint(this, options);
-  }
-
-  /**
-   * Retrieves a single listing based on the provided options.
-   * @param {methods.GetOneListingOptions} options - The options to use when retrieving the listing.
-   * @returns {Promise<AxiosResponse<Listing>>} A Promise that resolves with the retrieved listing.
-   */
-  async getOneListing(options: methods.GetOneListingOptions) {
-    return await methods.getOneListing(this, options);
-  }
-
-  /**
-   * Retrieves all listings associated with the current user.
-   * @param {methods.GetAllMyListingsOptions} options - An optional object containing options for the request.
-   * @returns {Promise<AxiosResponse<PaginatedReverbResponse<{ listings: Listing[] }>>>} A Promise that resolves with an array of listings.
-   */
-  async getAllMyListings(options?: methods.GetAllMyListingsOptions) {
-    return await methods.getAllMyListings(this, options ?? {});
+  async _getArbitraryEndpoint<T = any>(url: string, params?: GetArbitraryEndpointOptions['params']) {
+    return getArbitraryEndpoint<T>(this._httpClient, this._config, { url, params });
   }
 }

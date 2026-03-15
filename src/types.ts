@@ -314,3 +314,13 @@ export type ShippingAddress = {
   complete_shipping_address: boolean;
   _links: { self: Link };
 };
+
+export type PaginatedReverbResponse<T> = T & {
+  total: number;
+  current_page: number;
+  total_pages: number;
+  _links: {
+    next?: Link;
+    prev?: Link;
+  };
+};

@@ -1,20 +1,18 @@
 import { expect, it, suite } from 'vitest';
 
-import { Listing } from '~/types';
 import Reverb from '../../../src/Reverb';
 import { config } from 'dotenv';
-import { getMyListings } from '../../../src/methods';
 
 config();
 
 suite(
-  'getMyListings',
+  'listings.getMy',
   () => {
     const { REVERB_API_KEY } = process.env;
     const reverb = new Reverb({ apiKey: REVERB_API_KEY });
 
     it.concurrent('should return a list of listings', async ({ expect }) => {
-      const response = await getMyListings(reverb, {});
+      const response = await reverb.listings.getMy({});
       expect(response.data.listings[0].slug).toBeDefined();
       expect(response.data.listings[0].make).toBeDefined();
       expect(response.data.listings[0].model).toBeDefined();
@@ -27,22 +25,20 @@ suite(
         const testNumber = Math.ceil(Math.random() * 10);
         const testNumber2 = Math.ceil(Math.random() * 10);
 
-        const response = await getMyListings(reverb, {
+        const response = await reverb.listings.getMy({
           page: testNumber,
           perPage: testNumber2,
         });
-        // console.log(response.data);
         expect(response.data.current_page).toEqual(testNumber);
         expect(response.data.listings.length).toEqual(testNumber2);
       },
     );
 
     it.concurrent('should use all config options', async ({ expect }) => {
-      const response = await getMyListings(reverb, {
+      const response = await reverb.listings.getMy({
         page: 5,
         perPage: 1,
         query: 'gibson',
-        // sku: '',
         state: 'all',
       });
 
