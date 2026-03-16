@@ -20,7 +20,7 @@ export const getMyOrders = async (
     { page },
   );
 
-	Logger.debug('Fetching my orders with URL: %s', url);
+  Logger.debug('Fetching my orders with URL: %s', url);
 
   return client.get<PaginatedReverbResponse<{ orders: Order[] }>>(url, {
     headers: config.headers,

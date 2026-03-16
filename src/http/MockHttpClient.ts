@@ -1,12 +1,15 @@
 import { HttpClient } from './HttpClient';
 import { HttpRequestConfig, HttpResponse, HttpError } from './types';
 
-export type RequestMatcher = (url: string, config?: HttpRequestConfig) => boolean;
+export type RequestMatcher = (
+  url: string,
+  config?: HttpRequestConfig,
+) => boolean;
 
 export type ResponseGenerator<T = any> = (
   url: string,
   config?: HttpRequestConfig,
-  data?: any
+  data?: any,
 ) => HttpResponse<T> | Promise<HttpResponse<T>>;
 
 export interface MockResponse<T = any> {
@@ -42,7 +45,7 @@ export class MockHttpClient implements HttpClient {
     method: string,
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     this.requests.push({ method, url, config, data });
 
@@ -70,7 +73,7 @@ export class MockHttpClient implements HttpClient {
     }
 
     const error: HttpError = new Error(
-      `No mock found for ${method} ${url}`
+      `No mock found for ${method} ${url}`,
     ) as HttpError;
     error.config = config;
     throw error;
@@ -78,7 +81,7 @@ export class MockHttpClient implements HttpClient {
 
   async get<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('GET', url, undefined, config);
   }
@@ -86,7 +89,7 @@ export class MockHttpClient implements HttpClient {
   async post<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('POST', url, data, config);
   }
@@ -94,14 +97,14 @@ export class MockHttpClient implements HttpClient {
   async put<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('PUT', url, data, config);
   }
 
   async delete<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('DELETE', url, undefined, config);
   }
@@ -109,7 +112,7 @@ export class MockHttpClient implements HttpClient {
   async patch<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('PATCH', url, data, config);
   }
@@ -135,23 +138,38 @@ export class MockHttpClient implements HttpClient {
     this.mocks.get(method)!.push(mock);
   }
 
-  onGet<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onGet<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('GET', { matcher, response });
   }
 
-  onPost<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onPost<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('POST', { matcher, response });
   }
 
-  onPut<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onPut<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('PUT', { matcher, response });
   }
 
-  onDelete<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onDelete<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('DELETE', { matcher, response });
   }
 
-  onPatch<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onPatch<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('PATCH', { matcher, response });
   }
 
@@ -196,7 +214,7 @@ export class MockHttpClient implements HttpClient {
 export function createMockResponse<T>(
   data: T,
   status: number = 200,
-  statusText: string = 'OK'
+  statusText: string = 'OK',
 ): HttpResponse<T> {
   return {
     data,
@@ -210,7 +228,7 @@ export function createMockResponse<T>(
 export function createMockError(
   message: string,
   status?: number,
-  response?: HttpResponse
+  response?: HttpResponse,
 ): HttpError {
   const error = new Error(message) as HttpError;
   error.status = status;

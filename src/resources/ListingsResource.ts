@@ -25,12 +25,16 @@ export class ListingsResource {
     return getOneListing(this.getClient(), this.getConfig(), options);
   }
 
-	async getPhotos(options: GetOneListingOptions) {
-		const response = await getOneListing(this.getClient(), this.getConfig(), options);
-		const photos = response.data?.photos?.map(photo => photo._links.full.href) || [];
-		return photos;
-	}
-
+  async getPhotos(options: GetOneListingOptions) {
+    const response = await getOneListing(
+      this.getClient(),
+      this.getConfig(),
+      options,
+    );
+    const photos =
+      response.data?.photos?.map((photo) => photo._links.full.href) || [];
+    return photos;
+  }
 
   getAllMy(options: GetAllMyListingsOptions = {}) {
     return getAllMyListings(this.getClient(), this.getConfig(), options);

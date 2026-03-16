@@ -38,49 +38,64 @@ export class AxiosHttpClient implements HttpClient {
 
   async get<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.get<T>(url, config);
-		Logger.trace('GET request to %s with config: %o', url, config);
+    Logger.trace('GET request to %s with config: %o', url, config);
     return this.convertResponse(response);
   }
 
   async post<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.post<T>(url, data, config);
-		Logger.trace('POST request to %s with data: %o and config: %o', url, data, config);
+    Logger.trace(
+      'POST request to %s with data: %o and config: %o',
+      url,
+      data,
+      config,
+    );
     return this.convertResponse(response);
   }
 
   async put<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.put<T>(url, data, config);
-		Logger.trace('PUT request to %s with data: %o and config: %o', url, data, config);
+    Logger.trace(
+      'PUT request to %s with data: %o and config: %o',
+      url,
+      data,
+      config,
+    );
     return this.convertResponse(response);
   }
 
   async delete<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.delete<T>(url, config);
-		Logger.trace('DELETE request to %s with config: %o', url, config);
+    Logger.trace('DELETE request to %s with config: %o', url, config);
     return this.convertResponse(response);
   }
 
   async patch<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.patch<T>(url, data, config);
-		Logger.trace('PATCH request to %s with data: %o and config: %o', url, data, config);
+    Logger.trace(
+      'PATCH request to %s with data: %o and config: %o',
+      url,
+      data,
+      config,
+    );
     return this.convertResponse(response);
   }
 

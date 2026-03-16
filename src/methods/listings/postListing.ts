@@ -10,6 +10,8 @@ export const postListing = async (
   body: ListingPostBody,
 ): Promise<HttpResponse<Listing>> => {
   const url = buildUrl(config.rootEndpoint, '/listings');
-	Logger.debug('Posting new listing with URL: %s and body: %o', url, body);
-  return client.post<Listing>(url, JSON.stringify(body), { headers: config.headers });
+  Logger.debug('Posting new listing with URL: %s and body: %o', url, body);
+  return client.post<Listing>(url, JSON.stringify(body), {
+    headers: config.headers,
+  });
 };

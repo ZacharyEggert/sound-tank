@@ -19,9 +19,15 @@ export const getArbitraryEndpoint = async <T = any>(
   options: GetArbitraryEndpointOptions,
 ): Promise<HttpResponse<T>> => {
   const { url, params } = options;
-  const requestUrl = url.startsWith('http') ? url : buildUrl(config.rootEndpoint, url);
+  const requestUrl = url.startsWith('http')
+    ? url
+    : buildUrl(config.rootEndpoint, url);
 
-	Logger.debug('Fetching arbitrary endpoint with URL: %s and params: %o', requestUrl, params);
+  Logger.debug(
+    'Fetching arbitrary endpoint with URL: %s and params: %o',
+    requestUrl,
+    params,
+  );
 
   return client.get<T>(requestUrl, { headers: config.headers, params });
 };

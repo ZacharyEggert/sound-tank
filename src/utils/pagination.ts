@@ -1,4 +1,4 @@
-import Logger from "./logger";
+import Logger from './logger';
 
 export interface PaginationOptions {
   perPage?: number;
@@ -37,9 +37,9 @@ export interface PaginatedFetchResult<T> {
 export async function paginateAll<T>(
   fetchPage: (
     page: number,
-    perPage: number
+    perPage: number,
   ) => Promise<PaginatedFetchResult<T>>,
-  options: PaginationOptions = {}
+  options: PaginationOptions = {},
 ): Promise<T[]> {
   const {
     perPage = 50,
@@ -62,7 +62,11 @@ export async function paginateAll<T>(
 
     // Stop if we got fewer items than requested (indicates last page)
     if (result.items.length < perPage) {
-			Logger.debug('Received fewer items than perPage (%d < %d), assuming last page reached.', result.items.length, perPage);
+      Logger.debug(
+        'Received fewer items than perPage (%d < %d), assuming last page reached.',
+        result.items.length,
+        perPage,
+      );
       break;
     }
 
@@ -70,7 +74,11 @@ export async function paginateAll<T>(
     pagesProcessed++;
   }
 
-	Logger.debug('Pagination complete. Total items fetched: %d across %d pages.', allItems.length, pagesProcessed);
+  Logger.debug(
+    'Pagination complete. Total items fetched: %d across %d pages.',
+    allItems.length,
+    pagesProcessed,
+  );
   return allItems;
 }
 
@@ -91,7 +99,7 @@ export async function paginateAll<T>(
 export function createPaginatedResult<T>(
   items: T[],
   perPage: number,
-  currentPage: number
+  currentPage: number,
 ): PaginatedFetchResult<T> {
   return {
     items,

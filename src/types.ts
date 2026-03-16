@@ -23,9 +23,8 @@ export enum ListingStates {
   DRAFT = 'draft',
 }
 
-export type ListingStateSlug =
-	| ListingStates
-  // | Exclude<string, ListingStates>;
+export type ListingStateSlug = ListingStates;
+// | Exclude<string, ListingStates>;
 
 export type ListingState = {
   slug: ListingStateSlug;
@@ -44,11 +43,11 @@ export type ConditionDisplayName =
   | 'Very Good'
   | 'Good'
   | 'Fair'
-  | 'Poor'
-  // | Exclude<
-  //     string,
-  //     'Excellent' | 'New' | 'B-Stock' | 'Very Good' | 'Good' | 'Fair' | 'Poor'
-  //   >;
+  | 'Poor';
+// | Exclude<
+//     string,
+//     'Excellent' | 'New' | 'B-Stock' | 'Very Good' | 'Good' | 'Fair' | 'Poor'
+//   >;
 
 export type ListingCondition = {
   uuid: string;
@@ -186,7 +185,7 @@ enum OrderStatusOptions {
   Unpaid = 'unpaid',
   Paid = 'paid',
   AwaitingShipment = 'awaiting_shipment',
-  Shipped = 'shipped'
+  Shipped = 'shipped',
 }
 // type OtherOrderStatusOptions = Exclude<string, OrderStatusOptions>;
 
@@ -221,7 +220,7 @@ export enum ShippingProviders {
   DPDFrance = 'DPD France',
   Hermes = 'Hermes',
   TNT = 'TNT',
-  Other = 'Other'
+  Other = 'Other',
 }
 
 export type OrderTaxResponsibleParty = 'reverb' | Exclude<string, 'reverb'>;

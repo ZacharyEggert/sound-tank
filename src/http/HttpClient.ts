@@ -15,7 +15,10 @@ export interface HttpClient {
    * console.log(response.data);
    * ```
    */
-  get<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>>;
+  get<T = any>(
+    url: string,
+    config?: HttpRequestConfig,
+  ): Promise<HttpResponse<T>>;
 
   /**
    * @example
@@ -31,7 +34,7 @@ export interface HttpClient {
   post<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>>;
 
   /**
@@ -47,7 +50,7 @@ export interface HttpClient {
   put<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>>;
 
   /**
@@ -60,7 +63,7 @@ export interface HttpClient {
    */
   delete<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>>;
 
   /**
@@ -76,6 +79,6 @@ export interface HttpClient {
   patch<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>>;
 }
