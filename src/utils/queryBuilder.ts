@@ -1,3 +1,5 @@
+import Logger from "./logger";
+
 /**
  * Builds a URL-encoded query string from an object of parameters.
  * Filters out undefined and null values.
@@ -29,6 +31,7 @@ export function buildQueryString(
       return `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`;
     });
 
+	Logger.debug('Built query string: %s from params: %o', entries.join('&'), params);
   return entries.join('&');
 }
 

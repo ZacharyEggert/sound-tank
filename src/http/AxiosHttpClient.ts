@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpClient } from './HttpClient';
 import { HttpRequestConfig, HttpResponse } from './types';
+import Logger from '~/utils/logger';
 
 export class AxiosHttpClient implements HttpClient {
   private axiosInstance: AxiosInstance;
@@ -40,6 +41,7 @@ export class AxiosHttpClient implements HttpClient {
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.get<T>(url, config);
+		Logger.trace('GET request to %s with config: %o', url, config);
     return this.convertResponse(response);
   }
 
@@ -49,6 +51,7 @@ export class AxiosHttpClient implements HttpClient {
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.post<T>(url, data, config);
+		Logger.trace('POST request to %s with data: %o and config: %o', url, data, config);
     return this.convertResponse(response);
   }
 
@@ -58,6 +61,7 @@ export class AxiosHttpClient implements HttpClient {
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.put<T>(url, data, config);
+		Logger.trace('PUT request to %s with data: %o and config: %o', url, data, config);
     return this.convertResponse(response);
   }
 
@@ -66,6 +70,7 @@ export class AxiosHttpClient implements HttpClient {
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.delete<T>(url, config);
+		Logger.trace('DELETE request to %s with config: %o', url, config);
     return this.convertResponse(response);
   }
 
@@ -75,6 +80,7 @@ export class AxiosHttpClient implements HttpClient {
     config?: HttpRequestConfig
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.patch<T>(url, data, config);
+		Logger.trace('PATCH request to %s with data: %o and config: %o', url, data, config);
     return this.convertResponse(response);
   }
 

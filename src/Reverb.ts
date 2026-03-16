@@ -4,6 +4,7 @@ import { AxiosHttpClient, HttpClient } from './http';
 import { ListingsResource } from './resources/ListingsResource';
 import { OrdersResource } from './resources/OrdersResource';
 import { getArbitraryEndpoint, GetArbitraryEndpointOptions } from './methods';
+import Logger from './utils/logger';
 
 export type ApiVersion = string;
 export type ApiKey = string;
@@ -85,11 +86,16 @@ export default class Reverb {
 
     this.listings = new ListingsResource(() => this._httpClient, () => this._config);
     this.orders = new OrdersResource(() => this._httpClient, () => this._config);
+
+		Logger.trace('Reverb client initialized with config: %o', this._config);
+
   }
 
   private updateHeaders() {
     const optionalHeaders = {} as any;
     if (this._shippingRegion) optionalHeaders['X-Shipping-Region'] = this._shippingRegion;
+
+		Logger.debug('Updating headers with API key and config values. Shipping region included: %s', !!this._shippingRegion);
 
     this._headers = {
       ...this._headers,
@@ -102,6 +108,9 @@ export default class Reverb {
   }
 
   private _updateConfig() {
+
+		Logger.debug('Updating Reverb config with current settings. Root endpoint: %s, Version: %s, Display currency: %s, Locale: %s, Shipping region: %s', this._rootEndpoint, this._version, this._displayCurrency, this._locale, this._shippingRegion);
+
     this._config = createReverbConfig({
       rootEndpoint: this._rootEndpoint,
       apiKey: this.apiKey,
@@ -114,6 +123,9 @@ export default class Reverb {
   }
 
   set locale(locale: Locale) {
+
+		Logger.debug('Setting locale to: %s', locale);
+
     this._locale = locale;
     this.updateHeaders();
     this._updateConfig();
@@ -123,6 +135,9 @@ export default class Reverb {
   }
 
   set shippingRegion(shippingRegion: ShippingRegion | undefined) {
+
+		Logger.debug('Setting shipping region to: %s', shippingRegion);
+
     this._shippingRegion = shippingRegion;
     this.updateHeaders();
     this._updateConfig();
@@ -136,6 +151,9 @@ export default class Reverb {
   }
 
   set displayCurrency(displayCurrency: DisplayCurrency) {
+
+		Logger.debug('Setting display currency to: %s', displayCurrency);
+
     this._displayCurrency = displayCurrency;
     this.updateHeaders();
     this._updateConfig();
@@ -145,6 +163,9 @@ export default class Reverb {
   }
 
   set version(version: ApiVersion) {
+
+		Logger.debug('Setting API version to: %s', version);
+
     this._version = version;
     this.updateHeaders();
     this._updateConfig();
@@ -154,6 +175,9 @@ export default class Reverb {
   }
 
   set rootEndpoint(rootEndpoint: RootEndpoint) {
+
+		Logger.debug('Setting root endpoint to: %s', rootEndpoint);
+
     this._rootEndpoint = rootEndpoint;
     this._updateConfig();
   }

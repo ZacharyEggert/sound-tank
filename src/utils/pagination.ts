@@ -1,12 +1,8 @@
+import Logger from "./logger";
+
 export interface PaginationOptions {
   perPage?: number;
-  /**
-   * Starting page number (default: 1)
-   */
   startPage?: number;
-  /**
-   * Maximum number of pages to fetch (optional, for safety)
-   */
   maxPages?: number;
 }
 
@@ -66,6 +62,7 @@ export async function paginateAll<T>(
 
     // Stop if we got fewer items than requested (indicates last page)
     if (result.items.length < perPage) {
+			Logger.debug('Received fewer items than perPage (%d < %d), assuming last page reached.', result.items.length, perPage);
       break;
     }
 
@@ -73,6 +70,7 @@ export async function paginateAll<T>(
     pagesProcessed++;
   }
 
+	Logger.debug('Pagination complete. Total items fetched: %d across %d pages.', allItems.length, pagesProcessed);
   return allItems;
 }
 
