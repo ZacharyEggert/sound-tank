@@ -28,7 +28,7 @@ https://api.reverb.com/api/my/negotiations/[offer_id]
 
 import { HttpClient, HttpResponse } from '../../http';
 import { ReverbConfig } from '../../config/ReverbConfig';
-import { Negotiation, PaginatedReverbResponse } from '../../types';
+import { Negotiation, ListingWithNegotiations, PaginatedReverbResponse } from '../../types';
 import { buildUrlWithQuery, buildUrl } from '../../utils';
 
 export interface GetNegotiationsOptions {
@@ -42,7 +42,7 @@ export const getNegotiations = async (
 	client: HttpClient,
 	config: ReverbConfig,
 	options: GetNegotiationsOptions,
-): Promise<HttpResponse<PaginatedReverbResponse<{ negotiations: Negotiation[] }>>> => {
+): Promise<HttpResponse<PaginatedReverbResponse<{ listings: ListingWithNegotiations[] }>>> => {
 	const { page, perPage, status, negotiation_type } = options;
 
 	const url = buildUrlWithQuery(buildUrl(config.rootEndpoint, '/my/listings/negotiations'), {
@@ -52,7 +52,7 @@ export const getNegotiations = async (
 		negotiation_type,
 	});
 
-	return client.get<PaginatedReverbResponse<{ negotiations: Negotiation[] }>>(url, {
+	return client.get<PaginatedReverbResponse<{ listings: ListingWithNegotiations[] }>>(url, {
 		headers: config.headers,
 	});
 };

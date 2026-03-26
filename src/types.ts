@@ -324,6 +324,60 @@ export type PaginatedReverbResponse<T> = T & {
   };
 };
 
+export type NegotiationPriceDisplay = {
+  original: Price;
+  display: Price;
+};
+
+export type NegotiationOffer = {
+  created_at: string;
+  message: string;
+  price: NegotiationPriceDisplay;
+  shipping_price: NegotiationPriceDisplay;
+  total_price: NegotiationPriceDisplay;
+  initiated_by_name: string;
+  initiated_by_shop_name: string;
+  initiated_by_me: boolean;
+  initiator_type: 'seller' | 'buyer' | Exclude<string, 'seller' | 'buyer'>;
+};
+
+export type NegotiationLinks = {
+  listing: Link;
+  self: Link;
+  counter: Link;
+  accept: Link;
+  decline: Link;
+};
+
 export type Negotiation = {
-	id: number | string;
-}
+  id: number | string;
+  state: 'active' | 'accepted' | 'declined' | 'expired' | Exclude<string, 'active' | 'accepted' | 'declined' | 'expired'>;
+  offers_count: number;
+  expires_at: string;
+  created_at: string;
+  updated_at: string;
+  buyer_name: string;
+  buyer_id: number | string;
+  seller_name: string;
+  shop_id?: number | string;
+  shop_name: string;
+  other_party_name: string;
+  other_party?: {
+    _links: { avatar: Link };
+    profile_slug: string | null;
+  };
+  actionable: boolean;
+  you_last_initiated?: boolean;
+  can_ship_to_buyer: boolean;
+  buyer_shipping_region_code: string;
+  buyer_address: ShippingAddress & { uuid?: string };
+  last_offered_price: NegotiationPriceDisplay;
+  last_offered_shipping: NegotiationPriceDisplay;
+  last_offered_total: NegotiationPriceDisplay;
+  offers?: NegotiationOffer[];
+  _links: NegotiationLinks;
+};
+
+export type ListingWithNegotiations = Listing & {
+  negotiations: Negotiation[];
+};
