@@ -323,3 +323,7 @@ export type PaginatedReverbResponse<T> = T & {
     prev?: Link;
   };
 };
+
+export type Negotiation = {
+	id: number | string;
+}

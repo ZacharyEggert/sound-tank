@@ -3,6 +3,7 @@ import { ReverbConfig, createReverbConfig } from './config/ReverbConfig';
 import { AxiosHttpClient, HttpClient } from './http';
 import { ListingsResource } from './resources/ListingsResource';
 import { OrdersResource } from './resources/OrdersResource';
+import { NegotiationsResource } from './resources/NegotiationsResource';
 import { getArbitraryEndpoint, GetArbitraryEndpointOptions } from './methods';
 import Logger from './utils/logger';
 
@@ -61,7 +62,7 @@ export default class Reverb {
 
   readonly listings: ListingsResource;
   readonly orders: OrdersResource;
-
+  readonly negotiations: NegotiationsResource;
   constructor(options: ReverbOptions) {
     const {
       apiKey,
@@ -100,7 +101,11 @@ export default class Reverb {
       () => this._httpClient,
       () => this._config,
     );
-
+    this.negotiations = new NegotiationsResource(
+      () => this._httpClient,
+      () => this._config,
+    );
+		
     Logger.trace('Reverb client initialized with config: %o', this._config);
   }
 
