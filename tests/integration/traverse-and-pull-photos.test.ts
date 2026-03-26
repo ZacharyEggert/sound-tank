@@ -28,9 +28,7 @@ describe('Traverse and Pull Photos Integration', {}, () => {
     };
   });
   it('should be able to find my shop', async () => {
-    const response = await reverb.getArbitraryEndpoint({
-      url: '/shop/',
-    });
+    const response = await reverb._getArbitraryEndpoint('/shop/');
 
     expect(response).toBeDefined();
     expect(response.data).toBeDefined();
@@ -38,7 +36,7 @@ describe('Traverse and Pull Photos Integration', {}, () => {
   });
 
   it('should be able to get a list of recent listings and select one', async () => {
-    const response = await reverb.getMyListings({
+    const response = await reverb.listings.getMy({
       page: 1,
       perPage: 2,
       state: 'live',
@@ -52,7 +50,7 @@ describe('Traverse and Pull Photos Integration', {}, () => {
   });
 
   it('should be able to pull a detailed version of the listing', async () => {
-    const response = await reverb.getOneListing({ id: listing.id.toString() });
+    const response = await reverb.listings.getOne({ id: listing.id.toString() });
     expect(response).toBeDefined();
     expect(response.data).toBeDefined();
 

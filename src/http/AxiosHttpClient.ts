@@ -1,20 +1,12 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpClient } from './HttpClient';
 import { HttpRequestConfig, HttpResponse } from './types';
+import Logger from '~/utils/logger';
 
-/**
- * Production HTTP client implementation using axios.
- * Wraps axios to implement the HttpClient interface while preserving
- * all axios functionality and response structure.
- */
 export class AxiosHttpClient implements HttpClient {
   private axiosInstance: AxiosInstance;
 
   /**
-   * Creates a new AxiosHttpClient instance
-   *
-   * @param axiosInstance - Optional custom axios instance. If not provided, uses the default axios instance.
-   *
    * @example
    * ```ts
    * // Using default axios
@@ -46,52 +38,69 @@ export class AxiosHttpClient implements HttpClient {
 
   async get<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.get<T>(url, config);
+    Logger.trace('GET request to %s with config: %o', url, config);
     return this.convertResponse(response);
   }
 
   async post<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.post<T>(url, data, config);
+    Logger.trace(
+      'POST request to %s with data: %o and config: %o',
+      url,
+      data,
+      config,
+    );
     return this.convertResponse(response);
   }
 
   async put<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.put<T>(url, data, config);
+    Logger.trace(
+      'PUT request to %s with data: %o and config: %o',
+      url,
+      data,
+      config,
+    );
     return this.convertResponse(response);
   }
 
   async delete<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.delete<T>(url, config);
+    Logger.trace('DELETE request to %s with config: %o', url, config);
     return this.convertResponse(response);
   }
 
   async patch<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     const response = await this.axiosInstance.patch<T>(url, data, config);
+    Logger.trace(
+      'PATCH request to %s with data: %o and config: %o',
+      url,
+      data,
+      config,
+    );
     return this.convertResponse(response);
   }
 
   /**
-   * Gets the underlying axios instance.
    * Useful for advanced axios features like interceptors.
-   *
-   * @returns The axios instance
    *
    * @example
    * ```ts

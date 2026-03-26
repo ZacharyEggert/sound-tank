@@ -1,40 +1,14 @@
-/**
- * Options for pagination behavior
- */
+import Logger from './logger';
+
 export interface PaginationOptions {
-  /**
-   * Number of items per page
-   */
   perPage?: number;
-
-  /**
-   * Starting page number (default: 1)
-   */
   startPage?: number;
-
-  /**
-   * Maximum number of pages to fetch (optional, for safety)
-   */
   maxPages?: number;
 }
 
-/**
- * Result from a paginated fetch operation
- */
 export interface PaginatedFetchResult<T> {
-  /**
-   * The items returned from this page
-   */
   items: T[];
-
-  /**
-   * Whether there are more pages available
-   */
   hasMore: boolean;
-
-  /**
-   * Current page number
-   */
   currentPage: number;
 }
 
@@ -63,9 +37,9 @@ export interface PaginatedFetchResult<T> {
 export async function paginateAll<T>(
   fetchPage: (
     page: number,
-    perPage: number
+    perPage: number,
   ) => Promise<PaginatedFetchResult<T>>,
-  options: PaginationOptions = {}
+  options: PaginationOptions = {},
 ): Promise<T[]> {
   const {
     perPage = 50,
@@ -80,16 +54,19 @@ export async function paginateAll<T>(
   while (pagesProcessed < maxPages) {
     const result = await fetchPage(currentPage, perPage);
 
-    // Add items from this page
     allItems.push(...result.items);
 
-    // Stop if no more pages or empty result
     if (!result.hasMore || result.items.length === 0) {
       break;
     }
 
     // Stop if we got fewer items than requested (indicates last page)
     if (result.items.length < perPage) {
+      Logger.debug(
+        'Received fewer items than perPage (%d < %d), assuming last page reached.',
+        result.items.length,
+        perPage,
+      );
       break;
     }
 
@@ -97,6 +74,11 @@ export async function paginateAll<T>(
     pagesProcessed++;
   }
 
+  Logger.debug(
+    'Pagination complete. Total items fetched: %d across %d pages.',
+    allItems.length,
+    pagesProcessed,
+  );
   return allItems;
 }
 
@@ -117,7 +99,7 @@ export async function paginateAll<T>(
 export function createPaginatedResult<T>(
   items: T[],
   perPage: number,
-  currentPage: number
+  currentPage: number,
 ): PaginatedFetchResult<T> {
   return {
     items,

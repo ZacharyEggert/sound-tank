@@ -8,3 +8,7 @@ tsconfig.json
 prettier.config.cjs
 vite.config.ts
 tests
+architecture.md
+CLAUDE.md
+prt.json
+.prtrc.json

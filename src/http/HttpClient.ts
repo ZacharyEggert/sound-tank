@@ -7,12 +7,6 @@ import { HttpRequestConfig, HttpResponse } from './types';
  */
 export interface HttpClient {
   /**
-   * Performs an HTTP GET request
-   *
-   * @param url - The URL to request
-   * @param config - Optional request configuration
-   * @returns Promise resolving to the HTTP response
-   *
    * @example
    * ```ts
    * const response = await client.get<User>('/api/users/123', {
@@ -21,16 +15,12 @@ export interface HttpClient {
    * console.log(response.data);
    * ```
    */
-  get<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>>;
+  get<T = any>(
+    url: string,
+    config?: HttpRequestConfig,
+  ): Promise<HttpResponse<T>>;
 
   /**
-   * Performs an HTTP POST request
-   *
-   * @param url - The URL to request
-   * @param data - The request body data
-   * @param config - Optional request configuration
-   * @returns Promise resolving to the HTTP response
-   *
    * @example
    * ```ts
    * const response = await client.post<User>('/api/users', {
@@ -44,17 +34,10 @@ export interface HttpClient {
   post<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>>;
 
   /**
-   * Performs an HTTP PUT request
-   *
-   * @param url - The URL to request
-   * @param data - The request body data
-   * @param config - Optional request configuration
-   * @returns Promise resolving to the HTTP response
-   *
    * @example
    * ```ts
    * const response = await client.put<User>('/api/users/123', {
@@ -67,16 +50,10 @@ export interface HttpClient {
   put<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>>;
 
   /**
-   * Performs an HTTP DELETE request
-   *
-   * @param url - The URL to request
-   * @param config - Optional request configuration
-   * @returns Promise resolving to the HTTP response
-   *
    * @example
    * ```ts
    * const response = await client.delete('/api/users/123', {
@@ -86,17 +63,10 @@ export interface HttpClient {
    */
   delete<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>>;
 
   /**
-   * Performs an HTTP PATCH request
-   *
-   * @param url - The URL to request
-   * @param data - The request body data
-   * @param config - Optional request configuration
-   * @returns Promise resolving to the HTTP response
-   *
    * @example
    * ```ts
    * const response = await client.patch<User>('/api/users/123', {
@@ -109,6 +79,6 @@ export interface HttpClient {
   patch<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>>;
 }

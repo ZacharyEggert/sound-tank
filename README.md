@@ -32,7 +32,7 @@ pnpm add sound-tank
 import Reverb from 'sound-tank';
 
 const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
-const { data } = await reverb.getMyListings({ perPage: 10, state: 'live' });
+const { data } = await reverb.listings.getMy({ perPage: 10, state: 'live' });
 
 data.listings.forEach(listing => {
   console.log(`${listing.title}: ${listing.price.display}`);
@@ -56,11 +56,11 @@ data.listings.forEach(listing => {
 - [Getting Started](#getting-started)
 - [Configuration](#configuration)
 - [API Methods](#api-methods)
-  - [getMyListings](#getmylistingsoptions)
-  - [getAllMyListings](#getallmylistingsoptions)
-  - [getOneListing](#getonelistingoptions)
-  - [getMyOrders](#getmyordersoptions)
-  - [getArbitraryEndpoint](#getarbitraryendpointoptions)
+  - [listings.getMy](#listingsgetmyoptions)
+  - [listings.getAllMy](#listingsgetallmyoptions)
+  - [listings.getOne](#listingsgetoneoptions)
+  - [orders.getMy](#ordersgetmyoptions)
+  - [_getArbitraryEndpoint](#_getarbitraryendpointurl-params)
 - [TypeScript Usage](#typescript-usage)
 - [Advanced Features](#advanced-features)
 - [Examples](#examples)
@@ -118,7 +118,7 @@ const reverb = new Reverb({
 ### Fetch Your Listings
 
 ```typescript
-const response = await reverb.getMyListings({
+const response = await reverb.listings.getMy({
   perPage: 25,
   page: 1,
   state: 'live',
@@ -132,7 +132,7 @@ console.log(response.data.listings);
 
 ```typescript
 try {
-  const response = await reverb.getMyListings({ state: 'live' });
+  const response = await reverb.listings.getMy({ state: 'live' });
   console.log(`Found ${response.data.listings.length} listings`);
 } catch (error) {
   console.error('Failed to fetch listings:', error.message);
@@ -167,7 +167,7 @@ These changes automatically update the internal headers and configuration for su
 
 ## API Methods
 
-### getMyListings(options?)
+### listings.getMy(options?)
 
 Fetch a paginated list of your listings.
 
@@ -181,7 +181,7 @@ Fetch a paginated list of your listings.
 
 **Example:**
 ```typescript
-const response = await reverb.getMyListings({
+const response = await reverb.listings.getMy({
   perPage: 50,
   page: 1,
   state: 'live',
@@ -194,7 +194,7 @@ console.log(`Page 1: ${listings.length} listings`);
 
 ---
 
-### getAllMyListings(options?)
+### listings.getAllMy(options?)
 
 Automatically fetches **all** listings across all pages using automatic pagination.
 
@@ -206,7 +206,7 @@ Automatically fetches **all** listings across all pages using automatic paginati
 
 **Example:**
 ```typescript
-const response = await reverb.getAllMyListings({ state: 'live' });
+const response = await reverb.listings.getAllMy({ state: 'live' });
 const allListings = response.data; // All listings from all pages
 
 console.log(`Total listings: ${allListings.length}`);
@@ -216,7 +216,7 @@ console.log(`Total listings: ${allListings.length}`);
 
 ---
 
-### getOneListing(options)
+### listings.getOne(options)
 
 Fetch a single listing by ID.
 
@@ -227,7 +227,7 @@ Fetch a single listing by ID.
 
 **Example:**
 ```typescript
-const response = await reverb.getOneListing({ id: '12345' });
+const response = await reverb.listings.getOne({ id: '12345' });
 const listing = response.data;
 
 console.log(`${listing.title} - ${listing.price.display}`);
@@ -236,7 +236,7 @@ console.log(`Condition: ${listing.condition.displayName}`);
 
 ---
 
-### getMyOrders(options?)
+### orders.getMy(options?)
 
 Fetch your orders with pagination.
 
@@ -248,7 +248,7 @@ Fetch your orders with pagination.
 
 **Example:**
 ```typescript
-const response = await reverb.getMyOrders({
+const response = await reverb.orders.getMy({
   page: 1,
   perPage: 25
 });
@@ -261,9 +261,9 @@ orders.forEach(order => {
 
 ---
 
-### getArbitraryEndpoint(options)
+### _getArbitraryEndpoint(url, params?)
 
-Make requests to any Reverb API endpoint not explicitly covered by other methods.
+Escape hatch to call any Reverb endpoint not yet wrapped by a resource. The `_` prefix indicates this is not part of the stable public API but is intentionally supported.
 
 **Parameters:**
 - `url: string` - Endpoint URL (absolute or relative to root endpoint)
@@ -274,14 +274,10 @@ Make requests to any Reverb API endpoint not explicitly covered by other methods
 **Example:**
 ```typescript
 // Fetch categories
-const categories = await reverb.getArbitraryEndpoint({
-  url: '/categories/flat'
-});
+const categories = await reverb._getArbitraryEndpoint('/categories/flat');
 
 // Fetch listing conditions
-const conditions = await reverb.getArbitraryEndpoint({
-  url: '/listing_conditions'
-});
+const conditions = await reverb._getArbitraryEndpoint('/listing_conditions');
 
 console.log(categories.data);
 ```
@@ -308,7 +304,7 @@ import Reverb, {
 ### Working with Typed Responses
 
 ```typescript
-const response = await reverb.getMyListings();
+const response = await reverb.listings.getMy();
 const listings: Listing[] = response.data.listings;
 
 listings.forEach((listing: Listing) => {
@@ -361,13 +357,13 @@ let allListings = [];
 let response;
 
 do {
-  response = await reverb.getMyListings({ page, perPage: 50 });
+  response = await reverb.listings.getMy({ page, perPage: 50 });
   allListings = allListings.concat(response.data.listings);
   page++;
 } while (response.data.listings.length === 50);
 
 // Or use the built-in helper
-const autoResponse = await reverb.getAllMyListings();
+const autoResponse = await reverb.listings.getAllMy();
 const listings = autoResponse.data; // Same result, simpler code
 ```
 
@@ -405,7 +401,7 @@ console.log(headers['X-Display-Currency']); // 'USD'
 ```typescript
 const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
 
-const response = await reverb.getAllMyListings({ query: 'guitar' });
+const response = await reverb.listings.getAllMy({ query: 'guitar' });
 const affordable = response.data.filter(listing =>
   listing.price.amount_cents < 100000 // $1000 = 100,000 cents
 );
@@ -423,7 +419,7 @@ const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
 
 // Get prices in USD
 reverb.displayCurrency = 'USD';
-const usdResponse = await reverb.getMyListings({ perPage: 5 });
+const usdResponse = await reverb.listings.getMy({ perPage: 5 });
 console.log('USD Prices:');
 usdResponse.data.listings.forEach(l =>
   console.log(`  ${l.title}: ${l.price.display}`)
@@ -431,7 +427,7 @@ usdResponse.data.listings.forEach(l =>
 
 // Switch to EUR
 reverb.displayCurrency = 'EUR';
-const eurResponse = await reverb.getMyListings({ perPage: 5 });
+const eurResponse = await reverb.listings.getMy({ perPage: 5 });
 console.log('\nEUR Prices:');
 eurResponse.data.listings.forEach(l =>
   console.log(`  ${l.title}: ${l.price.display}`)
@@ -441,7 +437,7 @@ eurResponse.data.listings.forEach(l =>
 ### Export Listings to CSV
 
 ```typescript
-const response = await reverb.getAllMyListings({ state: 'live' });
+const response = await reverb.listings.getAllMy({ state: 'live' });
 
 const csvHeader = 'ID,Title,Price,Currency,Condition,Year,State\n';
 const csvRows = response.data.map(listing =>
@@ -457,7 +453,7 @@ console.log(csv);
 
 ```typescript
 // Search for specific items
-const response = await reverb.getMyListings({
+const response = await reverb.listings.getMy({
   query: 'Les Paul',
   state: 'live',
   perPage: 100
@@ -514,9 +510,12 @@ sound-tank/
 │   │   ├── AxiosHttpClient.ts    # Axios implementation
 │   │   └── MockHttpClient.ts     # Mock for testing
 │   ├── methods/
-│   │   ├── listings/       # Listing operations
-│   │   └── orders/         # Order operations
-│   └── utils/              # Helper utilities
+│   │   ├── listings/       # Listing operations (pure functions)
+│   │   └── orders/         # Order operations (pure functions)
+│   ├── resources/
+│   │   ├── ListingsResource.ts   # Listings resource class
+│   │   └── OrdersResource.ts     # Orders resource class
+│   └── utils/              # Helper utilities (pagination, url/query builders, logger)
 ├── tests/                  # Test files
 ├── dist/                   # Build output (git-ignored)
 ├── package.json
@@ -524,6 +523,16 @@ sound-tank/
 ├── tsup.config.ts          # Build configuration
 └── vite.config.mts         # Test configuration
 ```
+
+### Debugging
+
+Set `SOUNDTANK_LOG_LEVEL` to enable SDK logging:
+
+```bash
+SOUNDTANK_LOG_LEVEL=DEBUG yarn dev
+```
+
+Valid values: `ERROR | WARN | INFO | DEBUG | TRACE`. Silent by default.
 
 ### Available Scripts
 

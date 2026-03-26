@@ -1,3 +1,5 @@
+import Logger from './logger';
+
 /**
  * Builds a URL-encoded query string from an object of parameters.
  * Filters out undefined and null values.
@@ -21,7 +23,7 @@
  * ```
  */
 export function buildQueryString(
-  params: Record<string, string | number | boolean | undefined | null>
+  params: Record<string, string | number | boolean | undefined | null>,
 ): string {
   const entries = Object.entries(params)
     .filter(([_, value]) => value !== undefined && value !== null)
@@ -29,6 +31,11 @@ export function buildQueryString(
       return `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`;
     });
 
+  Logger.debug(
+    'Built query string: %s from params: %o',
+    entries.join('&'),
+    params,
+  );
   return entries.join('&');
 }
 
@@ -50,7 +57,7 @@ export function buildQueryString(
  */
 export function buildUrlWithQuery(
   baseUrl: string,
-  params: Record<string, string | number | boolean | undefined | null>
+  params: Record<string, string | number | boolean | undefined | null>,
 ): string {
   const queryString = buildQueryString(params);
   if (!queryString) {

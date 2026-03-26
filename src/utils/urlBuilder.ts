@@ -1,3 +1,5 @@
+import Logger from './logger';
+
 /**
  * Builds a complete URL from a base URL and path, handling both absolute and relative URLs.
  *
@@ -18,14 +20,20 @@
  * ```
  */
 export function buildUrl(baseUrl: string, path: string): string {
-  // Check if path is an absolute URL
   if (path.startsWith('http://') || path.startsWith('https://')) {
+    Logger.debug('Provided path is an absolute URL: %s', path);
     return path;
   }
 
-  // Ensure baseUrl doesn't end with a slash and path starts with one
   const normalizedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 
-  return `${normalizedBase}${normalizedPath}`;
+  const fullUrl = `${normalizedBase}${normalizedPath}`;
+  Logger.debug(
+    'Built URL: %s from base: %s and path: %s',
+    fullUrl,
+    baseUrl,
+    path,
+  );
+  return fullUrl;
 }

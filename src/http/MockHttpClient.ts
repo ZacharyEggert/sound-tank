@@ -1,27 +1,18 @@
 import { HttpClient } from './HttpClient';
 import { HttpRequestConfig, HttpResponse, HttpError } from './types';
 
-/**
- * Request matcher function type
- */
-export type RequestMatcher = (url: string, config?: HttpRequestConfig) => boolean;
+export type RequestMatcher = (
+  url: string,
+  config?: HttpRequestConfig,
+) => boolean;
 
-/**
- * Response generator function type
- */
 export type ResponseGenerator<T = any> = (
   url: string,
   config?: HttpRequestConfig,
-  data?: any
+  data?: any,
 ) => HttpResponse<T> | Promise<HttpResponse<T>>;
 
-/**
- * Mock response configuration
- */
 export interface MockResponse<T = any> {
-  /**
-   * Matcher to determine if this mock should be used
-   */
   matcher: RequestMatcher;
 
   /**
@@ -29,9 +20,6 @@ export interface MockResponse<T = any> {
    */
   response: HttpResponse<T> | ResponseGenerator<T>;
 
-  /**
-   * Optional error to throw instead of returning response
-   */
   error?: HttpError | Error;
 
   /**
@@ -53,19 +41,14 @@ export class MockHttpClient implements HttpClient {
     data?: any;
   }> = [];
 
-  /**
-   * Records a request and returns the appropriate mocked response
-   */
   private async handleRequest<T>(
     method: string,
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
-    // Record the request
     this.requests.push({ method, url, config, data });
 
-    // Find matching mock
     const mocks = this.mocks.get(method) || [];
     for (let i = 0; i < mocks.length; i++) {
       const mock = mocks[i];
@@ -78,12 +61,10 @@ export class MockHttpClient implements HttpClient {
           mock.times--;
         }
 
-        // Throw error if configured
         if (mock.error) {
           throw mock.error;
         }
 
-        // Return response
         if (typeof mock.response === 'function') {
           return await mock.response(url, config, data);
         }
@@ -91,9 +72,8 @@ export class MockHttpClient implements HttpClient {
       }
     }
 
-    // No mock found - throw error
     const error: HttpError = new Error(
-      `No mock found for ${method} ${url}`
+      `No mock found for ${method} ${url}`,
     ) as HttpError;
     error.config = config;
     throw error;
@@ -101,7 +81,7 @@ export class MockHttpClient implements HttpClient {
 
   async get<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('GET', url, undefined, config);
   }
@@ -109,7 +89,7 @@ export class MockHttpClient implements HttpClient {
   async post<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('POST', url, data, config);
   }
@@ -117,14 +97,14 @@ export class MockHttpClient implements HttpClient {
   async put<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('PUT', url, data, config);
   }
 
   async delete<T = any>(
     url: string,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('DELETE', url, undefined, config);
   }
@@ -132,7 +112,7 @@ export class MockHttpClient implements HttpClient {
   async patch<T = any>(
     url: string,
     data?: any,
-    config?: HttpRequestConfig
+    config?: HttpRequestConfig,
   ): Promise<HttpResponse<T>> {
     return this.handleRequest<T>('PATCH', url, data, config);
   }
@@ -158,44 +138,41 @@ export class MockHttpClient implements HttpClient {
     this.mocks.get(method)!.push(mock);
   }
 
-  /**
-   * Helper to mock a GET request
-   */
-  onGet<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onGet<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('GET', { matcher, response });
   }
 
-  /**
-   * Helper to mock a POST request
-   */
-  onPost<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onPost<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('POST', { matcher, response });
   }
 
-  /**
-   * Helper to mock a PUT request
-   */
-  onPut<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onPut<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('PUT', { matcher, response });
   }
 
-  /**
-   * Helper to mock a DELETE request
-   */
-  onDelete<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onDelete<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('DELETE', { matcher, response });
   }
 
-  /**
-   * Helper to mock a PATCH request
-   */
-  onPatch<T = any>(matcher: RequestMatcher, response: HttpResponse<T> | ResponseGenerator<T>): void {
+  onPatch<T = any>(
+    matcher: RequestMatcher,
+    response: HttpResponse<T> | ResponseGenerator<T>,
+  ): void {
     this.onRequest('PATCH', { matcher, response });
   }
 
-  /**
-   * Gets all recorded requests
-   */
   getRequests(): Array<{
     method: string;
     url: string;
@@ -205,9 +182,6 @@ export class MockHttpClient implements HttpClient {
     return [...this.requests];
   }
 
-  /**
-   * Gets requests for a specific method
-   */
   getRequestsByMethod(method: string): Array<{
     method: string;
     url: string;
@@ -217,16 +191,10 @@ export class MockHttpClient implements HttpClient {
     return this.requests.filter((req) => req.method === method);
   }
 
-  /**
-   * Clears all recorded requests
-   */
   clearRequests(): void {
     this.requests = [];
   }
 
-  /**
-   * Clears all mocks
-   */
   clearMocks(): void {
     this.mocks.clear();
   }
@@ -246,7 +214,7 @@ export class MockHttpClient implements HttpClient {
 export function createMockResponse<T>(
   data: T,
   status: number = 200,
-  statusText: string = 'OK'
+  statusText: string = 'OK',
 ): HttpResponse<T> {
   return {
     data,
@@ -257,13 +225,10 @@ export function createMockResponse<T>(
   };
 }
 
-/**
- * Helper function to create an HTTP error
- */
 export function createMockError(
   message: string,
   status?: number,
-  response?: HttpResponse
+  response?: HttpResponse,
 ): HttpError {
   const error = new Error(message) as HttpError;
   error.status = status;

@@ -1,21 +1,17 @@
-import type { Listing, ListingPostBody } from '../../types';
-import axios, {AxiosResponse} from 'axios';
+import type { Listing, ListingPostBody } from '~/types';
+import { HttpClient, HttpResponse } from '~/http';
+import { ReverbConfig } from '~/config/ReverbConfig';
+import { buildUrl } from '~/utils';
+import Logger from '~/utils/logger';
 
-import Reverb from '~/Reverb';
-
-/**
- * Posts a new listing to Reverb.
- * @param {Reverb} reverb - The Reverb API client.
- * @param {ListingPostBody} body - The listing data to post.
- * @returns {Promise<AxiosResponse<Listing>>} - A promise that resolves to the newly created listing.
- * @throws Will throw an axios error if the request fails.
- */
-export const postListing = async (reverb: Reverb, body: ListingPostBody): Promise<AxiosResponse<Listing>> => {
-  const { rootEndpoint, headers } = reverb;
-  const response = await axios.post<Listing>(
-    `${rootEndpoint}/listings`,
-    JSON.stringify(body),
-    { headers },
-  );
-  return response;
+export const postListing = async (
+  client: HttpClient,
+  config: ReverbConfig,
+  body: ListingPostBody,
+): Promise<HttpResponse<Listing>> => {
+  const url = buildUrl(config.rootEndpoint, '/listings');
+  Logger.debug('Posting new listing with URL: %s and body: %o', url, body);
+  return client.post<Listing>(url, JSON.stringify(body), {
+    headers: config.headers,
+  });
 };
