@@ -4,6 +4,7 @@ export interface PaginationOptions {
   perPage?: number;
   startPage?: number;
   maxPages?: number;
+  throttle?: { delayMs: number; everyNPages: number };
 }
 
 export interface PaginatedFetchResult<T> {
@@ -23,6 +24,7 @@ export async function paginateAll<T>(
     perPage = 50,
     startPage = 1,
     maxPages = Number.MAX_SAFE_INTEGER,
+    throttle,
   } = options;
 
   const allItems: T[] = [];
@@ -49,6 +51,11 @@ export async function paginateAll<T>(
 
     currentPage++;
     pagesProcessed++;
+
+    if (throttle && pagesProcessed % throttle.everyNPages === 0) {
+      Logger.debug('Throttling: waiting %dms after %d pages.', throttle.delayMs, pagesProcessed);
+      await new Promise((resolve) => setTimeout(resolve, throttle.delayMs));
+    }
   }
 
   Logger.debug(
@@ -70,6 +77,7 @@ export async function* paginateStream<T>(
     perPage = 50,
     startPage = 1,
     maxPages = Number.MAX_SAFE_INTEGER,
+    throttle,
   } = options;
 
   let currentPage = startPage;
@@ -97,6 +105,11 @@ export async function* paginateStream<T>(
 
     currentPage++;
     pagesProcessed++;
+
+    if (throttle && pagesProcessed % throttle.everyNPages === 0) {
+      Logger.debug('Throttling: waiting %dms after %d pages.', throttle.delayMs, pagesProcessed);
+      await new Promise((resolve) => setTimeout(resolve, throttle.delayMs));
+    }
   }
 
   Logger.debug('Stream pagination complete after %d pages.', pagesProcessed + 1);

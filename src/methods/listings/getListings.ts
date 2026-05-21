@@ -59,7 +59,7 @@ export const getAllMyListings = async (
       });
       return createPaginatedResult(response.data.listings || [], perPage, page);
     },
-    { perPage: 50 },
+    { perPage: 50, throttle: { delayMs: 5000, everyNPages: 5 } },
   );
 
   return {
@@ -88,7 +88,7 @@ export async function* streamAllMyListings(
       });
       return createPaginatedResult(response.data.listings || [], perPage, page);
     },
-    { perPage: 50 },
+    { perPage: 50, throttle: { delayMs: 5000, everyNPages: 5 } },
   );
 
   for await (const page of pages) {
