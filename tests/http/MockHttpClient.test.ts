@@ -322,7 +322,6 @@ describe('MockHttpClient', () => {
         const error = createMockError('Test error');
 
         expect(error.message).toBe('Test error');
-        expect(error.isAxiosError).toBe(true);
       });
 
       it('should create error with status and response', () => {

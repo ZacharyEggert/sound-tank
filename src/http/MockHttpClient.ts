@@ -233,6 +233,5 @@ export function createMockError(
   const error = new Error(message) as HttpError;
   error.status = status;
   error.response = response;
-  error.isAxiosError = true;
   return error;
 }

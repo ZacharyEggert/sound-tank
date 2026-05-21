@@ -1,13 +1,10 @@
 export interface HttpRequestConfig {
-  headers?: Record<string, string>;
+  headers?: Record<string, string | undefined>;
   params?: Record<string, string | number | boolean | undefined | null>;
   /**
    * Request timeout in milliseconds
    */
   timeout?: number;
-  /**
-   * Additional axios-compatible config options
-   */
   [key: string]: any;
 }
 
@@ -30,5 +27,4 @@ export interface HttpError extends Error {
    */
   status?: number;
   response?: HttpResponse;
-  isAxiosError?: boolean;
 }

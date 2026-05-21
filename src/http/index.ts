@@ -1,4 +1,4 @@
 export * from './HttpClient';
 export * from './types';
-export * from './AxiosHttpClient';
+export * from './FetchHttpClient';
 export * from './MockHttpClient';
