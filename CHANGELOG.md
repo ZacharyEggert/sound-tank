@@ -1,5 +1,11 @@
 # sound-tank
 
+## 2.1.1
+
+### Patch Changes
+
+- 8563389: Add `throttle` option to `PaginationOptions` (`delayMs`, `everyNPages`) to prevent 429 rate-limit errors on large fetches. `getAllMyListings()` and `streamAllMyListings()` now pause 5s every 5 pages by default.
+
 ## 2.1.0
 
 ### Minor Changes
