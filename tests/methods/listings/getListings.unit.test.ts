@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import { getMyListings, streamAllMyListings } from '../../../src/methods/listings/getListings';
 import { MockHttpClient, createMockResponse } from '~/http/MockHttpClient';
 import { ReverbConfig } from '~/config/ReverbConfig';
-import { Listing, PaginatedReverbResponse } from '~/types';
+import { Listing, ListingStates, PaginatedReverbResponse } from '~/types';
 
 describe('getListings (unit tests with MockHttpClient)', () => {
   let mockClient: MockHttpClient;
@@ -299,7 +299,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
     }
 
     function makeListing(id: string): Listing {
-      return { id, make: 'Fender', model: 'Strat', finish: '', year: '', title: '', created_at: '', shop_name: '', description: '', condition: { uuid: '', displayName: 'Good' }, price: {} as any, inventory: 0, has_inventory: false, offers_enabled: false, auction: false, categories: [], listing_currency: 'USD', published_at: '', buyer_price: {} as any, seller_price: {} as any, state: { slug: 'live', description: '' }, shipping_profile_id: 0, shipping: {} as any, stats: { views: 0, watches: 0 }, slug: id, photos: [], _links: {} as any };
+      return { id, make: 'Fender', model: 'Strat', finish: '', year: '', title: '', created_at: '', shop_name: '', description: '', condition: { uuid: '', displayName: 'Good' }, price: {} as any, inventory: 0, has_inventory: false, offers_enabled: false, auction: false, categories: [], listing_currency: 'USD', published_at: '', buyer_price: {} as any, seller_price: {} as any, state: { slug: ListingStates.LIVE, description: '' }, shipping_profile_id: 0, shipping: {} as any, stats: { views: 0, watches: 0 }, slug: id, photos: [], _links: {} as any };
     }
 
     it('should yield all listings across multiple pages', async () => {
