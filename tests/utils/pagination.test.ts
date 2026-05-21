@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   paginateAll,
+  paginateStream,
   createPaginatedResult,
   PaginatedFetchResult,
 } from '../../src/utils/pagination';
@@ -38,6 +39,91 @@ describe('pagination', () => {
         hasMore: false,
         currentPage: 1,
       });
+    });
+  });
+
+  describe('paginateStream', () => {
+    async function collectStream<T>(gen: AsyncGenerator<T[]>): Promise<T[][]> {
+      const pages: T[][] = [];
+      for await (const page of gen) pages.push(page);
+      return pages;
+    }
+
+    it('should yield each page as a separate batch', async () => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
+        const data: Record<number, string[]> = {
+          1: ['a', 'b', 'c'],
+          2: ['d', 'e', 'f'],
+          3: ['g'],
+        };
+        const items = data[page] || [];
+        return { items, hasMore: items.length === perPage, currentPage: page };
+      });
+
+      const pages = await collectStream(paginateStream(mockFetch, { perPage: 3 }));
+
+      expect(pages).toEqual([['a', 'b', 'c'], ['d', 'e', 'f'], ['g']]);
+      expect(mockFetch).toHaveBeenCalledTimes(3);
+    });
+
+    it('should not yield empty pages', async () => {
+      const mockFetch = vi.fn(async (page: number): Promise<PaginatedFetchResult<string>> => ({
+        items: [],
+        hasMore: false,
+        currentPage: page,
+      }));
+
+      const pages = await collectStream(paginateStream(mockFetch));
+      expect(pages).toEqual([]);
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('should stop when hasMore is false', async () => {
+      const mockFetch = vi.fn(async (page: number): Promise<PaginatedFetchResult<string>> => ({
+        items: page === 1 ? ['x'] : [],
+        hasMore: false,
+        currentPage: page,
+      }));
+
+      const pages = await collectStream(paginateStream(mockFetch));
+      expect(pages).toEqual([['x']]);
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('should respect maxPages', async () => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => ({
+        items: Array.from({ length: perPage }, (_, i) => `p${page}-${i}`),
+        hasMore: true,
+        currentPage: page,
+      }));
+
+      const pages = await collectStream(paginateStream(mockFetch, { perPage: 2, maxPages: 2 }));
+      expect(pages).toHaveLength(2);
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('should stop when fewer items than perPage received', async () => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<string>> => {
+        if (page === 1) return { items: ['a', 'b', 'c'], hasMore: true, currentPage: 1 };
+        return { items: ['d'], hasMore: true, currentPage: 2 };
+      });
+
+      const pages = await collectStream(paginateStream(mockFetch, { perPage: 3 }));
+      expect(pages).toEqual([['a', 'b', 'c'], ['d']]);
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('should be consumable as individual items via flat iteration', async () => {
+      const mockFetch = vi.fn(async (page: number, perPage: number): Promise<PaginatedFetchResult<number>> => {
+        if (page === 1) return { items: [1, 2], hasMore: true, currentPage: 1 };
+        return { items: [3], hasMore: false, currentPage: 2 };
+      });
+
+      const items: number[] = [];
+      for await (const page of paginateStream(mockFetch, { perPage: 2 })) {
+        items.push(...page);
+      }
+      expect(items).toEqual([1, 2, 3]);
     });
   });
 

@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { getMyListings } from '../../../src/methods/listings/getListings';
+import { getMyListings, streamAllMyListings } from '../../../src/methods/listings/getListings';
 import { MockHttpClient, createMockResponse } from '~/http/MockHttpClient';
 import { ReverbConfig } from '~/config/ReverbConfig';
 import { Listing, PaginatedReverbResponse } from '~/types';
@@ -290,6 +290,93 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       const requests = mockClient.getRequests();
       expect(requests[0].url).toContain('query=hello%20world');
+    });
+  });
+
+  describe('streamAllMyListings', () => {
+    function makePage(listings: Listing[], total: number, currentPage: number, totalPages: number): PaginatedReverbResponse<{ listings: Listing[] }> {
+      return { listings, total, current_page: currentPage, total_pages: totalPages, _links: {} };
+    }
+
+    function makeListing(id: string): Listing {
+      return { id, make: 'Fender', model: 'Strat', finish: '', year: '', title: '', created_at: '', shop_name: '', description: '', condition: { uuid: '', displayName: 'Good' }, price: {} as any, inventory: 0, has_inventory: false, offers_enabled: false, auction: false, categories: [], listing_currency: 'USD', published_at: '', buyer_price: {} as any, seller_price: {} as any, state: { slug: 'live', description: '' }, shipping_profile_id: 0, shipping: {} as any, stats: { views: 0, watches: 0 }, slug: id, photos: [], _links: {} as any };
+    }
+
+    it('should yield all listings across multiple pages', async () => {
+      // perPage defaults to 50 — page 1 must have exactly 50 items for hasMore=true
+      const page1Listings = Array.from({ length: 50 }, (_, i) => makeListing(`p1-${i}`));
+      const page2Listings = [makeListing('last')];
+
+      mockClient.onGet(
+        (url) => url.includes('/my/listings'),
+        (url) => {
+          const page = url.includes('page=2') ? 2 : 1;
+          const listings = page === 2 ? page2Listings : page1Listings;
+          return createMockResponse(makePage(listings, 51, page, 2));
+        },
+      );
+
+      const results: Listing[] = [];
+      for await (const listing of streamAllMyListings(mockClient, config, {})) {
+        results.push(listing);
+      }
+
+      expect(results).toHaveLength(51);
+      expect(results[0].id).toBe('p1-0');
+      expect(results[50].id).toBe('last');
+    });
+
+    it('should yield nothing when no listings exist', async () => {
+      mockClient.onGet(
+        (url) => url.includes('/my/listings'),
+        createMockResponse(makePage([], 0, 1, 0)),
+      );
+
+      const results: Listing[] = [];
+      for await (const listing of streamAllMyListings(mockClient, config, {})) {
+        results.push(listing);
+      }
+
+      expect(results).toHaveLength(0);
+    });
+
+    it('should pass query and state options through', async () => {
+      mockClient.onGet(
+        (url) => url.includes('query=gibson') && url.includes('state=live'),
+        createMockResponse(makePage([makeListing('42')], 1, 1, 1)),
+      );
+
+      const results: Listing[] = [];
+      for await (const listing of streamAllMyListings(mockClient, config, { query: 'gibson', state: 'live' as any })) {
+        results.push(listing);
+      }
+
+      expect(results).toHaveLength(1);
+      expect(results[0].id).toBe('42');
+    });
+
+    it('should emit listings as each page arrives, not all at once', async () => {
+      const order: string[] = [];
+      const page1 = Array.from({ length: 50 }, (_, i) => makeListing(`a${i}`));
+      const page2 = [makeListing('z')];
+
+      mockClient.onGet(
+        (url) => url.includes('/my/listings'),
+        (url) => {
+          const page = url.includes('page=2') ? 2 : 1;
+          const listings = page === 2 ? page2 : page1;
+          return createMockResponse(makePage(listings, 51, page, 2));
+        },
+      );
+
+      for await (const listing of streamAllMyListings(mockClient, config, {})) {
+        order.push(listing.id as string);
+      }
+
+      expect(order).toHaveLength(51);
+      expect(order[0]).toBe('a0');
+      expect(order[50]).toBe('z');
+      expect(mockClient.getRequests()).toHaveLength(2);
     });
   });
 });

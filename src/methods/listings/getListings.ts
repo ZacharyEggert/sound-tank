@@ -5,6 +5,7 @@ import {
   buildUrl,
   buildUrlWithQuery,
   paginateAll,
+  paginateStream,
   createPaginatedResult,
 } from '~/utils';
 import Logger from '~/utils/logger';
@@ -69,6 +70,33 @@ export const getAllMyListings = async (
     config: {},
   };
 };
+
+export async function* streamAllMyListings(
+  client: HttpClient,
+  config: ReverbConfig,
+  options: GetAllMyListingsOptions,
+): AsyncGenerator<Listing> {
+  const { query, state } = options;
+
+  const pages = paginateStream<Listing>(
+    async (page, perPage) => {
+      const response = await getMyListings(client, config, {
+        page,
+        perPage,
+        query,
+        state,
+      });
+      return createPaginatedResult(response.data.listings || [], perPage, page);
+    },
+    { perPage: 50 },
+  );
+
+  for await (const page of pages) {
+    for (const listing of page) {
+      yield listing;
+    }
+  }
+}
 
 export interface GetOneListingOptions {
   id: string;

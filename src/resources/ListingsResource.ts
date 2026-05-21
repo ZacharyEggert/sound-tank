@@ -3,6 +3,7 @@ import { ReverbConfig } from '~/config/ReverbConfig';
 import {
   getMyListings,
   getAllMyListings,
+  streamAllMyListings,
   getOneListing,
   GetMyListingsOptions,
   GetAllMyListingsOptions,
@@ -38,6 +39,10 @@ export class ListingsResource {
 
   getAllMy(options: GetAllMyListingsOptions = {}) {
     return getAllMyListings(this.getClient(), this.getConfig(), options);
+  }
+
+  streamAllMy(options: GetAllMyListingsOptions = {}) {
+    return streamAllMyListings(this.getClient(), this.getConfig(), options);
   }
 
   create(body: ListingPostBody) {
