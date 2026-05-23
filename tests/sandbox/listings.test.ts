@@ -73,6 +73,7 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
       photos: [],
       videos: [{ link: '' }],
       price: { amount: '99.00', currency: 'USD' },
+      shipping: { local: true, rates: [] },
       sku: '',
       upc: '',
       upc_does_not_apply: 'true',
