@@ -60,6 +60,33 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
     expect(all.length).toBeGreaterThanOrEqual(0);
   });
 
+  it("should create a draft listing", async () => {
+    const response = await reverb.listings.create({
+      make: 'Test',
+      model: 'Sandbox Draft',
+      year: '2020',
+      title: 'Test Draft — Sandbox Integration',
+      description: 'Created by sound-tank integration test.',
+      finish: 'Natural',
+      condition: { uuid: 'df4d9c53-87ab-4dfd-90e6-fe63a1b3e726' }, // Good condition
+      categories: [{ uuid: '4e49bf4b-6b28-4baf-a8e8-4c78a57b9c5a' }], // Electric Guitars
+      photos: [],
+      videos: [{ link: '' }],
+      price: { amount: '99.00', currency: 'USD' },
+      sku: '',
+      upc: '',
+      upc_does_not_apply: 'true',
+      has_inventory: true,
+      inventory: 1,
+      offers_enabled: false,
+      handmade: false,
+    });
+
+    expect(response.status).toBe(201);
+    expect(response.data.id).toBeDefined();
+    expect(response.data.state.slug).toBe(ListingStates.DRAFT);
+  });
+
   it("should delete a draft listing", async () => {
     const page = await reverb.listings.getMy({ page: 1, perPage: 5, state: ListingStates.DRAFT });
     const drafts = page.data.listings;
