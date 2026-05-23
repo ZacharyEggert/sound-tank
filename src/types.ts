@@ -1,7 +1,7 @@
 export enum LinkMethods {
-  PUT = 'PUT',
-  POST = 'POST',
-  GET = 'GET',
+  PUT = "PUT",
+  POST = "POST",
+  GET = "GET",
 }
 
 export type Link = {
@@ -18,9 +18,10 @@ export type ShippingRate = {
 };
 
 export enum ListingStates {
-  SOLD = 'sold',
-  LIVE = 'live',
-  DRAFT = 'draft',
+  SOLD = "sold",
+  LIVE = "live",
+  DRAFT = "draft",
+  ALL = "all",
 }
 
 export type ListingStateSlug = ListingStates;
@@ -37,13 +38,13 @@ export type ListingStats = {
 };
 
 export type ConditionDisplayName =
-  | 'Excellent'
-  | 'New'
-  | 'B-Stock'
-  | 'Very Good'
-  | 'Good'
-  | 'Fair'
-  | 'Poor';
+  | "Excellent"
+  | "New"
+  | "B-Stock"
+  | "Very Good"
+  | "Good"
+  | "Fair"
+  | "Poor";
 // | Exclude<
 //     string,
 //     'Excellent' | 'New' | 'B-Stock' | 'Very Good' | 'Good' | 'Fair' | 'Poor'
@@ -80,7 +81,7 @@ export type Category = {
 };
 
 export type CurrencyCode = string;
-export type CurrencySymbol = '$' | Exclude<string, '$'>;
+export type CurrencySymbol = "$" | Exclude<string, "$">;
 
 export type Price = {
   amount: `${number}.${number}` | `${number}`;
@@ -182,52 +183,50 @@ export type ListingPostBody = {
 };
 
 enum OrderStatusOptions {
-  Unpaid = 'unpaid',
-  Paid = 'paid',
-  AwaitingShipment = 'awaiting_shipment',
-  Shipped = 'shipped',
+  Unpaid = "unpaid",
+  Paid = "paid",
+  AwaitingShipment = "awaiting_shipment",
+  Shipped = "shipped",
 }
 // type OtherOrderStatusOptions = Exclude<string, OrderStatusOptions>;
 
-export type OrderStatus =
-  | OrderStatusOptions
-  | Exclude<string, OrderStatusOptions>;
+export type OrderStatus = OrderStatusOptions | Exclude<string, OrderStatusOptions>;
 
 export enum ShippingProviders {
-  UPS = 'UPS',
-  USPS = 'USPS',
-  FedEx = 'FedEx',
-  DHLDeutschland = 'DHL Deutschland',
-  DHLExpress = 'DHLExpress',
-  DHLGlobalMail = 'DHLGlobalMail',
-  DHL = 'DHL',
-  CanadaPost = 'Canada Post',
-  CanPar = 'CanPar',
-  RoyalMail = 'Royal Mail',
-  PostNL = 'PostNL',
-  AustraliaPost = 'Australia Post',
-  EMS = 'EMS',
-  LaPosteColissimo = 'La Poste - Colissimo',
-  ChinaPost = 'China Post',
-  GLS = 'GLS',
-  Parcelforce = 'Parcelforce',
-  Purolator = 'Purolator',
-  Interlogistica = 'Interlogistica',
-  CorreosEspaña = 'Correos España',
-  UkrainePost = 'Ukraine Post',
-  DPDGermany = 'DPD Germany',
-  DPDUK = 'DPD UK',
-  DPDFrance = 'DPD France',
-  Hermes = 'Hermes',
-  TNT = 'TNT',
-  Other = 'Other',
+  UPS = "UPS",
+  USPS = "USPS",
+  FedEx = "FedEx",
+  DHLDeutschland = "DHL Deutschland",
+  DHLExpress = "DHLExpress",
+  DHLGlobalMail = "DHLGlobalMail",
+  DHL = "DHL",
+  CanadaPost = "Canada Post",
+  CanPar = "CanPar",
+  RoyalMail = "Royal Mail",
+  PostNL = "PostNL",
+  AustraliaPost = "Australia Post",
+  EMS = "EMS",
+  LaPosteColissimo = "La Poste - Colissimo",
+  ChinaPost = "China Post",
+  GLS = "GLS",
+  Parcelforce = "Parcelforce",
+  Purolator = "Purolator",
+  Interlogistica = "Interlogistica",
+  CorreosEspaña = "Correos España",
+  UkrainePost = "Ukraine Post",
+  DPDGermany = "DPD Germany",
+  DPDUK = "DPD UK",
+  DPDFrance = "DPD France",
+  Hermes = "Hermes",
+  TNT = "TNT",
+  Other = "Other",
 }
 
-export type OrderTaxResponsibleParty = 'reverb' | Exclude<string, 'reverb'>;
-export type OrderShippingMethod = 'shipped' | Exclude<string, 'shipped'>;
-export type OrderShipmentStatus = 'in_transit' | Exclude<string, 'in_transit'>;
-export type OrderType = 'offer' | Exclude<string, 'offer'>;
-export type OrderSource = 'reverb' | Exclude<string, 'reverb'>;
+export type OrderTaxResponsibleParty = "reverb" | Exclude<string, "reverb">;
+export type OrderShippingMethod = "shipped" | Exclude<string, "shipped">;
+export type OrderShipmentStatus = "in_transit" | Exclude<string, "in_transit">;
+export type OrderType = "offer" | Exclude<string, "offer">;
+export type OrderSource = "reverb" | Exclude<string, "reverb">;
 
 export type Order = {
   amount_product: Price;
@@ -338,7 +337,7 @@ export type NegotiationOffer = {
   initiated_by_name: string;
   initiated_by_shop_name: string;
   initiated_by_me: boolean;
-  initiator_type: 'seller' | 'buyer' | Exclude<string, 'seller' | 'buyer'>;
+  initiator_type: "seller" | "buyer" | Exclude<string, "seller" | "buyer">;
 };
 
 export type NegotiationLinks = {
@@ -351,7 +350,12 @@ export type NegotiationLinks = {
 
 export type Negotiation = {
   id: number | string;
-  state: 'active' | 'accepted' | 'declined' | 'expired' | Exclude<string, 'active' | 'accepted' | 'declined' | 'expired'>;
+  state:
+    | "active"
+    | "accepted"
+    | "declined"
+    | "expired"
+    | Exclude<string, "active" | "accepted" | "declined" | "expired">;
   offers_count: number;
   expires_at: string;
   created_at: string;

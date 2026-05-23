@@ -15,6 +15,7 @@
   "scripts": {
     "dev": "vitest",
     "test": "vitest run",
+    "test:sandbox": "vitest run --config vitest.sandbox.config.mts",
     "build": "tsup --config tsup.config.ts",
     "lint": "tsc",
     "ci": "yarn install --frozen-lockfile && yarn lint && yarn test && yarn build",

@@ -3,8 +3,9 @@ import path from 'path';
 
 export default defineConfig({
   test: {
-    // Explicitly include test files from tests/ directory
+    // Explicitly include test files from tests/ directory (sandbox runs separately)
     include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['tests/sandbox/**'],
     coverage: {
       provider: 'v8',
       include: ['src/**/*.ts'],
