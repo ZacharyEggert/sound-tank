@@ -70,7 +70,7 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
       finish: 'Natural',
       condition: { uuid: 'f7a3f48c-972a-44c6-b01a-0cd27488d3f6' }, // Good condition
       categories: [{ uuid: 'dfd39027-d134-4353-b9e4-57dc6be791b9' }], // Electric Guitars
-      photos: [],
+      photos: ['https://picsum.photos/1000'],
       videos: [{ link: '' }],
       price: { amount: '99.00', currency: 'USD' },
       shipping: { local: true, rates: [] },
@@ -83,7 +83,7 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
       handmade: false,
     });
 
-    expect(response.status).toBe(201);
+    expect([201, 202]).toContain(response.status); // 202 when photos are queued for async processing
     expect(response.data.id).toBeDefined();
     expect(response.data.state.slug).toBe(ListingStates.DRAFT);
   });
