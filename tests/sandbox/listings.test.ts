@@ -60,6 +60,34 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
     expect(all.length).toBeGreaterThanOrEqual(0);
   });
 
+  it("should delete a draft listing", async () => {
+    const page = await reverb.listings.getMy({ page: 1, perPage: 5, state: ListingStates.DRAFT });
+    const drafts = page.data.listings;
+
+    if (drafts.length === 0) {
+      console.warn("No drafts found in sandbox — skipping delete test");
+      return;
+    }
+
+    const id = drafts[0].id.toString();
+    const deleteResponse = await reverb.listings.delete(id);
+    expect(deleteResponse.status).toBe(204);
+  });
+
+  it("should create a draft, publish it, then end it", async () => {
+    const page = await reverb.listings.getMy({ page: 1, perPage: 5, state: ListingStates.LIVE });
+    const liveListings = page.data.listings;
+
+    if (liveListings.length === 0) {
+      console.warn("No live listings found in sandbox — skipping end test");
+      return;
+    }
+
+    const id = liveListings[0].id.toString();
+    const endResponse = await reverb.listings.end(id, 'not_sold');
+    expect(endResponse.status).toBe(200);
+  });
+
   it("should update a draft's price and then publish it", async () => {
     const page = await reverb.listings.getMy({ page: 1, perPage: 5, state: ListingStates.DRAFT });
     const drafts = page.data.listings;

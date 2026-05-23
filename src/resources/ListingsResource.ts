@@ -11,7 +11,8 @@ import {
 } from '~/methods/listings/getListings';
 import { postListing } from '~/methods/listings/postListing';
 import { updateListing } from '~/methods/listings/updateListing';
-import { ListingPostBody, ListingUpdateBody } from '~/types';
+import { endListing, deleteListing } from '~/methods/listings/endListing';
+import { ListingPostBody, ListingUpdateBody, EndListingReason } from '~/types';
 
 export class ListingsResource {
   constructor(
@@ -56,5 +57,13 @@ export class ListingsResource {
 
   publish(id: string) {
     return updateListing(this.getClient(), this.getConfig(), id, { publish: true });
+  }
+
+  end(id: string, reason: EndListingReason) {
+    return endListing(this.getClient(), this.getConfig(), id, reason);
+  }
+
+  delete(id: string) {
+    return deleteListing(this.getClient(), this.getConfig(), id);
   }
 }

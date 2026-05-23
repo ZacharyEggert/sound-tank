@@ -184,6 +184,8 @@ export type ListingPostBody = {
 
 export type ListingUpdateBody = Partial<ListingPostBody> & { publish?: boolean };
 
+export type EndListingReason = 'not_sold' | 'reverb_sale';
+
 enum OrderStatusOptions {
   Unpaid = "unpaid",
   Paid = "paid",
