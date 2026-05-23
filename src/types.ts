@@ -182,6 +182,8 @@ export type ListingPostBody = {
   };
 };
 
+export type ListingUpdateBody = Partial<ListingPostBody> & { publish?: boolean };
+
 enum OrderStatusOptions {
   Unpaid = "unpaid",
   Paid = "paid",

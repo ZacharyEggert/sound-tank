@@ -10,7 +10,8 @@ import {
   GetOneListingOptions,
 } from '~/methods/listings/getListings';
 import { postListing } from '~/methods/listings/postListing';
-import { ListingPostBody } from '~/types';
+import { updateListing } from '~/methods/listings/updateListing';
+import { ListingPostBody, ListingUpdateBody } from '~/types';
 
 export class ListingsResource {
   constructor(
@@ -47,5 +48,13 @@ export class ListingsResource {
 
   create(body: ListingPostBody) {
     return postListing(this.getClient(), this.getConfig(), body);
+  }
+
+  update(id: string, body: ListingUpdateBody) {
+    return updateListing(this.getClient(), this.getConfig(), id, body);
+  }
+
+  publish(id: string) {
+    return updateListing(this.getClient(), this.getConfig(), id, { publish: true });
   }
 }

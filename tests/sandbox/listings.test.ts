@@ -59,4 +59,24 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
 
     expect(all.length).toBeGreaterThanOrEqual(0);
   });
+
+  it("should update a draft's price and then publish it", async () => {
+    const page = await reverb.listings.getMy({ page: 1, perPage: 5, state: ListingStates.DRAFT });
+    const drafts = page.data.listings;
+
+    if (drafts.length === 0) {
+      console.warn("No drafts found in sandbox — skipping update/publish test");
+      return;
+    }
+
+    const id = drafts[0].id.toString();
+
+    const updateResponse = await reverb.listings.update(id, {
+      price: { amount: '99.00', currency: 'USD' },
+    });
+    expect(updateResponse.status).toBe(200);
+
+    const publishResponse = await reverb.listings.publish(id);
+    expect(publishResponse.status).toBe(200);
+  });
 });

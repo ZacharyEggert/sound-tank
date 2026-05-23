@@ -1,5 +1,6 @@
 export * from './listings/getListings';
 export * from './listings/postListing';
+export * from './listings/updateListing';
 export * from './orders/getOrders';
 export type { PaginatedReverbResponse } from '~/types';
 
