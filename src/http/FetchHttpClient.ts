@@ -40,7 +40,7 @@ export class FetchHttpClient implements HttpClient {
         signal: controller?.signal,
       };
       if (data !== undefined) {
-        init.body = JSON.stringify(data);
+        init.body = typeof data === 'string' ? data : JSON.stringify(data);
       }
 
       const res = await fetch(fullUrl, init);

@@ -11,7 +11,8 @@ export const postListing = async (
 ): Promise<HttpResponse<Listing>> => {
   const url = buildUrl(config.rootEndpoint, '/listings');
   Logger.debug('Posting new listing with URL: %s and body: %o', url, body);
-  return client.post<Listing>(url, JSON.stringify(body), {
+  const response = await client.post<{ listing: Listing }>(url, JSON.stringify(body), {
     headers: config.headers,
   });
+  return { ...response, data: response.data.listing };
 };

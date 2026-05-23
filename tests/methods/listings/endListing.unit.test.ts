@@ -109,12 +109,12 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
     it('should send DELETE to /api/listings/:id', async () => {
       mockClient.onDelete(
         (url) => url.includes('/listings/123'),
-        createMockResponse(undefined, 204),
+        createMockResponse(undefined, 200),
       );
 
       const response = await deleteListing(mockClient, config, '123');
 
-      expect(response.status).toBe(204);
+      expect(response.status).toBe(200);
       const requests = mockClient.getRequests();
       expect(requests).toHaveLength(1);
       expect(requests[0].url).toContain('/listings/123');
@@ -124,12 +124,12 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
     it('should return HttpResponse<void>', async () => {
       mockClient.onDelete(
         (url) => url.includes('/listings/789'),
-        createMockResponse(undefined, 204),
+        createMockResponse(undefined, 200),
       );
 
       const response = await deleteListing(mockClient, config, '789');
 
-      expect(response.status).toBe(204);
+      expect(response.status).toBe(200);
       expect(response.data).toBeUndefined();
     });
 
@@ -164,13 +164,13 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
     it('delete() should delegate to deleteListing', async () => {
       mockClient.onDelete(
         (url) => url.includes('/listings/222'),
-        createMockResponse(undefined, 204),
+        createMockResponse(undefined, 200),
       );
 
       const resource = new ListingsResource(() => mockClient, () => config);
       const response = await resource.delete('222');
 
-      expect(response.status).toBe(204);
+      expect(response.status).toBe(200);
       const requests = mockClient.getRequests();
       expect(requests[0].url).toContain('/listings/222');
       expect(requests[0].method).toBe('DELETE');
