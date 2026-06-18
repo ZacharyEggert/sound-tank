@@ -13,7 +13,7 @@
   <a href="https://www.npmjs.com/package/sound-tank"><img src="https://img.shields.io/npm/dm/sound-tank.svg" alt="npm downloads"></a>
   <a href="https://github.com/ZacharyEggert/sound-tank/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
   <a href="https://github.com/ZacharyEggert/sound-tank/actions"><img src="https://github.com/ZacharyEggert/sound-tank/workflows/CI/badge.svg" alt="Build Status"></a>
-  <img src="https://img.shields.io/badge/TypeScript-5.8-blue" alt="TypeScript">
+  <img src="https://img.shields.io/badge/TypeScript-6.0-blue" alt="TypeScript">
 </p>
 
 ---
@@ -757,14 +757,7 @@ await reverb.catalog.getCategories(); // served from cache
 
 ### HTTP Client Abstraction
 
-Sound Tank uses a `fetch`-based HTTP client with an interface that can be swapped for testing:
-
-```typescript
-import { MockHttpClient } from 'sound-tank/http';
-
-// Use mock client for testing
-const mockClient = new MockHttpClient();
-```
+Sound Tank uses a `fetch`-based HTTP client behind an abstract interface. The `MockHttpClient` is used internally in tests; it is not part of the public API.
 
 ### Configuration Access
 
