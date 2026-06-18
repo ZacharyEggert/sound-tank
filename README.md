@@ -43,12 +43,13 @@ data.listings.forEach((listing) => {
 
 - ✅ **Full TypeScript Support** - Complete type definitions for all API entities
 - ✅ **Automatic Pagination** - Built-in helpers to fetch all results seamlessly
+- ✅ **Streaming Pagination** - Async generator to stream results page-by-page
 - ✅ **Configuration Management** - Easy setup for currency, locale, and shipping preferences
-- ✅ **Comprehensive Coverage** - Listings, orders, and arbitrary endpoint access
+- ✅ **Comprehensive Coverage** - Listings, orders, negotiations, messages, and arbitrary endpoint access
 - ✅ **HTTP Client Abstraction** - Clean architecture with testable mock implementations
 - ✅ **Dual Module Support** - Both CommonJS and ESM builds included
 - ✅ **Well Tested** - Extensive unit and integration test coverage
-- ✅ **Minimal Dependencies** - Only requires axios
+- ✅ **Zero Dependencies** - Uses the native `fetch` API; no runtime dependencies
 
 ## Table of Contents
 
@@ -56,10 +57,10 @@ data.listings.forEach((listing) => {
 - [Getting Started](#getting-started)
 - [Configuration](#configuration)
 - [API Methods](#api-methods)
-  - [listings.getMy](#listingsgetmyoptions)
-  - [listings.getAllMy](#listingsgetallmyoptions)
-  - [listings.getOne](#listingsgetoneoptions)
-  - [orders.getMy](#ordersgetmyoptions)
+  - [listings](#listings)
+  - [orders](#orders)
+  - [negotiations](#negotiations)
+  - [messages](#messages)
   - [\_getArbitraryEndpoint](#_getarbitraryendpointurl-params)
 - [TypeScript Usage](#typescript-usage)
 - [Advanced Features](#advanced-features)
@@ -167,7 +168,9 @@ These changes automatically update the internal headers and configuration for su
 
 ## API Methods
 
-### listings.getMy(options?)
+### listings
+
+#### listings.getMy(options?)
 
 Fetch a paginated list of your listings.
 
@@ -178,25 +181,14 @@ Fetch a paginated list of your listings.
 - `query?: string` - Search query to filter listings
 - `state?: string` - Filter by state: `'live'`, `'sold'`, `'draft'`, or `'all'`
 
-**Returns:** `Promise<AxiosResponse<PaginatedReverbResponse<{ listings: Listing[] }>>>`
-
-**Example:**
-
 ```typescript
-const response = await reverb.listings.getMy({
-  perPage: 50,
-  page: 1,
-  state: 'live',
-  query: 'Fender Stratocaster',
-});
-
+const response = await reverb.listings.getMy({ perPage: 50, state: 'live' });
 const { listings } = response.data;
-console.log(`Page 1: ${listings.length} listings`);
 ```
 
 ---
 
-### listings.getAllMy(options?)
+#### listings.getAllMy(options?)
 
 Automatically fetches **all** listings across all pages using automatic pagination.
 
@@ -205,22 +197,34 @@ Automatically fetches **all** listings across all pages using automatic paginati
 - `query?: string` - Search query to filter listings
 - `state?: ListingStates` - Filter by state: `ListingStates.LIVE`, `ListingStates.SOLD`, or `ListingStates.DRAFT`
 
-**Returns:** `Promise<AxiosResponse<Listing[]>>`
-
-**Example:**
+**Returns:** `Promise<HttpResponse<Listing[]>>`
 
 ```typescript
 const response = await reverb.listings.getAllMy({ state: 'live' });
 const allListings = response.data; // All listings from all pages
-
-console.log(`Total listings: ${allListings.length}`);
 ```
 
-> **Note:** This method automatically handles pagination by fetching all pages sequentially until all results are retrieved.
+> **Note:** Fetches all pages sequentially, throttling every 5 pages to respect rate limits.
 
 ---
 
-### listings.getOne(options)
+#### listings.streamAllMy(options?)
+
+Stream all listings as an async generator — yields one `Listing` at a time without waiting for all pages to load.
+
+**Parameters:** Same as `getAllMy`.
+
+**Returns:** `AsyncGenerator<Listing>`
+
+```typescript
+for await (const listing of reverb.listings.streamAllMy({ state: 'live' })) {
+  console.log(listing.title);
+}
+```
+
+---
+
+#### listings.getOne(options)
 
 Fetch a single listing by ID.
 
@@ -228,21 +232,126 @@ Fetch a single listing by ID.
 
 - `id: string` - Listing ID (required)
 
-**Returns:** `Promise<AxiosResponse<Listing>>`
-
-**Example:**
+**Returns:** `Promise<HttpResponse<Listing>>`
 
 ```typescript
 const response = await reverb.listings.getOne({ id: '12345' });
-const listing = response.data;
-
-console.log(`${listing.title} - ${listing.price.display}`);
-console.log(`Condition: ${listing.condition.displayName}`);
+console.log(response.data.title);
 ```
 
 ---
 
-### orders.getMy(options?)
+#### listings.getPhotos(options)
+
+Fetch full-resolution photo URLs for a listing.
+
+**Parameters:**
+
+- `id: string` - Listing ID (required)
+
+**Returns:** `Promise<string[]>`
+
+```typescript
+const photos = await reverb.listings.getPhotos({ id: '12345' });
+photos.forEach((url) => console.log(url));
+```
+
+---
+
+#### listings.create(body)
+
+Create a new listing.
+
+**Parameters:**
+
+- `body: ListingPostBody` - Listing data (title, make, model, price, condition, etc.)
+
+**Returns:** `Promise<HttpResponse<Listing>>`
+
+```typescript
+const response = await reverb.listings.create({
+  make: 'Fender',
+  model: 'Stratocaster',
+  title: 'Fender Stratocaster 1965',
+  price: { amount: '1500.00', currency: 'USD' },
+  condition: { uuid: 'f7a3f48c-972a-44c6-b01a-1d9dd5ca8879' }, // Excellent
+  description: 'Great condition vintage Strat.',
+  categories: [{ uuid: '4-electric-guitars' }],
+  shipping: { us: { rate: '30.00', currency: 'USD' } },
+});
+```
+
+---
+
+#### listings.update(id, body)
+
+Update an existing listing.
+
+**Parameters:**
+
+- `id: string` - Listing ID
+- `body: ListingUpdateBody` - Fields to update (any subset of listing fields)
+
+**Returns:** `Promise<HttpResponse<Listing>>`
+
+```typescript
+await reverb.listings.update('12345', { price: { amount: '1200.00', currency: 'USD' } });
+```
+
+---
+
+#### listings.publish(id)
+
+Publish a draft listing (sets `publish: true`).
+
+**Parameters:**
+
+- `id: string` - Listing ID
+
+**Returns:** `Promise<HttpResponse<Listing>>`
+
+```typescript
+await reverb.listings.publish('12345');
+```
+
+---
+
+#### listings.end(id, reason)
+
+End an active listing.
+
+**Parameters:**
+
+- `id: string` - Listing ID
+- `reason: EndListingReason` - Reason for ending (e.g., `'sold_elsewhere'`, `'not_selling'`)
+
+**Returns:** `Promise<HttpResponse<Listing>>`
+
+```typescript
+await reverb.listings.end('12345', 'sold_elsewhere');
+```
+
+---
+
+#### listings.delete(id)
+
+Permanently delete a listing.
+
+**Parameters:**
+
+- `id: string` - Listing ID
+
+**Returns:** `Promise<HttpResponse<void>>`
+
+```typescript
+await reverb.listings.delete('12345');
+```
+
+---
+
+### orders
+
+#### orders.getMy(options?)
 
 Fetch your orders with pagination.
 
@@ -251,20 +360,109 @@ Fetch your orders with pagination.
 - `page?: number` - Page number (starts at 1)
 - `perPage?: number` - Items per page
 
-**Returns:** `Promise<AxiosResponse<PaginatedReverbResponse<{ orders: Order[] }>>>`
+```typescript
+const response = await reverb.orders.getMy({ page: 1, perPage: 25 });
+const { orders } = response.data;
+orders.forEach((order) => console.log(`Order ${order.order_number}: ${order.status}`));
+```
 
-**Example:**
+---
+
+### negotiations
+
+#### negotiations.getNegotiations(options)
+
+Fetch your active offers/negotiations.
+
+**Parameters:**
+
+- `page?: number`
+- `perPage?: number`
+- `status?: 'active' | 'active_for_seller' | 'all'`
+- `negotiation_type?: 'standard' | 'auto_push_offer'`
+
+**Returns:** `Promise<HttpResponse<PaginatedReverbResponse<{ listings: ListingWithNegotiations[] }>>>`
 
 ```typescript
-const response = await reverb.orders.getMy({
-  page: 1,
-  perPage: 25,
-});
+const response = await reverb.negotiations.getNegotiations({ status: 'active' });
+const { listings } = response.data;
+listings.forEach((l) => console.log(`${l.title}: ${l.negotiations.length} offers`));
+```
 
-const { orders } = response.data;
-orders.forEach((order) => {
-  console.log(`Order ${order.order_number}: ${order.status}`);
-});
+---
+
+#### negotiations.getNegotiation(offerId)
+
+Fetch a single offer by ID.
+
+**Parameters:**
+
+- `offerId: string` - Offer ID
+
+**Returns:** `Promise<HttpResponse<Negotiation>>`
+
+```typescript
+const response = await reverb.negotiations.getNegotiation('offer-id-here');
+console.log(response.data);
+```
+
+---
+
+### messages
+
+#### messages.getMy(options?)
+
+Fetch your conversations (messages).
+
+**Parameters:**
+
+- `unread_only?: boolean` - Filter to unread conversations only
+
+```typescript
+const response = await reverb.messages.getMy({ unread_only: true });
+```
+
+---
+
+#### messages.getById(messageId)
+
+Fetch a single conversation by ID.
+
+**Parameters:**
+
+- `messageId: number` - Conversation ID
+
+```typescript
+const response = await reverb.messages.getById(12345);
+```
+
+---
+
+#### messages.markAsRead(messageId)
+
+Mark a conversation as read.
+
+**Parameters:**
+
+- `messageId: number` - Conversation ID
+
+```typescript
+await reverb.messages.markAsRead(12345);
+```
+
+---
+
+#### messages.reply(messageId, replyBody)
+
+Reply to a conversation.
+
+**Parameters:**
+
+- `messageId: number` - Conversation ID
+- `replyBody: string` - Message text
+
+```typescript
+await reverb.messages.reply(12345, 'Thanks for your offer!');
 ```
 
 ---
@@ -278,18 +476,9 @@ Escape hatch to call any Reverb endpoint not yet wrapped by a resource. The `_` 
 - `url: string` - Endpoint URL (absolute or relative to root endpoint)
 - `params?: object` - Query parameters
 
-**Returns:** `Promise<AxiosResponse<unknown>>`
-
-**Example:**
-
 ```typescript
-// Fetch categories
 const categories = await reverb._getArbitraryEndpoint('/categories/flat');
-
-// Fetch listing conditions
 const conditions = await reverb._getArbitraryEndpoint('/listing_conditions');
-
-console.log(categories.data);
 ```
 
 ## TypeScript Usage
@@ -302,9 +491,14 @@ Sound Tank is written in TypeScript and provides comprehensive type definitions 
 import Reverb, {
   Listing,
   Order,
+  Negotiation,
+  ListingWithNegotiations,
   Price,
   ListingStates,
   ListingCondition,
+  ListingPostBody,
+  ListingUpdateBody,
+  EndListingReason,
   ShippingRate,
   Category,
   ReverbOptions,
@@ -330,8 +524,6 @@ listings.forEach((listing: Listing) => {
 
 ### Available Types
 
-The SDK exports comprehensive TypeScript types including:
-
 **Listing Types:**
 
 - `Listing` - Complete listing data with make, model, price, condition, shipping, etc.
@@ -340,12 +532,20 @@ The SDK exports comprehensive TypeScript types including:
 - `ListingCondition` - Item condition with UUID and display name
 - `ListingShipping` - Shipping information and rates
 - `ListingStats` - View and watch counts
+- `ListingPostBody` - Body for creating a listing
+- `ListingUpdateBody` - Body for updating a listing
+- `EndListingReason` - Valid reasons for ending a listing
 
 **Order Types:**
 
 - `Order` - Complete order information with buyer, seller, shipping, pricing details
 - `OrderStatus` - Order status information
 - `ShippingAddress` - Complete address information
+
+**Negotiation Types:**
+
+- `Negotiation` - Individual offer/negotiation details
+- `ListingWithNegotiations` - Listing with attached negotiations array
 
 **Pricing Types:**
 
@@ -356,13 +556,12 @@ The SDK exports comprehensive TypeScript types including:
 
 - `Category` - Product categorization
 - `Link` - HATEOAS navigation links
+- `PaginatedReverbResponse<T>` - Paginated API response wrapper
 - `ReverbOptions` - SDK configuration options
 
 ## Advanced Features
 
 ### Automatic Pagination
-
-The `getAllMyListings` method demonstrates automatic pagination, fetching all results across multiple API pages:
 
 ```typescript
 // Manually paginate
@@ -381,21 +580,30 @@ const autoResponse = await reverb.listings.getAllMy();
 const listings = autoResponse.data; // Same result, simpler code
 ```
 
+### Streaming Pagination
+
+Stream results without waiting for all pages to complete:
+
+```typescript
+let count = 0;
+for await (const listing of reverb.listings.streamAllMy({ state: 'live' })) {
+  count++;
+  console.log(`[${count}] ${listing.title}`);
+}
+```
+
 ### HTTP Client Abstraction
 
-Sound Tank uses an HTTP client abstraction for testability:
+Sound Tank uses a `fetch`-based HTTP client with an interface that can be swapped for testing:
 
 ```typescript
 import { MockHttpClient } from 'sound-tank/http';
 
 // Use mock client for testing
 const mockClient = new MockHttpClient();
-// Your tests here
 ```
 
 ### Configuration Access
-
-Access the internal configuration and headers:
 
 ```typescript
 const config = reverb.config;
@@ -421,31 +629,16 @@ const affordable = response.data.filter(
 );
 
 console.log(`Found ${affordable.length} guitars under $1000`);
-affordable.forEach((listing) => {
-  console.log(`  ${listing.title}: ${listing.price.display}`);
-});
 ```
 
 ### Multi-Currency Price Display
 
 ```typescript
-const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
-
-// Get prices in USD
 reverb.displayCurrency = 'USD';
 const usdResponse = await reverb.listings.getMy({ perPage: 5 });
-console.log('USD Prices:');
-usdResponse.data.listings.forEach((l) =>
-  console.log(`  ${l.title}: ${l.price.display}`),
-);
 
-// Switch to EUR
 reverb.displayCurrency = 'EUR';
 const eurResponse = await reverb.listings.getMy({ perPage: 5 });
-console.log('\nEUR Prices:');
-eurResponse.data.listings.forEach((l) =>
-  console.log(`  ${l.title}: ${l.price.display}`),
-);
 ```
 
 ### Export Listings to CSV
@@ -461,33 +654,28 @@ const csvRows = response.data
   )
   .join('\n');
 
-const csv = csvHeader + csvRows;
-console.log(csv);
-// Save to file or send via API
+console.log(csvHeader + csvRows);
 ```
 
-### Search and Filter
+### Respond to All Unread Messages
 
 ```typescript
-// Search for specific items
-const response = await reverb.listings.getMy({
-  query: 'Les Paul',
-  state: 'live',
-  perPage: 100,
-});
+const response = await reverb.messages.getMy({ unread_only: true });
 
-// Filter by condition
-const excellent = response.data.listings.filter(
-  (listing) => listing.condition.displayName === 'Excellent',
-);
+for (const conversation of response.data.conversations) {
+  await reverb.messages.reply(conversation.id, 'Thanks for reaching out!');
+  await reverb.messages.markAsRead(conversation.id);
+}
+```
 
-// Filter by year
-const vintage = response.data.listings.filter(
-  (listing) => parseInt(listing.year) < 1980,
-);
+### Review Active Offers
 
-console.log(`Found ${excellent.length} in excellent condition`);
-console.log(`Found ${vintage.length} vintage items`);
+```typescript
+const response = await reverb.negotiations.getNegotiations({ status: 'active_for_seller' });
+
+for (const listing of response.data.listings) {
+  console.log(`${listing.title}: ${listing.negotiations.length} pending offer(s)`);
+}
 ```
 
 ## Development
@@ -524,21 +712,25 @@ sound-tank/
 │   │   └── ReverbConfig.ts # Configuration management
 │   ├── http/
 │   │   ├── HttpClient.ts         # HTTP client interface
-│   │   ├── AxiosHttpClient.ts    # Axios implementation
+│   │   ├── FetchHttpClient.ts    # Native fetch implementation
 │   │   └── MockHttpClient.ts     # Mock for testing
 │   ├── methods/
-│   │   ├── listings/       # Listing operations (pure functions)
-│   │   └── orders/         # Order operations (pure functions)
+│   │   ├── listings/       # getListings, postListing, updateListing, endListing
+│   │   ├── orders/         # getOrders
+│   │   ├── negotiations/   # getNegotiations
+│   │   └── messages/       # getMessages, postMessages
 │   ├── resources/
-│   │   ├── ListingsResource.ts   # Listings resource class
-│   │   └── OrdersResource.ts     # Orders resource class
-│   └── utils/              # Helper utilities (pagination, url/query builders, logger)
+│   │   ├── ListingsResource.ts      # getMy, getOne, getPhotos, getAllMy, streamAllMy, create, update, publish, end, delete
+│   │   ├── OrdersResource.ts        # getMy
+│   │   ├── NegotiationsResource.ts  # getNegotiations, getNegotiation
+│   │   └── MessagesResource.ts      # getMy, getById, markAsRead, reply
+│   └── utils/              # pagination, urlBuilder, queryBuilder, logger
 ├── tests/                  # Test files
 ├── dist/                   # Build output (git-ignored)
 ├── package.json
-├── tsconfig.json           # TypeScript configuration
-├── tsup.config.ts          # Build configuration
-└── vite.config.mts         # Test configuration
+├── tsconfig.json
+├── tsup.config.ts
+└── vite.config.mts
 ```
 
 ### Debugging
@@ -570,7 +762,6 @@ Sound Tank uses [tsup](https://tsup.egoist.dev/) for building:
 - **Type Declarations**: Full TypeScript `.d.ts` files
 - **Source Maps**: Included for debugging
 - **Tree-shaking**: Optimized bundles
-- **External Dependencies**: `axios` marked as external (not bundled)
 
 Build outputs:
 
@@ -595,13 +786,13 @@ yarn test
 # Run tests in watch mode (for development)
 yarn dev
 
-# Run tests with coverage report
-yarn test --coverage
+# Run a single test file
+yarn test tests/methods/listings/getListings.test.ts
 ```
 
 ### Test Structure
 
-- **Unit Tests**: Test individual functions in isolation
+- **Unit Tests**: Test individual functions in isolation using `MockHttpClient`
 - **Integration Tests**: Test real API interactions (require `REVERB_API_KEY` in `.env`)
 
 ### Writing Tests
@@ -644,17 +835,6 @@ Contributions are welcome! Here's how to get started:
 - Ensure all **tests pass** (`yarn test`)
 - Keep commits **atomic** and well-described
 - Run **full CI** locally before pushing: `yarn ci`
-
-### Code Style
-
-This project uses:
-
-- **TypeScript** strict mode
-- **Prettier** for formatting (run automatically)
-- **ESLint** for linting
-- 2-space indentation
-- Single quotes for strings
-- Trailing commas
 
 ### Changesets
 
