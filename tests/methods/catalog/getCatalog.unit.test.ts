@@ -106,8 +106,8 @@ describe('getCatalog (unit tests with MockHttpClient)', () => {
   describe('getShippingRegions()', () => {
     it('should GET /shipping/regions and return shipping_regions array', async () => {
       const shipping_regions: ReverbShippingRegion[] = [
-        { name: 'Continental US', region_code: 'US_CON' },
-        { name: 'Everywhere Else', region_code: 'XX' },
+        { name: 'Continental US', code: 'US_CON' },
+        { name: 'Everywhere Else', code: 'XX' },
       ];
       mockClient.onGet(
         (url) => url.includes('/shipping/regions'),
@@ -137,10 +137,7 @@ describe('getCatalog (unit tests with MockHttpClient)', () => {
 
   describe('getCurrencies()', () => {
     it('should GET /currencies/listing and return currencies array', async () => {
-      const currencies: ListingCurrency[] = [
-        { name: 'US Dollar', symbol: '$', currency_code: 'USD' },
-        { name: 'Euro', symbol: '€', currency_code: 'EUR' },
-      ];
+      const currencies: ListingCurrency[] = ['USD', 'EUR'];
       mockClient.onGet(
         (url) => url.includes('/currencies/listing'),
         createMockResponse({ currencies }),
@@ -206,7 +203,7 @@ describe('getCatalog (unit tests with MockHttpClient)', () => {
 
     it('getShippingRegions() should delegate to underlying function', async () => {
       const shipping_regions: ReverbShippingRegion[] = [
-        { name: 'Continental US', region_code: 'US_CON' },
+        { name: 'Continental US', code: 'US_CON' },
       ];
       mockClient.onGet(
         (url) => url.includes('/shipping/regions'),
@@ -224,9 +221,7 @@ describe('getCatalog (unit tests with MockHttpClient)', () => {
     });
 
     it('getCurrencies() should delegate to underlying function', async () => {
-      const currencies: ListingCurrency[] = [
-        { name: 'US Dollar', symbol: '$', currency_code: 'USD' },
-      ];
+      const currencies: ListingCurrency[] = ['USD'];
       mockClient.onGet(
         (url) => url.includes('/currencies/listing'),
         createMockResponse({ currencies }),

@@ -34,7 +34,7 @@ suite('catalog', { timeout: 30000 }, () => {
       expect(Array.isArray(response.data)).toBe(true);
       expect(response.data.length).toBeGreaterThan(0);
       expect(response.data[0]).toHaveProperty('name');
-      expect(response.data[0]).toHaveProperty('region_code');
+      expect(response.data[0]).toHaveProperty('code');
     },
   );
 
@@ -43,7 +43,7 @@ suite('catalog', { timeout: 30000 }, () => {
     expect(response.status).toBe(200);
     expect(Array.isArray(response.data)).toBe(true);
     expect(response.data.length).toBeGreaterThan(0);
-    expect(response.data[0]).toHaveProperty('name');
-    expect(response.data[0]).toHaveProperty('currency_code');
+    expect(typeof response.data[0]).toBe('string');
+    expect(response.data[0].length).toBeGreaterThan(0);
   });
 });
