@@ -1,5 +1,11 @@
 # sound-tank
 
+## 2.2.1
+
+### Patch Changes
+
+- 5c739bf: Docs: update README to reflect current resources and methods
+
 ## 2.2.0
 
 ### Minor Changes
