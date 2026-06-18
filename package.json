@@ -1,6 +1,6 @@
 {
   "name": "sound-tank",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "private": false,
   "description": "A library for interacting with the Reverb Marketplace API",
   "license": "MIT",
