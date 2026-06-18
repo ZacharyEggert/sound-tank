@@ -2,6 +2,7 @@ export * from './listings/getListings';
 export * from './listings/postListing';
 export * from './listings/updateListing';
 export * from './listings/endListing';
+export * from './listings/listingImages';
 export * from './orders/getOrders';
 export type { PaginatedReverbResponse } from '~/types';
 

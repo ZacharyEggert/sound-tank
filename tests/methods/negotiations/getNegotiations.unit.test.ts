@@ -237,6 +237,7 @@ describe('getNegotiations (unit tests with MockHttpClient)', () => {
       rates: [],
       user_region_rate: null as any,
       initial_offer_rate: null as any,
+      free_expedited_shipping: false,
     },
     stats: { views: 0, watches: 0 },
     slug: '94128653-esp-eclipse-ii-sw-snow-white-2010-w-hard-shell-case',

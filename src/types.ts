@@ -195,6 +195,11 @@ export type ListingUpdateBody = Partial<ListingPostBody> & {
 
 export type EndListingReason = 'not_sold' | 'reverb_sale';
 
+export type ListingImage = {
+  id: string;
+  url: string;
+};
+
 enum OrderStatusOptions {
   Unpaid = 'unpaid',
   Paid = 'paid',

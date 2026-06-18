@@ -17,6 +17,11 @@ import {
 import { postListing } from '~/methods/listings/postListing';
 import { updateListing } from '~/methods/listings/updateListing';
 import { endListing, deleteListing } from '~/methods/listings/endListing';
+import {
+  getListingImages,
+  deleteListingPhoto,
+  reorderListingPhotos,
+} from '~/methods/listings/listingImages';
 import { ListingPostBody, ListingUpdateBody, EndListingReason } from '~/types';
 
 export class ListingsResource {
@@ -84,5 +89,22 @@ export class ListingsResource {
 
   delete(id: string) {
     return deleteListing(this.getClient(), this.getConfig(), id);
+  }
+
+  getImages(id: string) {
+    return getListingImages(this.getClient(), this.getConfig(), id);
+  }
+
+  deletePhoto(id: string, imageId: string) {
+    return deleteListingPhoto(this.getClient(), this.getConfig(), id, imageId);
+  }
+
+  reorderPhotos(id: string, photoUrls: string[]) {
+    return reorderListingPhotos(
+      this.getClient(),
+      this.getConfig(),
+      id,
+      photoUrls,
+    );
   }
 }
