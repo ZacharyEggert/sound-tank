@@ -5,6 +5,7 @@ import { OrdersResource } from './resources/OrdersResource';
 import { NegotiationsResource } from './resources/NegotiationsResource';
 import { getArbitraryEndpoint, GetArbitraryEndpointOptions } from './methods';
 import Logger from './utils/logger';
+import { MessagesResource } from './resources/MessagesResource';
 
 export type ApiVersion = string;
 export type ApiKey = string;
@@ -63,6 +64,8 @@ export default class Reverb {
   readonly listings: ListingsResource;
   readonly orders: OrdersResource;
   readonly negotiations: NegotiationsResource;
+  readonly messages: MessagesResource;
+
   constructor(options: ReverbOptions) {
     const {
       apiKey,
@@ -102,6 +105,10 @@ export default class Reverb {
       () => this._config,
     );
     this.negotiations = new NegotiationsResource(
+      () => this._httpClient,
+      () => this._config,
+    );
+    this.messages = new MessagesResource(
       () => this._httpClient,
       () => this._config,
     );
