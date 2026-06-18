@@ -46,7 +46,7 @@ describe.skipIf(!SANDBOX_KEY)('Sandbox: Negotiations', () => {
     }
 
     const response = await reverb.negotiations.getNegotiation(
-      firstNegotiation.id,
+      String(firstNegotiation.id),
     );
 
     expect(response.status).toBe(200);

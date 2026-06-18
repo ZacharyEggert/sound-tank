@@ -69,7 +69,7 @@ export const getNegotiations = async (
 export const getNegotiation = async (
   client: HttpClient,
   config: ReverbConfig,
-  offerId: number,
+  offerId: string,
 ): Promise<HttpResponse<Negotiation>> => {
   const url = buildUrl(config.rootEndpoint, `/my/negotiations/${offerId}`);
 

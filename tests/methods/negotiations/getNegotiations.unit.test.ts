@@ -430,7 +430,7 @@ describe('getNegotiations (unit tests with MockHttpClient)', () => {
         createMockResponse(mockNegotiation),
       );
 
-      const response = await getNegotiation(mockClient, config, 53447768);
+      const response = await getNegotiation(mockClient, config, '53447768');
 
       expect(response.status).toBe(200);
       expect(response.data.id).toBe('53447768');
@@ -448,7 +448,7 @@ describe('getNegotiations (unit tests with MockHttpClient)', () => {
     });
 
     it('should use the offerId in the URL', async () => {
-      const otherId = 99;
+      const otherId = '99';
 
       mockClient.onGet(
         (url) => url.includes(`/my/negotiations/${otherId}`),
@@ -469,7 +469,7 @@ describe('getNegotiations (unit tests with MockHttpClient)', () => {
         createMockResponse(mockNegotiation),
       );
 
-      await getNegotiation(mockClient, config, 53447768);
+      await getNegotiation(mockClient, config, '53447768');
 
       const requests = mockClient.getRequests();
       expect(requests[0].config?.headers?.Authorization).toBe(

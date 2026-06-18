@@ -16,7 +16,7 @@ export class NegotiationsResource {
     return getNegotiations(this.getClient(), this.getConfig(), options);
   }
 
-  getNegotiation(offerId: number) {
+  getNegotiation(offerId: string) {
     return getNegotiation(this.getClient(), this.getConfig(), offerId);
   }
 }
