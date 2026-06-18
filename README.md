@@ -45,7 +45,8 @@ data.listings.forEach((listing) => {
 - ✅ **Automatic Pagination** - Built-in helpers to fetch all results seamlessly
 - ✅ **Streaming Pagination** - Async generator to stream results page-by-page
 - ✅ **Configuration Management** - Easy setup for currency, locale, and shipping preferences
-- ✅ **Comprehensive Coverage** - Listings, orders, negotiations, messages, and arbitrary endpoint access
+- ✅ **Comprehensive Coverage** - Listings, orders, negotiations, messages, catalog data, and arbitrary endpoint access
+- ✅ **Response Caching** - Optional TTL-based cache for GET requests
 - ✅ **HTTP Client Abstraction** - Clean architecture with testable mock implementations
 - ✅ **Dual Module Support** - Both CommonJS and ESM builds included
 - ✅ **Well Tested** - Extensive unit and integration test coverage
@@ -61,6 +62,7 @@ data.listings.forEach((listing) => {
   - [orders](#orders)
   - [negotiations](#negotiations)
   - [messages](#messages)
+  - [catalog](#catalog)
   - [\_getArbitraryEndpoint](#_getarbitraryendpointurl-params)
 - [TypeScript Usage](#typescript-usage)
 - [Advanced Features](#advanced-features)
@@ -113,6 +115,7 @@ const reverb = new Reverb({
   displayCurrency: 'USD', // optional
   locale: 'en', // optional
   version: '3.0', // optional
+  cache: { ttlMs: 60_000 }, // optional: cache GET responses for 60s
 });
 ```
 
@@ -152,6 +155,7 @@ try {
 | `displayCurrency` | `string` | No       | `'USD'`                        | Currency for price display               |
 | `locale`          | `string` | No       | `'en'`                         | Language locale (e.g., 'en', 'fr', 'de') |
 | `shippingRegion`  | `string` | No       | `undefined`                    | Shipping region code (e.g., 'US', 'EU')  |
+| `cache`           | `ReverbCacheOptions` | No | `undefined`               | Enable TTL response cache: `{ ttlMs: number }` |
 
 ### Runtime Configuration
 
@@ -349,6 +353,95 @@ await reverb.listings.delete('12345');
 
 ---
 
+#### listings.getDrafts(options?)
+
+Fetch a paginated page of draft listings.
+
+**Parameters:**
+
+- `perPage?: number`
+- `page?: number`
+
+```typescript
+const response = await reverb.listings.getDrafts({ perPage: 50 });
+```
+
+---
+
+#### listings.getAllDrafts(options?)
+
+Fetch **all** draft listings across all pages.
+
+**Returns:** `Promise<HttpResponse<Listing[]>>`
+
+```typescript
+const response = await reverb.listings.getAllDrafts();
+const drafts = response.data;
+```
+
+---
+
+#### listings.streamAllDrafts(options?)
+
+Stream all draft listings as an async generator.
+
+**Returns:** `AsyncGenerator<Listing>`
+
+```typescript
+for await (const draft of reverb.listings.streamAllDrafts()) {
+  console.log(draft.title);
+}
+```
+
+---
+
+#### listings.getImages(id)
+
+Fetch all images attached to a listing.
+
+**Parameters:**
+
+- `id: string` - Listing ID
+
+**Returns:** `Promise<HttpResponse<{ photos: ListingImage[] }>>`
+
+```typescript
+const response = await reverb.listings.getImages('12345');
+response.data.photos.forEach((photo) => console.log(photo._links.full.href));
+```
+
+---
+
+#### listings.deletePhoto(id, imageId)
+
+Delete a photo from a listing.
+
+**Parameters:**
+
+- `id: string` - Listing ID
+- `imageId: string` - Photo ID
+
+```typescript
+await reverb.listings.deletePhoto('12345', 'photo-id');
+```
+
+---
+
+#### listings.reorderPhotos(id, photoUrls)
+
+Set the display order of a listing's photos.
+
+**Parameters:**
+
+- `id: string` - Listing ID
+- `photoUrls: string[]` - Ordered array of photo URLs
+
+```typescript
+await reverb.listings.reorderPhotos('12345', [url1, url2, url3]);
+```
+
+---
+
 ### orders
 
 #### orders.getMy(options?)
@@ -467,6 +560,48 @@ await reverb.messages.reply(12345, 'Thanks for your offer!');
 
 ---
 
+### catalog
+
+#### catalog.getCategories()
+
+Fetch all Reverb listing categories.
+
+```typescript
+const response = await reverb.catalog.getCategories();
+```
+
+---
+
+#### catalog.getConditions()
+
+Fetch all item condition options (UUIDs and display names).
+
+```typescript
+const response = await reverb.catalog.getConditions();
+```
+
+---
+
+#### catalog.getShippingRegions()
+
+Fetch all supported shipping regions.
+
+```typescript
+const response = await reverb.catalog.getShippingRegions();
+```
+
+---
+
+#### catalog.getCurrencies()
+
+Fetch all supported listing currencies.
+
+```typescript
+const response = await reverb.catalog.getCurrencies();
+```
+
+---
+
 ### \_getArbitraryEndpoint(url, params?)
 
 Escape hatch to call any Reverb endpoint not yet wrapped by a resource. The `_` prefix indicates this is not part of the stable public API but is intentionally supported.
@@ -496,12 +631,16 @@ import Reverb, {
   Price,
   ListingStates,
   ListingCondition,
+  ListingImage,
   ListingPostBody,
   ListingUpdateBody,
   EndListingReason,
   ShippingRate,
   Category,
+  ReverbShippingRegion,
+  ListingCurrency,
   ReverbOptions,
+  ReverbCacheOptions,
 } from 'sound-tank';
 ```
 
@@ -517,7 +656,7 @@ listings.forEach((listing: Listing) => {
 
   console.log(`${listing.title}`);
   console.log(`  Price: ${price.display} (${price.currency})`);
-  console.log(`  Condition: ${condition.displayName}`);
+  console.log(`  Condition: ${condition.display_name}`);
   console.log(`  Year: ${listing.year}`);
 });
 ```
@@ -531,6 +670,7 @@ listings.forEach((listing: Listing) => {
 - `ListingStates` - Enum for state values (LIVE, SOLD, DRAFT)
 - `ListingCondition` - Item condition with UUID and display name
 - `ListingShipping` - Shipping information and rates
+- `ListingImage` - Photo attached to a listing (includes `_links.full.href`)
 - `ListingStats` - View and watch counts
 - `ListingPostBody` - Body for creating a listing
 - `ListingUpdateBody` - Body for updating a listing
@@ -552,12 +692,18 @@ listings.forEach((listing: Listing) => {
 - `Price` - Currency-aware price with amount, currency, symbol, and formatted display
 - `ShippingRate` - Regional shipping costs
 
+**Catalog Types:**
+
+- `ReverbShippingRegion` - Shipping region returned by `catalog.getShippingRegions()`
+- `ListingCurrency` - Currency option returned by `catalog.getCurrencies()`
+
 **Other Types:**
 
 - `Category` - Product categorization
 - `Link` - HATEOAS navigation links
 - `PaginatedReverbResponse<T>` - Paginated API response wrapper
 - `ReverbOptions` - SDK configuration options
+- `ReverbCacheOptions` - Cache configuration: `{ ttlMs: number }`
 
 ## Advanced Features
 
@@ -591,6 +737,23 @@ for await (const listing of reverb.listings.streamAllMy({ state: 'live' })) {
   console.log(`[${count}] ${listing.title}`);
 }
 ```
+
+### Response Caching
+
+Cache repeated GET requests with a TTL to avoid hitting rate limits:
+
+```typescript
+const reverb = new Reverb({
+  apiKey: process.env.REVERB_API_KEY,
+  cache: { ttlMs: 60_000 }, // cache for 60 seconds
+});
+
+// These two calls hit the network only once
+await reverb.catalog.getCategories();
+await reverb.catalog.getCategories(); // served from cache
+```
+
+---
 
 ### HTTP Client Abstraction
 
@@ -650,7 +813,7 @@ const csvHeader = 'ID,Title,Price,Currency,Condition,Year,State\n';
 const csvRows = response.data
   .map(
     (listing) =>
-      `${listing.id},"${listing.title}",${listing.price.amount},${listing.price.currency},${listing.condition.displayName},${listing.year},${listing.state.slug}`,
+      `${listing.id},"${listing.title}",${listing.price.amount},${listing.price.currency},${listing.condition.display_name},${listing.year},${listing.state.slug}`,
   )
   .join('\n');
 
@@ -715,16 +878,18 @@ sound-tank/
 │   │   ├── FetchHttpClient.ts    # Native fetch implementation
 │   │   └── MockHttpClient.ts     # Mock for testing
 │   ├── methods/
-│   │   ├── listings/       # getListings, postListing, updateListing, endListing
+│   │   ├── listings/       # getListings, postListing, updateListing, endListing, listingImages
 │   │   ├── orders/         # getOrders
 │   │   ├── negotiations/   # getNegotiations
-│   │   └── messages/       # getMessages, postMessages
+│   │   ├── messages/       # getMessages, postMessages
+│   │   └── catalog/        # getCatalog (categories, conditions, shippingRegions, currencies)
 │   ├── resources/
-│   │   ├── ListingsResource.ts      # getMy, getOne, getPhotos, getAllMy, streamAllMy, create, update, publish, end, delete
+│   │   ├── ListingsResource.ts      # getMy, getOne, getPhotos, getAllMy, streamAllMy, getDrafts, getAllDrafts, streamAllDrafts, create, update, publish, end, delete, getImages, deletePhoto, reorderPhotos
 │   │   ├── OrdersResource.ts        # getMy
 │   │   ├── NegotiationsResource.ts  # getNegotiations, getNegotiation
-│   │   └── MessagesResource.ts      # getMy, getById, markAsRead, reply
-│   └── utils/              # pagination, urlBuilder, queryBuilder, logger
+│   │   ├── MessagesResource.ts      # getMy, getById, markAsRead, reply
+│   │   └── CatalogResource.ts       # getCategories, getConditions, getShippingRegions, getCurrencies
+│   └── utils/              # pagination, urlBuilder, queryBuilder, logger, cache
 ├── tests/                  # Test files
 ├── dist/                   # Build output (git-ignored)
 ├── package.json
