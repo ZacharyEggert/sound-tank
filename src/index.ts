@@ -1,7 +1,7 @@
 export * from './Reverb';
 export * from './resources/ListingsResource';
 export * from './resources/OrdersResource';
-export type { ListingUpdateBody, EndListingReason } from './types';
+export type * from './types';
 
 import Reverb from './Reverb';
 
