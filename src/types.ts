@@ -200,6 +200,17 @@ export type ListingImage = {
   url: string;
 };
 
+export type ReverbShippingRegion = {
+  name: string;
+  region_code: string;
+};
+
+export type ListingCurrency = {
+  name: string;
+  symbol: string;
+  currency_code: string;
+};
+
 enum OrderStatusOptions {
   Unpaid = 'unpaid',
   Paid = 'paid',

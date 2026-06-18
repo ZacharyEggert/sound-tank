@@ -3,9 +3,11 @@ import { FetchHttpClient, HttpClient } from './http';
 import { ListingsResource } from './resources/ListingsResource';
 import { OrdersResource } from './resources/OrdersResource';
 import { NegotiationsResource } from './resources/NegotiationsResource';
+import { CatalogResource } from './resources/CatalogResource';
 import { getArbitraryEndpoint, GetArbitraryEndpointOptions } from './methods';
 import Logger from './utils/logger';
 import { MessagesResource } from './resources/MessagesResource';
+import { ReverbCacheOptions, ResponseCache } from './utils/cache';
 
 export type ApiVersion = string;
 export type ApiKey = string;
@@ -23,7 +25,10 @@ export interface ReverbOptions {
   displayCurrency?: DisplayCurrency | undefined;
   shippingRegion?: ShippingRegion | undefined;
   locale?: Locale | undefined;
+  cache?: ReverbCacheOptions | undefined;
 }
+
+export type { ReverbCacheOptions };
 
 export type ReverbHeaders = {
   'Content-Type': string;
@@ -65,6 +70,7 @@ export default class Reverb {
   readonly orders: OrdersResource;
   readonly negotiations: NegotiationsResource;
   readonly messages: MessagesResource;
+  readonly catalog: CatalogResource;
 
   constructor(options: ReverbOptions) {
     const {
@@ -74,6 +80,7 @@ export default class Reverb {
       displayCurrency,
       shippingRegion,
       locale,
+      cache,
     } = options;
 
     if (!apiKey || apiKey === '') {
@@ -92,7 +99,10 @@ export default class Reverb {
       Authorization: `Bearer ${this.apiKey}`,
     };
 
-    this._httpClient = new FetchHttpClient();
+    const baseClient = new FetchHttpClient();
+    this._httpClient = cache
+      ? new ResponseCache(cache.ttlMs).wrapClient(baseClient)
+      : baseClient;
     this.updateHeaders();
     this._updateConfig();
 
@@ -109,6 +119,10 @@ export default class Reverb {
       () => this._config,
     );
     this.messages = new MessagesResource(
+      () => this._httpClient,
+      () => this._config,
+    );
+    this.catalog = new CatalogResource(
       () => this._httpClient,
       () => this._config,
     );
