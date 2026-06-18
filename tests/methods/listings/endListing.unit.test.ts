@@ -23,7 +23,7 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
       created_at: '2024-01-01',
       shop_name: 'Test Shop',
       description: 'A great guitar',
-      condition: { uuid: 'abc', displayName: 'Good' },
+      condition: { uuid: 'abc', display_name: 'Good' },
       price: {
         amount: '500.00',
         amount_cents: 50000,

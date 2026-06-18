@@ -5,9 +5,14 @@ import {
   getAllMyListings,
   streamAllMyListings,
   getOneListing,
+  getDrafts,
+  getAllDrafts,
+  streamAllDrafts,
   GetMyListingsOptions,
   GetAllMyListingsOptions,
   GetOneListingOptions,
+  GetDraftsOptions,
+  GetAllDraftsOptions,
 } from '~/methods/listings/getListings';
 import { postListing } from '~/methods/listings/postListing';
 import { updateListing } from '~/methods/listings/updateListing';
@@ -45,6 +50,18 @@ export class ListingsResource {
 
   streamAllMy(options: GetAllMyListingsOptions = {}) {
     return streamAllMyListings(this.getClient(), this.getConfig(), options);
+  }
+
+  getDrafts(options: GetDraftsOptions = {}) {
+    return getDrafts(this.getClient(), this.getConfig(), options);
+  }
+
+  getAllDrafts(options: GetAllDraftsOptions = {}) {
+    return getAllDrafts(this.getClient(), this.getConfig(), options);
+  }
+
+  streamAllDrafts(options: GetAllDraftsOptions = {}) {
+    return streamAllDrafts(this.getClient(), this.getConfig(), options);
   }
 
   create(body: ListingPostBody) {

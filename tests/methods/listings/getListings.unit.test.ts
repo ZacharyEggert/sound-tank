@@ -325,7 +325,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         created_at: '',
         shop_name: '',
         description: '',
-        condition: { uuid: '', displayName: 'Good' },
+        condition: { uuid: '', display_name: 'Good' },
         price: {} as any,
         inventory: 0,
         has_inventory: false,

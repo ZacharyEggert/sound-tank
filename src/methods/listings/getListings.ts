@@ -98,6 +98,73 @@ export async function* streamAllMyListings(
   }
 }
 
+export interface GetDraftsOptions {
+  page?: number;
+  perPage?: number;
+}
+
+export const getDrafts = async (
+  client: HttpClient,
+  config: ReverbConfig,
+  options: GetDraftsOptions,
+): Promise<HttpResponse<PaginatedReverbResponse<{ listings: Listing[] }>>> => {
+  const { page, perPage } = options;
+
+  const url = buildUrlWithQuery(
+    buildUrl(config.rootEndpoint, '/my/listings/drafts'),
+    { page, per_page: perPage },
+  );
+  Logger.debug('Fetching draft listings with URL: %s', url);
+
+  return client.get<PaginatedReverbResponse<{ listings: Listing[] }>>(url, {
+    headers: config.headers,
+  });
+};
+
+export interface GetAllDraftsOptions {}
+
+export const getAllDrafts = async (
+  client: HttpClient,
+  config: ReverbConfig,
+  options: GetAllDraftsOptions,
+): Promise<HttpResponse<Listing[]>> => {
+  const allDrafts = await paginateAll<Listing>(
+    async (page, perPage) => {
+      const response = await getDrafts(client, config, { page, perPage });
+      return createPaginatedResult(response.data.listings || [], perPage, page);
+    },
+    { perPage: 50, throttle: { delayMs: 5000, everyNPages: 5 } },
+  );
+
+  return {
+    data: allDrafts,
+    status: 200,
+    statusText: 'OK',
+    headers: {},
+    config: {},
+  };
+};
+
+export async function* streamAllDrafts(
+  client: HttpClient,
+  config: ReverbConfig,
+  options: GetAllDraftsOptions,
+): AsyncGenerator<Listing> {
+  const pages = paginateStream<Listing>(
+    async (page, perPage) => {
+      const response = await getDrafts(client, config, { page, perPage });
+      return createPaginatedResult(response.data.listings || [], perPage, page);
+    },
+    { perPage: 50, throttle: { delayMs: 5000, everyNPages: 5 } },
+  );
+
+  for await (const page of pages) {
+    for (const listing of page) {
+      yield listing;
+    }
+  }
+}
+
 export interface GetOneListingOptions {
   id: string;
 }

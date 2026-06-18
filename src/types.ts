@@ -52,14 +52,19 @@ export type ConditionDisplayName =
 
 export type ListingCondition = {
   uuid: string;
-  displayName: ConditionDisplayName;
+  display_name: ConditionDisplayName;
+};
+
+export type InitialOfferRate = Omit<ShippingRate, 'rate'> & {
+  rate: { original: Price; display: Price };
 };
 
 export type ListingShipping = {
   local: boolean;
   rates: ShippingRate[];
   user_region_rate: ShippingRate;
-  initial_offer_rate: ShippingRate;
+  initial_offer_rate: InitialOfferRate;
+  free_expedited_shipping: boolean;
 };
 
 export type ListingLinks = {
@@ -119,9 +124,11 @@ export type Listing = {
   auction: boolean;
   categories: Category[];
   listing_currency: string;
-  published_at: ReturnType<typeof Date.toString>;
+  published_at?: ReturnType<typeof Date.toString>;
   buyer_price: Price;
+  seller_cost?: Price;
   seller_price: Price;
+  zero_percent_financing_enabled?: boolean;
   state: ListingState;
   shipping_profile_id: number;
   shipping: ListingShipping;

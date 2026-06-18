@@ -195,7 +195,7 @@ describe('getNegotiations (unit tests with MockHttpClient)', () => {
     description: 'ESP Eclipse-II SW in Snow White finish.',
     condition: {
       uuid: 'ae4d9114-1bd7-4ec5-a4ba-6653af5ac84d',
-      displayName: 'Very Good',
+      display_name: 'Very Good',
     },
     price: {
       amount: '2499.99',
