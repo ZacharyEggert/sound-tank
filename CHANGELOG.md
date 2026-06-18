@@ -1,5 +1,11 @@
 # sound-tank
 
+## 2.3.1
+
+### Patch Changes
+
+- 06ac6bf: Bump dev deps; add package.json exports field for ESM/CJS dual publish
+
 ## 2.3.0
 
 ### Minor Changes
