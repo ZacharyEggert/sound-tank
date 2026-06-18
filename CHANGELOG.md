@@ -1,5 +1,11 @@
 # sound-tank
 
+## 2.2.0
+
+### Minor Changes
+
+- 7bdf353: Add `MessagesResource` (`reverb.messages`) with `getMy`, `getById`, `markAsRead`, and `reply` methods.
+
 ## 2.1.1
 
 ### Patch Changes
