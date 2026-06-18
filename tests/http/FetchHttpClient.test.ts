@@ -2,7 +2,12 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { FetchHttpClient } from '../../src/http/FetchHttpClient';
 import { HttpClient } from '../../src/http/HttpClient';
 
-const makeResponse = (body: any, status = 200, statusText = 'OK', contentType = 'application/json') => {
+const makeResponse = (
+  body: any,
+  status = 200,
+  statusText = 'OK',
+  contentType = 'application/json',
+) => {
   const headers = new Headers({ 'content-type': contentType });
   return new Response(JSON.stringify(body), { status, statusText, headers });
 };
@@ -50,11 +55,16 @@ describe('FetchHttpClient', () => {
     it('calls fetch with POST and serializes body', async () => {
       fetchSpy.mockResolvedValue(makeResponse({ id: 2 }, 201, 'Created'));
 
-      const response = await client.post('https://api.example.com/test', { name: 'item' });
+      const response = await client.post('https://api.example.com/test', {
+        name: 'item',
+      });
 
       expect(fetchSpy).toHaveBeenCalledWith(
         'https://api.example.com/test',
-        expect.objectContaining({ method: 'POST', body: JSON.stringify({ name: 'item' }) }),
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ name: 'item' }),
+        }),
       );
       expect(response.status).toBe(201);
     });
@@ -86,7 +96,9 @@ describe('FetchHttpClient', () => {
   describe('patch', () => {
     it('calls fetch with PATCH', async () => {
       fetchSpy.mockResolvedValue(makeResponse({ email: 'new@example.com' }));
-      const response = await client.patch('https://api.example.com/test/1', { email: 'new@example.com' });
+      const response = await client.patch('https://api.example.com/test/1', {
+        email: 'new@example.com',
+      });
       expect(fetchSpy).toHaveBeenCalledWith(
         'https://api.example.com/test/1',
         expect.objectContaining({ method: 'PATCH' }),
@@ -98,7 +110,9 @@ describe('FetchHttpClient', () => {
   describe('params', () => {
     it('appends query params to URL', async () => {
       fetchSpy.mockResolvedValue(makeResponse([]));
-      await client.get('https://api.example.com/items', { params: { page: 1, per_page: 50 } });
+      await client.get('https://api.example.com/items', {
+        params: { page: 1, per_page: 50 },
+      });
       const calledUrl = fetchSpy.mock.calls[0][0] as string;
       expect(calledUrl).toContain('page=1');
       expect(calledUrl).toContain('per_page=50');
@@ -106,7 +120,9 @@ describe('FetchHttpClient', () => {
 
     it('omits null/undefined params', async () => {
       fetchSpy.mockResolvedValue(makeResponse([]));
-      await client.get('https://api.example.com/items', { params: { page: 1, query: undefined } });
+      await client.get('https://api.example.com/items', {
+        params: { page: 1, query: undefined },
+      });
       const calledUrl = fetchSpy.mock.calls[0][0] as string;
       expect(calledUrl).not.toContain('query');
     });
@@ -114,8 +130,12 @@ describe('FetchHttpClient', () => {
 
   describe('error handling', () => {
     it('throws on non-ok response', async () => {
-      fetchSpy.mockResolvedValue(makeResponse({ error: 'not found' }, 404, 'Not Found'));
-      await expect(client.get('https://api.example.com/missing')).rejects.toMatchObject({
+      fetchSpy.mockResolvedValue(
+        makeResponse({ error: 'not found' }, 404, 'Not Found'),
+      );
+      await expect(
+        client.get('https://api.example.com/missing'),
+      ).rejects.toMatchObject({
         status: 404,
       });
     });
@@ -126,8 +146,12 @@ describe('FetchHttpClient', () => {
         headers: { Authorization: 'Bearer x', 'X-Optional': undefined },
       });
       const init = fetchSpy.mock.calls[0][1] as RequestInit;
-      expect((init.headers as Record<string, string>)['X-Optional']).toBeUndefined();
-      expect((init.headers as Record<string, string>)['Authorization']).toBe('Bearer x');
+      expect(
+        (init.headers as Record<string, string>)['X-Optional'],
+      ).toBeUndefined();
+      expect((init.headers as Record<string, string>)['Authorization']).toBe(
+        'Bearer x',
+      );
     });
   });
 });

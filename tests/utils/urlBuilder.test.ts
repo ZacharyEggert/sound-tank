@@ -46,12 +46,18 @@ describe('urlBuilder', () => {
     });
 
     it('should handle nested paths', () => {
-      const result = buildUrl('https://api.reverb.com/api', '/my/orders/selling/all');
+      const result = buildUrl(
+        'https://api.reverb.com/api',
+        '/my/orders/selling/all',
+      );
       expect(result).toBe('https://api.reverb.com/api/my/orders/selling/all');
     });
 
     it('should handle paths with query strings', () => {
-      const result = buildUrl('https://api.reverb.com/api', '/my/listings?page=1');
+      const result = buildUrl(
+        'https://api.reverb.com/api',
+        '/my/listings?page=1',
+      );
       expect(result).toBe('https://api.reverb.com/api/my/listings?page=1');
     });
   });

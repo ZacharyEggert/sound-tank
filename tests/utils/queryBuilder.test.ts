@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { buildQueryString, buildUrlWithQuery } from '../../src/utils/queryBuilder';
+import {
+  buildQueryString,
+  buildUrlWithQuery,
+} from '../../src/utils/queryBuilder';
 
 describe('queryBuilder', () => {
   describe('buildQueryString', () => {
@@ -19,7 +22,11 @@ describe('queryBuilder', () => {
     });
 
     it('should filter out undefined values', () => {
-      const result = buildQueryString({ page: 1, query: undefined, state: 'live' });
+      const result = buildQueryString({
+        page: 1,
+        query: undefined,
+        state: 'live',
+      });
       expect(result).toBe('page=1&state=live');
     });
 
@@ -39,7 +46,10 @@ describe('queryBuilder', () => {
     });
 
     it('should URL-encode special characters', () => {
-      const result = buildQueryString({ search: 'hello world', tag: 'rock&roll' });
+      const result = buildQueryString({
+        search: 'hello world',
+        tag: 'rock&roll',
+      });
       expect(result).toBe('search=hello%20world&tag=rock%26roll');
     });
 
@@ -53,7 +63,7 @@ describe('queryBuilder', () => {
         page: 1,
         query: 'test',
         active: true,
-        skip: undefined
+        skip: undefined,
       });
       expect(result).toBe('page=1&query=test&active=true');
     });
@@ -81,38 +91,59 @@ describe('queryBuilder', () => {
 
   describe('buildUrlWithQuery', () => {
     it('should append query string to URL', () => {
-      const result = buildUrlWithQuery('https://api.reverb.com/api/my/listings', {
-        page: 1,
-        per_page: 50
-      });
-      expect(result).toBe('https://api.reverb.com/api/my/listings?page=1&per_page=50');
+      const result = buildUrlWithQuery(
+        'https://api.reverb.com/api/my/listings',
+        {
+          page: 1,
+          per_page: 50,
+        },
+      );
+      expect(result).toBe(
+        'https://api.reverb.com/api/my/listings?page=1&per_page=50',
+      );
     });
 
     it('should return URL without query string when params are empty', () => {
-      const result = buildUrlWithQuery('https://api.reverb.com/api/my/listings', {});
+      const result = buildUrlWithQuery(
+        'https://api.reverb.com/api/my/listings',
+        {},
+      );
       expect(result).toBe('https://api.reverb.com/api/my/listings');
     });
 
     it('should return URL without query string when all params are undefined', () => {
-      const result = buildUrlWithQuery('https://api.reverb.com/api/my/listings', {
-        page: undefined,
-        query: null
-      });
+      const result = buildUrlWithQuery(
+        'https://api.reverb.com/api/my/listings',
+        {
+          page: undefined,
+          query: null,
+        },
+      );
       expect(result).toBe('https://api.reverb.com/api/my/listings');
     });
 
     it('should handle URL with existing query string', () => {
-      const result = buildUrlWithQuery('https://api.reverb.com/api/my/listings?existing=value', {
-        page: 1
-      });
-      expect(result).toBe('https://api.reverb.com/api/my/listings?existing=value?page=1');
+      const result = buildUrlWithQuery(
+        'https://api.reverb.com/api/my/listings?existing=value',
+        {
+          page: 1,
+        },
+      );
+      expect(result).toBe(
+        'https://api.reverb.com/api/my/listings?existing=value?page=1',
+      );
     });
 
     it('should URL-encode parameter values', () => {
-      const result = buildUrlWithQuery('https://api.reverb.com/api/my/listings', {
-        search: 'hello world'
-      });
-      expect(result).toBe('https://api.reverb.com/api/my/listings?search=hello%20world');
+      const result = buildUrlWithQuery(
+        'https://api.reverb.com/api/my/listings',
+        {
+          search: 'hello world',
+        },
+      );
+      expect(result).toBe(
+        'https://api.reverb.com/api/my/listings?search=hello%20world',
+      );
     });
   });
 });

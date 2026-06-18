@@ -1,16 +1,16 @@
-import { beforeAll, describe, expect, it } from "vitest";
-import Reverb from "../../src";
-import { SANDBOX_KEY, createSandboxClient } from "./helpers";
-import { ListingStates } from "~/types";
+import { beforeAll, describe, expect, it } from 'vitest';
+import Reverb from '../../src';
+import { SANDBOX_KEY, createSandboxClient } from './helpers';
+import { ListingStates } from '~/types';
 
-describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
+describe.skipIf(!SANDBOX_KEY)('Sandbox: Listings', () => {
   let reverb: Reverb;
 
   beforeAll(() => {
     reverb = createSandboxClient();
   });
 
-  it("should fetch first page of my listings", async () => {
+  it('should fetch first page of my listings', async () => {
     const response = await reverb.listings.getMy({ page: 1, perPage: 5 });
 
     expect(response.status).toBe(200);
@@ -18,12 +18,12 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
     expect(Array.isArray(response.data.listings)).toBe(true);
   });
 
-  it("should fetch a single listing by id", async () => {
+  it('should fetch a single listing by id', async () => {
     const page = await reverb.listings.getMy({ page: 1, perPage: 1 });
     const listings = page.data.listings;
 
     if (listings.length === 0) {
-      console.warn("No listings found in sandbox — skipping getOne assertion");
+      console.warn('No listings found in sandbox — skipping getOne assertion');
       return;
     }
 
@@ -34,12 +34,14 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
     expect(response.data.id.toString()).toBe(id);
   });
 
-  it("should return photo urls from getPhotos", async () => {
+  it('should return photo urls from getPhotos', async () => {
     const page = await reverb.listings.getMy({ page: 1, perPage: 1 });
     const listings = page.data.listings;
 
     if (listings.length === 0) {
-      console.warn("No listings found in sandbox — skipping getPhotos assertion");
+      console.warn(
+        'No listings found in sandbox — skipping getPhotos assertion',
+      );
       return;
     }
 
@@ -49,10 +51,12 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
     expect(Array.isArray(photos)).toBe(true);
   });
 
-  it("should stream all listings without error", async () => {
+  it('should stream all listings without error', async () => {
     const all: unknown[] = [];
 
-    for await (const listing of reverb.listings.streamAllMy({ state: ListingStates.ALL })) {
+    for await (const listing of reverb.listings.streamAllMy({
+      state: ListingStates.ALL,
+    })) {
       all.push(listing);
       if (all.length >= 10) break; // guard against large sandboxes
     }
@@ -60,7 +64,7 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
     expect(all.length).toBeGreaterThanOrEqual(0);
   });
 
-  it("should create a draft listing", async () => {
+  it('should create a draft listing', async () => {
     const response = await reverb.listings.create({
       make: 'Test',
       model: 'Sandbox Draft',
@@ -88,12 +92,16 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
     expect(response.data.state.slug).toBe(ListingStates.DRAFT);
   });
 
-  it("should delete a draft listing", async () => {
-    const page = await reverb.listings.getMy({ page: 1, perPage: 5, state: ListingStates.DRAFT });
+  it('should delete a draft listing', async () => {
+    const page = await reverb.listings.getMy({
+      page: 1,
+      perPage: 5,
+      state: ListingStates.DRAFT,
+    });
     const drafts = page.data.listings;
 
     if (drafts.length === 0) {
-      console.warn("No drafts found in sandbox — skipping delete test");
+      console.warn('No drafts found in sandbox — skipping delete test');
       return;
     }
 
@@ -102,12 +110,16 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
     expect(deleteResponse.status).toBe(200);
   });
 
-  it("should create a draft, publish it, then end it", async () => {
-    const page = await reverb.listings.getMy({ page: 1, perPage: 5, state: ListingStates.LIVE });
+  it('should create a draft, publish it, then end it', async () => {
+    const page = await reverb.listings.getMy({
+      page: 1,
+      perPage: 5,
+      state: ListingStates.LIVE,
+    });
     const liveListings = page.data.listings;
 
     if (liveListings.length === 0) {
-      console.warn("No live listings found in sandbox — skipping end test");
+      console.warn('No live listings found in sandbox — skipping end test');
       return;
     }
 
@@ -117,11 +129,15 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
   });
 
   it("should update a draft's price and then publish it", async () => {
-    const page = await reverb.listings.getMy({ page: 1, perPage: 5, state: ListingStates.DRAFT });
+    const page = await reverb.listings.getMy({
+      page: 1,
+      perPage: 5,
+      state: ListingStates.DRAFT,
+    });
     const drafts = page.data.listings;
 
     if (drafts.length === 0) {
-      console.warn("No drafts found in sandbox — skipping update/publish test");
+      console.warn('No drafts found in sandbox — skipping update/publish test');
       return;
     }
 
@@ -138,7 +154,9 @@ describe.skipIf(!SANDBOX_KEY)("Sandbox: Listings", () => {
       expect(publishResponse.status).toBe(200);
     } catch (e: any) {
       if (e.status === 422 || e.status === 403) {
-        console.warn(`Publish blocked in sandbox (${e.status}) — skipping publish assertion`);
+        console.warn(
+          `Publish blocked in sandbox (${e.status}) — skipping publish assertion`,
+        );
       } else {
         throw e;
       }

@@ -9,7 +9,7 @@ import {
   Negotiation,
   ListingWithNegotiations,
   PaginatedReverbResponse,
-	ListingStates,
+  ListingStates,
 } from '~/types';
 
 describe('getNegotiations (unit tests with MockHttpClient)', () => {

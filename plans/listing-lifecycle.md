@@ -142,6 +142,7 @@ New types: `Category` (already exists — reuse), `ListingCondition` (already ex
 ## Out of scope (follow-on)
 
 The following endpoints exist in the API but are intentionally deferred:
+
 - Bumps (`/api/listings/:id/bump`, `/api/bump/v2/bids`) — seller promotion tooling
 - Direct Offers (`/api/listings/:id/auto_offer`) — automated offer config
 - Sales (`/api/sales/*`) — sale/promo management

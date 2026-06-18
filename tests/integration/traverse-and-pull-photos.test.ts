@@ -50,7 +50,9 @@ describe('Traverse and Pull Photos Integration', {}, () => {
   });
 
   it('should be able to pull a detailed version of the listing', async () => {
-    const response = await reverb.listings.getOne({ id: listing.id.toString() });
+    const response = await reverb.listings.getOne({
+      id: listing.id.toString(),
+    });
     expect(response).toBeDefined();
     expect(response.data).toBeDefined();
 

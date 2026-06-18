@@ -1,10 +1,10 @@
-import { ReverbConfig, createReverbConfig } from "./config/ReverbConfig";
-import { FetchHttpClient, HttpClient } from "./http";
-import { ListingsResource } from "./resources/ListingsResource";
-import { OrdersResource } from "./resources/OrdersResource";
-import { NegotiationsResource } from "./resources/NegotiationsResource";
-import { getArbitraryEndpoint, GetArbitraryEndpointOptions } from "./methods";
-import Logger from "./utils/logger";
+import { ReverbConfig, createReverbConfig } from './config/ReverbConfig';
+import { FetchHttpClient, HttpClient } from './http';
+import { ListingsResource } from './resources/ListingsResource';
+import { OrdersResource } from './resources/OrdersResource';
+import { NegotiationsResource } from './resources/NegotiationsResource';
+import { getArbitraryEndpoint, GetArbitraryEndpointOptions } from './methods';
+import Logger from './utils/logger';
 
 export type ApiVersion = string;
 export type ApiKey = string;
@@ -25,13 +25,13 @@ export interface ReverbOptions {
 }
 
 export type ReverbHeaders = {
-  "Content-Type": string;
-  "Accept-Version": ApiVersion;
+  'Content-Type': string;
+  'Accept-Version': ApiVersion;
   Accept: string;
-  "Accept-Language": Locale;
-  "X-Display-Currency": DisplayCurrency;
-  "X-Shipping-Region"?: ShippingRegion | undefined;
-  "User-Agent"?: string;
+  'Accept-Language': Locale;
+  'X-Display-Currency': DisplayCurrency;
+  'X-Shipping-Region'?: ShippingRegion | undefined;
+  'User-Agent'?: string;
   [key: string]: string | undefined;
 };
 
@@ -41,21 +41,22 @@ export interface AuthReverbHeaders extends ReverbHeaders {
 
 export default class Reverb {
   static defaultHeaders: ReverbHeaders = {
-    "Content-Type": "application/hal+json",
-    "Accept-Version": "3.0",
-    Accept: "application/hal+json",
-    "Accept-Language": "en",
-    "X-Display-Currency": "USD",
-    "User-Agent": "Reverb Node SDK",
+    'Content-Type': 'application/hal+json',
+    'Accept-Version': '3.0',
+    Accept: 'application/hal+json',
+    'Accept-Language': 'en',
+    'X-Display-Currency': 'USD',
+    'User-Agent': 'Reverb Node SDK',
   };
 
-  private _rootEndpoint: RootEndpoint = "https://api.reverb.com/api";
-  private _version: ApiVersion = Reverb.defaultHeaders["Accept-Version"];
+  private _rootEndpoint: RootEndpoint = 'https://api.reverb.com/api';
+  private _version: ApiVersion = Reverb.defaultHeaders['Accept-Version'];
   private apiKey: string;
   private _headers: AuthReverbHeaders;
-  private _displayCurrency: DisplayCurrency = Reverb.defaultHeaders["X-Display-Currency"];
+  private _displayCurrency: DisplayCurrency =
+    Reverb.defaultHeaders['X-Display-Currency'];
   private _shippingRegion: ShippingRegion | undefined;
-  private _locale: Locale = Reverb.defaultHeaders["Accept-Language"];
+  private _locale: Locale = Reverb.defaultHeaders['Accept-Language'];
   private _config!: ReverbConfig;
   private _httpClient: HttpClient;
 
@@ -72,8 +73,8 @@ export default class Reverb {
       locale,
     } = options;
 
-    if (!apiKey || apiKey === "") {
-      throw new Error("Reverb: apiKey is required");
+    if (!apiKey || apiKey === '') {
+      throw new Error('Reverb: apiKey is required');
     }
 
     if (version) this._version = version;
@@ -105,31 +106,32 @@ export default class Reverb {
       () => this._config,
     );
 
-    Logger.trace("Reverb client initialized with config: %o", this._config);
+    Logger.trace('Reverb client initialized with config: %o', this._config);
   }
 
   private updateHeaders() {
     const optionalHeaders = {} as any;
-    if (this._shippingRegion) optionalHeaders["X-Shipping-Region"] = this._shippingRegion;
+    if (this._shippingRegion)
+      optionalHeaders['X-Shipping-Region'] = this._shippingRegion;
 
     Logger.debug(
-      "Updating headers with API key and config values. Shipping region included: %s",
+      'Updating headers with API key and config values. Shipping region included: %s',
       !!this._shippingRegion,
     );
 
     this._headers = {
       ...this._headers,
       Authorization: `Bearer ${this.apiKey}`,
-      "Accept-Version": this._version,
-      "X-Display-Currency": this._displayCurrency,
-      "Accept-Language": this._locale,
+      'Accept-Version': this._version,
+      'X-Display-Currency': this._displayCurrency,
+      'Accept-Language': this._locale,
       ...optionalHeaders,
     };
   }
 
   private _updateConfig() {
     Logger.debug(
-      "Updating Reverb config with current settings. Root endpoint: %s, Version: %s, Display currency: %s, Locale: %s, Shipping region: %s",
+      'Updating Reverb config with current settings. Root endpoint: %s, Version: %s, Display currency: %s, Locale: %s, Shipping region: %s',
       this._rootEndpoint,
       this._version,
       this._displayCurrency,
@@ -149,7 +151,7 @@ export default class Reverb {
   }
 
   set locale(locale: Locale) {
-    Logger.debug("Setting locale to: %s", locale);
+    Logger.debug('Setting locale to: %s', locale);
 
     this._locale = locale;
     this.updateHeaders();
@@ -160,7 +162,7 @@ export default class Reverb {
   }
 
   set shippingRegion(shippingRegion: ShippingRegion | undefined) {
-    Logger.debug("Setting shipping region to: %s", shippingRegion);
+    Logger.debug('Setting shipping region to: %s', shippingRegion);
 
     this._shippingRegion = shippingRegion;
     this.updateHeaders();
@@ -175,7 +177,7 @@ export default class Reverb {
   }
 
   set displayCurrency(displayCurrency: DisplayCurrency) {
-    Logger.debug("Setting display currency to: %s", displayCurrency);
+    Logger.debug('Setting display currency to: %s', displayCurrency);
 
     this._displayCurrency = displayCurrency;
     this.updateHeaders();
@@ -186,7 +188,7 @@ export default class Reverb {
   }
 
   set version(version: ApiVersion) {
-    Logger.debug("Setting API version to: %s", version);
+    Logger.debug('Setting API version to: %s', version);
 
     this._version = version;
     this.updateHeaders();
@@ -197,7 +199,7 @@ export default class Reverb {
   }
 
   set rootEndpoint(rootEndpoint: RootEndpoint) {
-    Logger.debug("Setting root endpoint to: %s", rootEndpoint);
+    Logger.debug('Setting root endpoint to: %s', rootEndpoint);
 
     this._rootEndpoint = rootEndpoint;
     this._updateConfig();
@@ -212,7 +214,7 @@ export default class Reverb {
 
   async _getArbitraryEndpoint<T = any>(
     url: string,
-    params?: GetArbitraryEndpointOptions["params"],
+    params?: GetArbitraryEndpointOptions['params'],
   ) {
     return getArbitraryEndpoint<T>(this._httpClient, this._config, {
       url,

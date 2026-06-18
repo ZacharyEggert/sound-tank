@@ -34,7 +34,7 @@ import Reverb from 'sound-tank';
 const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
 const { data } = await reverb.listings.getMy({ perPage: 10, state: 'live' });
 
-data.listings.forEach(listing => {
+data.listings.forEach((listing) => {
   console.log(`${listing.title}: ${listing.price.display}`);
 });
 ```
@@ -60,7 +60,7 @@ data.listings.forEach(listing => {
   - [listings.getAllMy](#listingsgetallmyoptions)
   - [listings.getOne](#listingsgetoneoptions)
   - [orders.getMy](#ordersgetmyoptions)
-  - [_getArbitraryEndpoint](#_getarbitraryendpointurl-params)
+  - [\_getArbitraryEndpoint](#_getarbitraryendpointurl-params)
 - [TypeScript Usage](#typescript-usage)
 - [Advanced Features](#advanced-features)
 - [Examples](#examples)
@@ -110,8 +110,8 @@ import Reverb from 'sound-tank';
 const reverb = new Reverb({
   apiKey: process.env.REVERB_API_KEY,
   displayCurrency: 'USD', // optional
-  locale: 'en',           // optional
-  version: '3.0',         // optional
+  locale: 'en', // optional
+  version: '3.0', // optional
 });
 ```
 
@@ -122,7 +122,7 @@ const response = await reverb.listings.getMy({
   perPage: 25,
   page: 1,
   state: 'live',
-  query: 'Gibson Les Paul'
+  query: 'Gibson Les Paul',
 });
 
 console.log(response.data.listings);
@@ -143,14 +143,14 @@ try {
 
 ### Constructor Options
 
-| Option | Type | Required | Default | Description |
-|--------|------|----------|---------|-------------|
-| `apiKey` | `string` | ✅ Yes | - | Your Reverb API key |
-| `version` | `string` | No | `'3.0'` | API version to use |
-| `rootEndpoint` | `string` | No | `'https://api.reverb.com/api'` | API base URL |
-| `displayCurrency` | `string` | No | `'USD'` | Currency for price display |
-| `locale` | `string` | No | `'en'` | Language locale (e.g., 'en', 'fr', 'de') |
-| `shippingRegion` | `string` | No | `undefined` | Shipping region code (e.g., 'US', 'EU') |
+| Option            | Type     | Required | Default                        | Description                              |
+| ----------------- | -------- | -------- | ------------------------------ | ---------------------------------------- |
+| `apiKey`          | `string` | ✅ Yes   | -                              | Your Reverb API key                      |
+| `version`         | `string` | No       | `'3.0'`                        | API version to use                       |
+| `rootEndpoint`    | `string` | No       | `'https://api.reverb.com/api'` | API base URL                             |
+| `displayCurrency` | `string` | No       | `'USD'`                        | Currency for price display               |
+| `locale`          | `string` | No       | `'en'`                         | Language locale (e.g., 'en', 'fr', 'de') |
+| `shippingRegion`  | `string` | No       | `undefined`                    | Shipping region code (e.g., 'US', 'EU')  |
 
 ### Runtime Configuration
 
@@ -172,6 +172,7 @@ These changes automatically update the internal headers and configuration for su
 Fetch a paginated list of your listings.
 
 **Parameters:**
+
 - `perPage?: number` - Items per page
 - `page?: number` - Page number (starts at 1)
 - `query?: string` - Search query to filter listings
@@ -180,12 +181,13 @@ Fetch a paginated list of your listings.
 **Returns:** `Promise<AxiosResponse<PaginatedReverbResponse<{ listings: Listing[] }>>>`
 
 **Example:**
+
 ```typescript
 const response = await reverb.listings.getMy({
   perPage: 50,
   page: 1,
   state: 'live',
-  query: 'Fender Stratocaster'
+  query: 'Fender Stratocaster',
 });
 
 const { listings } = response.data;
@@ -199,12 +201,14 @@ console.log(`Page 1: ${listings.length} listings`);
 Automatically fetches **all** listings across all pages using automatic pagination.
 
 **Parameters:**
+
 - `query?: string` - Search query to filter listings
 - `state?: ListingStates` - Filter by state: `ListingStates.LIVE`, `ListingStates.SOLD`, or `ListingStates.DRAFT`
 
 **Returns:** `Promise<AxiosResponse<Listing[]>>`
 
 **Example:**
+
 ```typescript
 const response = await reverb.listings.getAllMy({ state: 'live' });
 const allListings = response.data; // All listings from all pages
@@ -221,11 +225,13 @@ console.log(`Total listings: ${allListings.length}`);
 Fetch a single listing by ID.
 
 **Parameters:**
+
 - `id: string` - Listing ID (required)
 
 **Returns:** `Promise<AxiosResponse<Listing>>`
 
 **Example:**
+
 ```typescript
 const response = await reverb.listings.getOne({ id: '12345' });
 const listing = response.data;
@@ -241,37 +247,41 @@ console.log(`Condition: ${listing.condition.displayName}`);
 Fetch your orders with pagination.
 
 **Parameters:**
+
 - `page?: number` - Page number (starts at 1)
 - `perPage?: number` - Items per page
 
 **Returns:** `Promise<AxiosResponse<PaginatedReverbResponse<{ orders: Order[] }>>>`
 
 **Example:**
+
 ```typescript
 const response = await reverb.orders.getMy({
   page: 1,
-  perPage: 25
+  perPage: 25,
 });
 
 const { orders } = response.data;
-orders.forEach(order => {
+orders.forEach((order) => {
   console.log(`Order ${order.order_number}: ${order.status}`);
 });
 ```
 
 ---
 
-### _getArbitraryEndpoint(url, params?)
+### \_getArbitraryEndpoint(url, params?)
 
 Escape hatch to call any Reverb endpoint not yet wrapped by a resource. The `_` prefix indicates this is not part of the stable public API but is intentionally supported.
 
 **Parameters:**
+
 - `url: string` - Endpoint URL (absolute or relative to root endpoint)
 - `params?: object` - Query parameters
 
 **Returns:** `Promise<AxiosResponse<unknown>>`
 
 **Example:**
+
 ```typescript
 // Fetch categories
 const categories = await reverb._getArbitraryEndpoint('/categories/flat');
@@ -297,7 +307,7 @@ import Reverb, {
   ListingCondition,
   ShippingRate,
   Category,
-  ReverbOptions
+  ReverbOptions,
 } from 'sound-tank';
 ```
 
@@ -323,6 +333,7 @@ listings.forEach((listing: Listing) => {
 The SDK exports comprehensive TypeScript types including:
 
 **Listing Types:**
+
 - `Listing` - Complete listing data with make, model, price, condition, shipping, etc.
 - `ListingState` - Listing status information
 - `ListingStates` - Enum for state values (LIVE, SOLD, DRAFT)
@@ -331,15 +342,18 @@ The SDK exports comprehensive TypeScript types including:
 - `ListingStats` - View and watch counts
 
 **Order Types:**
+
 - `Order` - Complete order information with buyer, seller, shipping, pricing details
 - `OrderStatus` - Order status information
 - `ShippingAddress` - Complete address information
 
 **Pricing Types:**
+
 - `Price` - Currency-aware price with amount, currency, symbol, and formatted display
 - `ShippingRate` - Regional shipping costs
 
 **Other Types:**
+
 - `Category` - Product categorization
 - `Link` - HATEOAS navigation links
 - `ReverbOptions` - SDK configuration options
@@ -385,12 +399,12 @@ Access the internal configuration and headers:
 
 ```typescript
 const config = reverb.config;
-console.log(config.rootEndpoint);    // 'https://api.reverb.com/api'
+console.log(config.rootEndpoint); // 'https://api.reverb.com/api'
 console.log(config.displayCurrency); // 'USD'
-console.log(config.locale);          // 'en'
+console.log(config.locale); // 'en'
 
 const headers = reverb.headers;
-console.log(headers['Authorization']);      // 'Bearer your_api_key'
+console.log(headers['Authorization']); // 'Bearer your_api_key'
 console.log(headers['X-Display-Currency']); // 'USD'
 ```
 
@@ -402,12 +416,12 @@ console.log(headers['X-Display-Currency']); // 'USD'
 const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
 
 const response = await reverb.listings.getAllMy({ query: 'guitar' });
-const affordable = response.data.filter(listing =>
-  listing.price.amount_cents < 100000 // $1000 = 100,000 cents
+const affordable = response.data.filter(
+  (listing) => listing.price.amount_cents < 100000, // $1000 = 100,000 cents
 );
 
 console.log(`Found ${affordable.length} guitars under $1000`);
-affordable.forEach(listing => {
+affordable.forEach((listing) => {
   console.log(`  ${listing.title}: ${listing.price.display}`);
 });
 ```
@@ -421,16 +435,16 @@ const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
 reverb.displayCurrency = 'USD';
 const usdResponse = await reverb.listings.getMy({ perPage: 5 });
 console.log('USD Prices:');
-usdResponse.data.listings.forEach(l =>
-  console.log(`  ${l.title}: ${l.price.display}`)
+usdResponse.data.listings.forEach((l) =>
+  console.log(`  ${l.title}: ${l.price.display}`),
 );
 
 // Switch to EUR
 reverb.displayCurrency = 'EUR';
 const eurResponse = await reverb.listings.getMy({ perPage: 5 });
 console.log('\nEUR Prices:');
-eurResponse.data.listings.forEach(l =>
-  console.log(`  ${l.title}: ${l.price.display}`)
+eurResponse.data.listings.forEach((l) =>
+  console.log(`  ${l.title}: ${l.price.display}`),
 );
 ```
 
@@ -440,9 +454,12 @@ eurResponse.data.listings.forEach(l =>
 const response = await reverb.listings.getAllMy({ state: 'live' });
 
 const csvHeader = 'ID,Title,Price,Currency,Condition,Year,State\n';
-const csvRows = response.data.map(listing =>
-  `${listing.id},"${listing.title}",${listing.price.amount},${listing.price.currency},${listing.condition.displayName},${listing.year},${listing.state.slug}`
-).join('\n');
+const csvRows = response.data
+  .map(
+    (listing) =>
+      `${listing.id},"${listing.title}",${listing.price.amount},${listing.price.currency},${listing.condition.displayName},${listing.year},${listing.state.slug}`,
+  )
+  .join('\n');
 
 const csv = csvHeader + csvRows;
 console.log(csv);
@@ -456,17 +473,17 @@ console.log(csv);
 const response = await reverb.listings.getMy({
   query: 'Les Paul',
   state: 'live',
-  perPage: 100
+  perPage: 100,
 });
 
 // Filter by condition
 const excellent = response.data.listings.filter(
-  listing => listing.condition.displayName === 'Excellent'
+  (listing) => listing.condition.displayName === 'Excellent',
 );
 
 // Filter by year
 const vintage = response.data.listings.filter(
-  listing => parseInt(listing.year) < 1980
+  (listing) => parseInt(listing.year) < 1980,
 );
 
 console.log(`Found ${excellent.length} in excellent condition`);
@@ -536,14 +553,14 @@ Valid values: `ERROR | WARN | INFO | DEBUG | TRACE`. Silent by default.
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `yarn dev` | Run tests in watch mode during development |
-| `yarn test` | Run all tests once |
-| `yarn build` | Build production bundles (CJS + ESM + declarations) |
-| `yarn lint` | Type-check code with TypeScript compiler |
-| `yarn ci` | Run full CI pipeline (install, lint, test, build) |
-| `yarn release` | Build and publish to npm (uses changesets) |
+| Command        | Description                                         |
+| -------------- | --------------------------------------------------- |
+| `yarn dev`     | Run tests in watch mode during development          |
+| `yarn test`    | Run all tests once                                  |
+| `yarn build`   | Build production bundles (CJS + ESM + declarations) |
+| `yarn lint`    | Type-check code with TypeScript compiler            |
+| `yarn ci`      | Run full CI pipeline (install, lint, test, build)   |
+| `yarn release` | Build and publish to npm (uses changesets)          |
 
 ### Build System
 
@@ -556,6 +573,7 @@ Sound Tank uses [tsup](https://tsup.egoist.dev/) for building:
 - **External Dependencies**: `axios` marked as external (not bundled)
 
 Build outputs:
+
 ```
 dist/
 ├── index.js        # CommonJS
@@ -630,6 +648,7 @@ Contributions are welcome! Here's how to get started:
 ### Code Style
 
 This project uses:
+
 - **TypeScript** strict mode
 - **Prettier** for formatting (run automatically)
 - **ESLint** for linting

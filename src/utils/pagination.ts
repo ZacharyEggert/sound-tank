@@ -53,7 +53,11 @@ export async function paginateAll<T>(
     pagesProcessed++;
 
     if (throttle && pagesProcessed % throttle.everyNPages === 0) {
-      Logger.debug('Throttling: waiting %dms after %d pages.', throttle.delayMs, pagesProcessed);
+      Logger.debug(
+        'Throttling: waiting %dms after %d pages.',
+        throttle.delayMs,
+        pagesProcessed,
+      );
       await new Promise((resolve) => setTimeout(resolve, throttle.delayMs));
     }
   }
@@ -107,12 +111,19 @@ export async function* paginateStream<T>(
     pagesProcessed++;
 
     if (throttle && pagesProcessed % throttle.everyNPages === 0) {
-      Logger.debug('Throttling: waiting %dms after %d pages.', throttle.delayMs, pagesProcessed);
+      Logger.debug(
+        'Throttling: waiting %dms after %d pages.',
+        throttle.delayMs,
+        pagesProcessed,
+      );
       await new Promise((resolve) => setTimeout(resolve, throttle.delayMs));
     }
   }
 
-  Logger.debug('Stream pagination complete after %d pages.', pagesProcessed + 1);
+  Logger.debug(
+    'Stream pagination complete after %d pages.',
+    pagesProcessed + 1,
+  );
 }
 
 export function createPaginatedResult<T>(

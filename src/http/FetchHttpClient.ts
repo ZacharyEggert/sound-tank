@@ -15,7 +15,10 @@ export class FetchHttpClient implements HttpClient {
     if (params) {
       const query = Object.entries(params)
         .filter(([, v]) => v != null)
-        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+        .map(
+          ([k, v]) =>
+            `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`,
+        )
         .join('&');
       if (query) fullUrl += (url.includes('?') ? '&' : '?') + query;
     }
@@ -53,10 +56,9 @@ export class FetchHttpClient implements HttpClient {
       });
 
       const contentType = res.headers.get('content-type') ?? '';
-      const responseData: T =
-        contentType.includes('json')
-          ? await res.json()
-          : (await res.text()) as unknown as T;
+      const responseData: T = contentType.includes('json')
+        ? await res.json()
+        : ((await res.text()) as unknown as T);
 
       if (!res.ok) {
         const err = new Error(`HTTP ${res.status}: ${res.statusText}`) as any;
@@ -84,28 +86,61 @@ export class FetchHttpClient implements HttpClient {
     }
   }
 
-  async get<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+  async get<T = any>(
+    url: string,
+    config?: HttpRequestConfig,
+  ): Promise<HttpResponse<T>> {
     Logger.trace('GET request to %s with config: %o', url, config);
     return this.request<T>('GET', url, undefined, config);
   }
 
-  async post<T = any>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
-    Logger.trace('POST request to %s with data: %o and config: %o', url, data, config);
+  async post<T = any>(
+    url: string,
+    data?: any,
+    config?: HttpRequestConfig,
+  ): Promise<HttpResponse<T>> {
+    Logger.trace(
+      'POST request to %s with data: %o and config: %o',
+      url,
+      data,
+      config,
+    );
     return this.request<T>('POST', url, data, config);
   }
 
-  async put<T = any>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
-    Logger.trace('PUT request to %s with data: %o and config: %o', url, data, config);
+  async put<T = any>(
+    url: string,
+    data?: any,
+    config?: HttpRequestConfig,
+  ): Promise<HttpResponse<T>> {
+    Logger.trace(
+      'PUT request to %s with data: %o and config: %o',
+      url,
+      data,
+      config,
+    );
     return this.request<T>('PUT', url, data, config);
   }
 
-  async delete<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+  async delete<T = any>(
+    url: string,
+    config?: HttpRequestConfig,
+  ): Promise<HttpResponse<T>> {
     Logger.trace('DELETE request to %s with config: %o', url, config);
     return this.request<T>('DELETE', url, undefined, config);
   }
 
-  async patch<T = any>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
-    Logger.trace('PATCH request to %s with data: %o and config: %o', url, data, config);
+  async patch<T = any>(
+    url: string,
+    data?: any,
+    config?: HttpRequestConfig,
+  ): Promise<HttpResponse<T>> {
+    Logger.trace(
+      'PATCH request to %s with data: %o and config: %o',
+      url,
+      data,
+      config,
+    );
     return this.request<T>('PATCH', url, data, config);
   }
 }

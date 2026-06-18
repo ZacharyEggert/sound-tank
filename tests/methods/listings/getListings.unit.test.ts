@@ -1,5 +1,8 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { getMyListings, streamAllMyListings } from '../../../src/methods/listings/getListings';
+import {
+  getMyListings,
+  streamAllMyListings,
+} from '../../../src/methods/listings/getListings';
 import { MockHttpClient, createMockResponse } from '~/http/MockHttpClient';
 import { ReverbConfig } from '~/config/ReverbConfig';
 import { Listing, ListingStates, PaginatedReverbResponse } from '~/types';
@@ -53,7 +56,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       mockClient.onGet(
         (url) => url.includes('/my/listings'),
-        createMockResponse(mockResponse)
+        createMockResponse(mockResponse),
       );
 
       const response = await getMyListings(mockClient, config, {});
@@ -76,7 +79,10 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         _links: {},
       };
 
-      mockClient.onGet((url) => url.includes('page=2'), createMockResponse(mockResponse));
+      mockClient.onGet(
+        (url) => url.includes('page=2'),
+        createMockResponse(mockResponse),
+      );
 
       await getMyListings(mockClient, config, { page: 2 });
 
@@ -95,7 +101,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       mockClient.onGet(
         (url) => url.includes('per_page=25'),
-        createMockResponse(mockResponse)
+        createMockResponse(mockResponse),
       );
 
       await getMyListings(mockClient, config, { perPage: 25 });
@@ -115,7 +121,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       mockClient.onGet(
         (url) => url.includes('query=guitar'),
-        createMockResponse(mockResponse)
+        createMockResponse(mockResponse),
       );
 
       await getMyListings(mockClient, config, { query: 'guitar' });
@@ -135,7 +141,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       mockClient.onGet(
         (url) => url.includes('state=live'),
-        createMockResponse(mockResponse)
+        createMockResponse(mockResponse),
       );
 
       await getMyListings(mockClient, config, { state: 'live' });
@@ -159,7 +165,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
           url.includes('per_page=50') &&
           url.includes('query=fender') &&
           url.includes('state=draft'),
-        createMockResponse(mockResponse)
+        createMockResponse(mockResponse),
       );
 
       await getMyListings(mockClient, config, {
@@ -185,20 +191,19 @@ describe('getListings (unit tests with MockHttpClient)', () => {
         _links: {},
       };
 
-      mockClient.onGet(
-        (url, reqConfig) => {
-          return (
-            reqConfig?.headers?.Authorization === 'Bearer test-api-key' &&
-            reqConfig?.headers?.['Accept-Version'] === '3.0'
-          );
-        },
-        createMockResponse(mockResponse)
-      );
+      mockClient.onGet((url, reqConfig) => {
+        return (
+          reqConfig?.headers?.Authorization === 'Bearer test-api-key' &&
+          reqConfig?.headers?.['Accept-Version'] === '3.0'
+        );
+      }, createMockResponse(mockResponse));
 
       await getMyListings(mockClient, config, {});
 
       const requests = mockClient.getRequests();
-      expect(requests[0].config?.headers?.Authorization).toBe('Bearer test-api-key');
+      expect(requests[0].config?.headers?.Authorization).toBe(
+        'Bearer test-api-key',
+      );
     });
 
     it('should use correct base URL from config', async () => {
@@ -217,7 +222,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       mockClient.onGet(
         (url) => url.startsWith('https://custom.api.com'),
-        createMockResponse(mockResponse)
+        createMockResponse(mockResponse),
       );
 
       await getMyListings(mockClient, customConfig, {});
@@ -237,7 +242,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       mockClient.onGet(
         (url) => url.includes('/my/listings'),
-        createMockResponse(mockResponse)
+        createMockResponse(mockResponse),
       );
 
       const response = await getMyListings(mockClient, config, {});
@@ -260,7 +265,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       mockClient.onGet(
         (url) => url.includes('/my/listings'),
-        createMockResponse(mockResponse)
+        createMockResponse(mockResponse),
       );
 
       const response = await getMyListings(mockClient, config, { page: 3 });
@@ -283,7 +288,7 @@ describe('getListings (unit tests with MockHttpClient)', () => {
 
       mockClient.onGet(
         (url) => url.includes('query=hello%20world'),
-        createMockResponse(mockResponse)
+        createMockResponse(mockResponse),
       );
 
       await getMyListings(mockClient, config, { query: 'hello world' });
@@ -294,17 +299,58 @@ describe('getListings (unit tests with MockHttpClient)', () => {
   });
 
   describe('streamAllMyListings', () => {
-    function makePage(listings: Listing[], total: number, currentPage: number, totalPages: number): PaginatedReverbResponse<{ listings: Listing[] }> {
-      return { listings, total, current_page: currentPage, total_pages: totalPages, _links: {} };
+    function makePage(
+      listings: Listing[],
+      total: number,
+      currentPage: number,
+      totalPages: number,
+    ): PaginatedReverbResponse<{ listings: Listing[] }> {
+      return {
+        listings,
+        total,
+        current_page: currentPage,
+        total_pages: totalPages,
+        _links: {},
+      };
     }
 
     function makeListing(id: string): Listing {
-      return { id, make: 'Fender', model: 'Strat', finish: '', year: '', title: '', created_at: '', shop_name: '', description: '', condition: { uuid: '', displayName: 'Good' }, price: {} as any, inventory: 0, has_inventory: false, offers_enabled: false, auction: false, categories: [], listing_currency: 'USD', published_at: '', buyer_price: {} as any, seller_price: {} as any, state: { slug: ListingStates.LIVE, description: '' }, shipping_profile_id: 0, shipping: {} as any, stats: { views: 0, watches: 0 }, slug: id, photos: [], _links: {} as any };
+      return {
+        id,
+        make: 'Fender',
+        model: 'Strat',
+        finish: '',
+        year: '',
+        title: '',
+        created_at: '',
+        shop_name: '',
+        description: '',
+        condition: { uuid: '', displayName: 'Good' },
+        price: {} as any,
+        inventory: 0,
+        has_inventory: false,
+        offers_enabled: false,
+        auction: false,
+        categories: [],
+        listing_currency: 'USD',
+        published_at: '',
+        buyer_price: {} as any,
+        seller_price: {} as any,
+        state: { slug: ListingStates.LIVE, description: '' },
+        shipping_profile_id: 0,
+        shipping: {} as any,
+        stats: { views: 0, watches: 0 },
+        slug: id,
+        photos: [],
+        _links: {} as any,
+      };
     }
 
     it('should yield all listings across multiple pages', async () => {
       // perPage defaults to 50 — page 1 must have exactly 50 items for hasMore=true
-      const page1Listings = Array.from({ length: 50 }, (_, i) => makeListing(`p1-${i}`));
+      const page1Listings = Array.from({ length: 50 }, (_, i) =>
+        makeListing(`p1-${i}`),
+      );
       const page2Listings = [makeListing('last')];
 
       mockClient.onGet(
@@ -347,7 +393,10 @@ describe('getListings (unit tests with MockHttpClient)', () => {
       );
 
       const results: Listing[] = [];
-      for await (const listing of streamAllMyListings(mockClient, config, { query: 'gibson', state: 'live' as any })) {
+      for await (const listing of streamAllMyListings(mockClient, config, {
+        query: 'gibson',
+        state: 'live' as any,
+      })) {
         results.push(listing);
       }
 

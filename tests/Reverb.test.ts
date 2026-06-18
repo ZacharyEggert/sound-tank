@@ -51,7 +51,11 @@ suite('Reverb', () => {
   });
 
   it('should set the display currency and locale if provided', () => {
-    const reverb = new Reverb({ apiKey: '123', displayCurrency: 'CAD', locale: 'fr' });
+    const reverb = new Reverb({
+      apiKey: '123',
+      displayCurrency: 'CAD',
+      locale: 'fr',
+    });
     const reverb2 = new Reverb({ apiKey: '123' });
 
     expect(reverb.displayCurrency).toBe('CAD');
@@ -72,7 +76,10 @@ suite('Reverb', () => {
   });
 
   it('should set the default endpoint if provided', () => {
-    const reverb = new Reverb({ apiKey: '123', rootEndpoint: 'https://api.reverb.com/api2' });
+    const reverb = new Reverb({
+      apiKey: '123',
+      rootEndpoint: 'https://api.reverb.com/api2',
+    });
     expect(reverb.rootEndpoint).toBe('https://api.reverb.com/api2');
   });
 
@@ -80,7 +87,10 @@ suite('Reverb', () => {
     it('setters should update the headers when any option is updated', () => {
       const reverb = new Reverb({ apiKey: '123' });
 
-      expect(reverb.headers).toEqual({ ...defaultHeaders, Authorization: 'Bearer 123' });
+      expect(reverb.headers).toEqual({
+        ...defaultHeaders,
+        Authorization: 'Bearer 123',
+      });
 
       reverb.version = '1.0';
       reverb.displayCurrency = 'CAD';
@@ -186,7 +196,9 @@ suite('Reverb', () => {
       'should be able to get arbitrary endpoints on another domain',
       async ({ expect }) => {
         const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
-        const response = await reverb._getArbitraryEndpoint('https://www.google.com');
+        const response = await reverb._getArbitraryEndpoint(
+          'https://www.google.com',
+        );
         expect(response.status).toEqual(200);
       },
       60000,
@@ -203,34 +215,28 @@ suite('Reverb', () => {
       60000,
     );
 
-    it(
-      'should be able to fetch all listings in a given query',
-      async ({ expect }) => {
-        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
-        const response = await reverb.listings.getAllMy({ query: 'gibson' });
+    it('should be able to fetch all listings in a given query', async ({
+      expect,
+    }) => {
+      const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+      const response = await reverb.listings.getAllMy({ query: 'gibson' });
 
-        const listingTitles = response.data.map((listing) => listing.title);
-        const includesQuery = listingTitles
-          .map((title) => title.toLowerCase().includes('gibson'))
-          .every((result) => result === true);
+      const listingTitles = response.data.map((listing) => listing.title);
+      const includesQuery = listingTitles
+        .map((title) => title.toLowerCase().includes('gibson'))
+        .every((result) => result === true);
 
-        expect(response.status).toEqual(200);
-        expect(response.data.length).toBeGreaterThan(0);
-        expect(includesQuery).toBe(true);
-      },
-      60000,
-    );
+      expect(response.status).toEqual(200);
+      expect(response.data.length).toBeGreaterThan(0);
+      expect(includesQuery).toBe(true);
+    }, 60000);
 
-    it(
-      'should be able to fetch all listings',
-      async ({ expect }) => {
-        const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
-        const response = await reverb.listings.getAllMy();
+    it('should be able to fetch all listings', async ({ expect }) => {
+      const reverb = new Reverb({ apiKey: process.env.REVERB_API_KEY });
+      const response = await reverb.listings.getAllMy();
 
-        expect(response.status).toEqual(200);
-        expect(response.data.length).toBeGreaterThan(0);
-      },
-      60000,
-    );
+      expect(response.status).toEqual(200);
+      expect(response.data.length).toBeGreaterThan(0);
+    }, 60000);
   });
 });

@@ -56,7 +56,9 @@ export class ListingsResource {
   }
 
   publish(id: string) {
-    return updateListing(this.getClient(), this.getConfig(), id, { publish: true });
+    return updateListing(this.getClient(), this.getConfig(), id, {
+      publish: true,
+    });
   }
 
   end(id: string, reason: EndListingReason) {

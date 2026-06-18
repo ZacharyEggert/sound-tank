@@ -80,12 +80,15 @@ export const myMethod = async (
   config: ReverbConfig,
   options: MyMethodOptions,
 ): Promise<HttpResponse<SomeType>> => {
-  const url = buildUrlWithQuery(buildUrl(config.rootEndpoint, '/my/path'), { page: options.page });
+  const url = buildUrlWithQuery(buildUrl(config.rootEndpoint, '/my/path'), {
+    page: options.page,
+  });
   return client.get<SomeType>(url, { headers: config.headers });
 };
 ```
 
 Rules:
+
 - Never import `axios` directly — always use the `HttpClient` interface
 - Use `buildUrl` + `buildUrlWithQuery` for URL construction
 - Use `paginateAll` + `createPaginatedResult` for paginated endpoints
@@ -165,6 +168,7 @@ const response = await getMyListings(client, config, {});
 Integration tests use a real `Reverb` instance with a `REVERB_API_KEY` in `.env`.
 
 Run a single test file:
+
 ```bash
 yarn test tests/methods/listings/getListings.unit.test.ts
 ```

@@ -3,20 +3,20 @@ import { ReverbConfig } from '~/config/ReverbConfig';
 import {
   getNegotiation,
   getNegotiations,
-	GetNegotiationsOptions
+  GetNegotiationsOptions,
 } from '../methods/negotiations/getNegotiations';
 
 export class NegotiationsResource {
-	constructor(
+  constructor(
     private getClient: () => HttpClient,
     private getConfig: () => ReverbConfig,
   ) {}
 
-	getNegotiations(options: GetNegotiationsOptions) {
-		return getNegotiations(this.getClient(), this.getConfig(), options);
-	}
+  getNegotiations(options: GetNegotiationsOptions) {
+    return getNegotiations(this.getClient(), this.getConfig(), options);
+  }
 
-	getNegotiation(offerId: number) {
-		return getNegotiation(this.getClient(), this.getConfig(), offerId);
-	}
+  getNegotiation(offerId: number) {
+    return getNegotiation(this.getClient(), this.getConfig(), offerId);
+  }
 }

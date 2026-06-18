@@ -7,8 +7,8 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
-  id-token: write      # Generate OIDC tokens for npm trusted publishing
-  contents: write      # Create version commits
+  id-token: write # Generate OIDC tokens for npm trusted publishing
+  contents: write # Create version commits
   pull-requests: write # Create version PRs
 
 env:

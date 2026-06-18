@@ -1,5 +1,3 @@
-
-
 /*
 
 Find your Active Offers
@@ -28,43 +26,54 @@ https://api.reverb.com/api/my/negotiations/[offer_id]
 
 import { HttpClient, HttpResponse } from '../../http';
 import { ReverbConfig } from '../../config/ReverbConfig';
-import { Negotiation, ListingWithNegotiations, PaginatedReverbResponse } from '../../types';
+import {
+  Negotiation,
+  ListingWithNegotiations,
+  PaginatedReverbResponse,
+} from '../../types';
 import { buildUrlWithQuery, buildUrl } from '../../utils';
 
 export interface GetNegotiationsOptions {
-	page?: number;
-	perPage?: number;
-	status?: 'active' | 'active_for_seller' | 'all';
-	negotiation_type?: 'standard' | 'auto_push_offer';
+  page?: number;
+  perPage?: number;
+  status?: 'active' | 'active_for_seller' | 'all';
+  negotiation_type?: 'standard' | 'auto_push_offer';
 }
 
 export const getNegotiations = async (
-	client: HttpClient,
-	config: ReverbConfig,
-	options: GetNegotiationsOptions,
-): Promise<HttpResponse<PaginatedReverbResponse<{ listings: ListingWithNegotiations[] }>>> => {
-	const { page, perPage, status, negotiation_type } = options;
+  client: HttpClient,
+  config: ReverbConfig,
+  options: GetNegotiationsOptions,
+): Promise<
+  HttpResponse<PaginatedReverbResponse<{ listings: ListingWithNegotiations[] }>>
+> => {
+  const { page, perPage, status, negotiation_type } = options;
 
-	const url = buildUrlWithQuery(buildUrl(config.rootEndpoint, '/my/listings/negotiations'), {
-		page,
-		per_page: perPage,
-		status,
-		negotiation_type,
-	});
+  const url = buildUrlWithQuery(
+    buildUrl(config.rootEndpoint, '/my/listings/negotiations'),
+    {
+      page,
+      per_page: perPage,
+      status,
+      negotiation_type,
+    },
+  );
 
-	return client.get<PaginatedReverbResponse<{ listings: ListingWithNegotiations[] }>>(url, {
-		headers: config.headers,
-	});
+  return client.get<
+    PaginatedReverbResponse<{ listings: ListingWithNegotiations[] }>
+  >(url, {
+    headers: config.headers,
+  });
 };
 
 export const getNegotiation = async (
-	client: HttpClient,
-	config: ReverbConfig,
-	offerId: number,
+  client: HttpClient,
+  config: ReverbConfig,
+  offerId: number,
 ): Promise<HttpResponse<Negotiation>> => {
-	const url = buildUrl(config.rootEndpoint, `/my/negotiations/${offerId}`);
+  const url = buildUrl(config.rootEndpoint, `/my/negotiations/${offerId}`);
 
-	return client.get<Negotiation>(url, {
-		headers: config.headers,
-	});
+  return client.get<Negotiation>(url, {
+    headers: config.headers,
+  });
 };

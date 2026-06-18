@@ -21,7 +21,13 @@ describe('updateListing (unit tests with MockHttpClient)', () => {
       shop_name: 'Test Shop',
       description: 'A great guitar',
       condition: { uuid: 'abc', displayName: 'Good' },
-      price: { amount: '500.00', amount_cents: 50000, currency: 'USD', symbol: '$', display: '$500' },
+      price: {
+        amount: '500.00',
+        amount_cents: 50000,
+        currency: 'USD',
+        symbol: '$',
+        display: '$500',
+      },
       inventory: 1,
       has_inventory: true,
       offers_enabled: false,
@@ -68,7 +74,9 @@ describe('updateListing (unit tests with MockHttpClient)', () => {
       createMockResponse(listing),
     );
 
-    const response = await updateListing(mockClient, config, '123', { description: 'Updated' });
+    const response = await updateListing(mockClient, config, '123', {
+      description: 'Updated',
+    });
 
     expect(response.status).toBe(200);
     expect(response.data.id).toBe('123');
@@ -79,13 +87,18 @@ describe('updateListing (unit tests with MockHttpClient)', () => {
   });
 
   it('should send publish flag in body when provided', async () => {
-    const listing = makeListing({ id: '456', state: { slug: ListingStates.LIVE, description: 'Live' } });
+    const listing = makeListing({
+      id: '456',
+      state: { slug: ListingStates.LIVE, description: 'Live' },
+    });
     mockClient.onPut(
       (url) => url.includes('/listings/456'),
       createMockResponse(listing),
     );
 
-    const response = await updateListing(mockClient, config, '456', { publish: true });
+    const response = await updateListing(mockClient, config, '456', {
+      publish: true,
+    });
 
     expect(response.status).toBe(200);
     const requests = mockClient.getRequests();
@@ -109,23 +122,31 @@ describe('updateListing (unit tests with MockHttpClient)', () => {
   it('should propagate errors for unknown ids', async () => {
     mockClient.onPut(
       (url) => url.includes('/listings/999'),
-      () => { throw new Error('404 Not Found'); },
+      () => {
+        throw new Error('404 Not Found');
+      },
     );
 
-    await expect(
-      updateListing(mockClient, config, '999', {}),
-    ).rejects.toThrow('404 Not Found');
+    await expect(updateListing(mockClient, config, '999', {})).rejects.toThrow(
+      '404 Not Found',
+    );
   });
 
   describe('ListingsResource.publish()', () => {
     it('should call PUT with { publish: true } body', async () => {
-      const listing = makeListing({ id: '111', state: { slug: ListingStates.LIVE, description: 'Live' } });
+      const listing = makeListing({
+        id: '111',
+        state: { slug: ListingStates.LIVE, description: 'Live' },
+      });
       mockClient.onPut(
         (url) => url.includes('/listings/111'),
         createMockResponse(listing),
       );
 
-      const resource = new ListingsResource(() => mockClient, () => config);
+      const resource = new ListingsResource(
+        () => mockClient,
+        () => config,
+      );
       const response = await resource.publish('111');
 
       expect(response.status).toBe(200);
@@ -141,7 +162,10 @@ describe('updateListing (unit tests with MockHttpClient)', () => {
         createMockResponse(listing),
       );
 
-      const resource = new ListingsResource(() => mockClient, () => config);
+      const resource = new ListingsResource(
+        () => mockClient,
+        () => config,
+      );
       const viaPublish = await resource.publish('222');
 
       mockClient.clearRequests();

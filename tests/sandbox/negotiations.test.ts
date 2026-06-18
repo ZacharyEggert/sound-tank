@@ -39,11 +39,15 @@ describe.skipIf(!SANDBOX_KEY)('Sandbox: Negotiations', () => {
     const firstNegotiation = page.data.listings?.[0]?.negotiations?.[0];
 
     if (!firstNegotiation) {
-      console.warn('No negotiations found in sandbox — skipping getNegotiation assertion');
+      console.warn(
+        'No negotiations found in sandbox — skipping getNegotiation assertion',
+      );
       return;
     }
 
-    const response = await reverb.negotiations.getNegotiation(firstNegotiation.id);
+    const response = await reverb.negotiations.getNegotiation(
+      firstNegotiation.id,
+    );
 
     expect(response.status).toBe(200);
     expect(response.data.id).toBe(firstNegotiation.id);

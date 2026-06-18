@@ -28,10 +28,7 @@ describe('MockHttpClient', () => {
   describe('GET requests', () => {
     it('should return mocked response for matching GET request', async () => {
       const mockData = { id: 1, name: 'Test' };
-      client.onGet(
-        (url) => url === '/api/test',
-        createMockResponse(mockData)
-      );
+      client.onGet((url) => url === '/api/test', createMockResponse(mockData));
 
       const response = await client.get('/api/test');
 
@@ -41,7 +38,7 @@ describe('MockHttpClient', () => {
 
     it('should throw error when no mock matches', async () => {
       await expect(client.get('/api/unknown')).rejects.toThrow(
-        'No mock found for GET /api/unknown'
+        'No mock found for GET /api/unknown',
       );
     });
 
@@ -51,7 +48,7 @@ describe('MockHttpClient', () => {
         (url) => {
           const id = url.split('/').pop();
           return createMockResponse({ id, name: `User ${id}` });
-        }
+        },
       );
 
       const response = await client.get('/api/users/123');
@@ -65,7 +62,7 @@ describe('MockHttpClient', () => {
       const mockData = { id: 2, name: 'Created' };
       client.onPost(
         (url) => url === '/api/test',
-        createMockResponse(mockData, 201, 'Created')
+        createMockResponse(mockData, 201, 'Created'),
       );
 
       const response = await client.post('/api/test', { name: 'New Item' });
@@ -79,7 +76,7 @@ describe('MockHttpClient', () => {
         (url) => url === '/api/users',
         (url, config, data) => {
           return createMockResponse({ ...data, id: 999 }, 201);
-        }
+        },
       );
 
       const response = await client.post('/api/users', { name: 'John' });
@@ -91,7 +88,10 @@ describe('MockHttpClient', () => {
   describe('PUT requests', () => {
     it('should return mocked response for matching PUT request', async () => {
       const mockData = { id: 1, name: 'Updated' };
-      client.onPut((url) => url === '/api/test/1', createMockResponse(mockData));
+      client.onPut(
+        (url) => url === '/api/test/1',
+        createMockResponse(mockData),
+      );
 
       const response = await client.put('/api/test/1', { name: 'Updated' });
 
@@ -103,7 +103,7 @@ describe('MockHttpClient', () => {
     it('should return mocked response for matching DELETE request', async () => {
       client.onDelete(
         (url) => url === '/api/test/1',
-        createMockResponse({}, 204, 'No Content')
+        createMockResponse({}, 204, 'No Content'),
       );
 
       const response = await client.delete('/api/test/1');
@@ -117,7 +117,7 @@ describe('MockHttpClient', () => {
       const mockData = { id: 1, email: 'updated@example.com' };
       client.onPatch(
         (url) => url === '/api/test/1',
-        createMockResponse(mockData)
+        createMockResponse(mockData),
       );
 
       const response = await client.patch('/api/test/1', {
@@ -215,7 +215,7 @@ describe('MockHttpClient', () => {
       client.clearMocks();
 
       await expect(client.get('/api/test')).rejects.toThrow(
-        'No mock found for GET /api/test'
+        'No mock found for GET /api/test',
       );
     });
 
@@ -246,7 +246,7 @@ describe('MockHttpClient', () => {
 
       // Third call should fail
       await expect(client.get('/api/test')).rejects.toThrow(
-        'No mock found for GET /api/test'
+        'No mock found for GET /api/test',
       );
     });
 
@@ -266,7 +266,7 @@ describe('MockHttpClient', () => {
     it('should match based on URL pattern', async () => {
       client.onGet(
         (url) => url.startsWith('/api/users/'),
-        createMockResponse({ user: 'data' })
+        createMockResponse({ user: 'data' }),
       );
 
       const response = await client.get('/api/users/123');
@@ -276,7 +276,7 @@ describe('MockHttpClient', () => {
     it('should match based on config', async () => {
       client.onGet(
         (url, config) => config?.headers?.Authorization === 'Bearer token',
-        createMockResponse({ authenticated: true })
+        createMockResponse({ authenticated: true }),
       );
 
       const response = await client.get('/api/test', {

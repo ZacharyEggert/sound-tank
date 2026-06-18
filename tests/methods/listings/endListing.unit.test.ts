@@ -1,5 +1,8 @@
 import { describe, expect, it, beforeEach } from 'vitest';
-import { endListing, deleteListing } from '../../../src/methods/listings/endListing';
+import {
+  endListing,
+  deleteListing,
+} from '../../../src/methods/listings/endListing';
 import { ListingsResource } from '../../../src/resources/ListingsResource';
 import { MockHttpClient, createMockResponse } from '~/http/MockHttpClient';
 import { ReverbConfig } from '~/config/ReverbConfig';
@@ -21,7 +24,13 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
       shop_name: 'Test Shop',
       description: 'A great guitar',
       condition: { uuid: 'abc', displayName: 'Good' },
-      price: { amount: '500.00', amount_cents: 50000, currency: 'USD', symbol: '$', display: '$500' },
+      price: {
+        amount: '500.00',
+        amount_cents: 50000,
+        currency: 'USD',
+        symbol: '$',
+        display: '$500',
+      },
       inventory: 1,
       has_inventory: true,
       offers_enabled: false,
@@ -63,7 +72,10 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
 
   describe('endListing()', () => {
     it('should send PUT to /api/my/listings/:id/state/end with reason=not_sold', async () => {
-      const listing = makeListing({ id: '123', state: { slug: 'ended' as any, description: 'Ended' } });
+      const listing = makeListing({
+        id: '123',
+        state: { slug: 'ended' as any, description: 'Ended' },
+      });
       mockClient.onPut(
         (url) => url.includes('/my/listings/123/state/end'),
         createMockResponse(listing),
@@ -80,13 +92,21 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
     });
 
     it('should send PUT with reason=reverb_sale', async () => {
-      const listing = makeListing({ id: '456', state: { slug: 'ended' as any, description: 'Ended' } });
+      const listing = makeListing({
+        id: '456',
+        state: { slug: 'ended' as any, description: 'Ended' },
+      });
       mockClient.onPut(
         (url) => url.includes('/my/listings/456/state/end'),
         createMockResponse(listing),
       );
 
-      const response = await endListing(mockClient, config, '456', 'reverb_sale');
+      const response = await endListing(
+        mockClient,
+        config,
+        '456',
+        'reverb_sale',
+      );
 
       expect(response.status).toBe(200);
       const requests = mockClient.getRequests();
@@ -96,7 +116,9 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
     it('should propagate errors', async () => {
       mockClient.onPut(
         (url) => url.includes('/my/listings/999/state/end'),
-        () => { throw new Error('404 Not Found'); },
+        () => {
+          throw new Error('404 Not Found');
+        },
       );
 
       await expect(
@@ -136,7 +158,9 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
     it('should propagate error when deleting a live listing', async () => {
       mockClient.onDelete(
         (url) => url.includes('/listings/live-id'),
-        () => { throw new Error('422 Cannot delete a live listing'); },
+        () => {
+          throw new Error('422 Cannot delete a live listing');
+        },
       );
 
       await expect(
@@ -153,7 +177,10 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
         createMockResponse(listing),
       );
 
-      const resource = new ListingsResource(() => mockClient, () => config);
+      const resource = new ListingsResource(
+        () => mockClient,
+        () => config,
+      );
       const response = await resource.end('111', 'not_sold');
 
       expect(response.status).toBe(200);
@@ -167,7 +194,10 @@ describe('endListing / deleteListing (unit tests with MockHttpClient)', () => {
         createMockResponse(undefined, 200),
       );
 
-      const resource = new ListingsResource(() => mockClient, () => config);
+      const resource = new ListingsResource(
+        () => mockClient,
+        () => config,
+      );
       const response = await resource.delete('222');
 
       expect(response.status).toBe(200);
